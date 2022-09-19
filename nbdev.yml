@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "g2fd"
+  site-url: "https://danielkick.github.io/g2fd"
+  description: "This project makes data from the Genomes to Fields Initiative easier to use."
+  repo-branch: main
+  repo-url: "https://github.com/danielkick/g2fd"
