@@ -5,4 +5,4 @@ d = { 'settings': { 'branch': 'main',
                 'doc_host': 'https://danielkick.github.io',
                 'git_url': 'https://github.com/danielkick/g2fd',
                 'lib_path': 'g2fd'},
-  'syms': {'g2fd.core': {'g2fd.core.foo': ('core.html#foo', 'g2fd/core.py')}}}
+  'syms': {'g2fd.core': {}}}

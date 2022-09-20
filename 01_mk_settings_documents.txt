@@ -1,0 +1,591 @@
+import pickle
+# For all datasets except geno ----
+# ExperimentCode should be in this list
+expectedExperimentCodes = ["ARH1",
+ "ARH2",
+ "AZH1",
+ "AZI1",
+ "AZI1  AZI2",
+ "AZI2",
+ "COH1",
+ "DEH1",
+ "DEI1",
+ "G2FDE1",
+ "G2FIA3",
+ "G2FIL1",
+ "G2FIN1",
+ "G2FMN2",
+ "G2FNE1",
+ "G2FNY1",
+ "G2FWI-HYB",
+ "G2FWI1",
+ "G2FWI2",
+ "G2F_IN_TX1",
+ "GAH1",
+ "GAH2",
+ "GAI1",
+ "GAI2",
+ "GXE_inb_BO2",
+ "GXE_inb_IA1",
+ "GXE_inb_IA2",
+ "GXE_inb_MO1",
+ "GXE_inb_MO3",
+ "GxE_inb_PA1",
+ "IA(?)2",
+ "IA(?)3",
+ "IA(H4)",
+ "IAH1",
+ "IAH1 IAI1",
+ "IAH1a",
+ "IAH1b",
+ "IAH1c",
+ "IAH2",
+ "IAH3",
+ "IAH4",
+ "IAI1",
+ "IAI2",
+ "IAI3",
+ "IAI4",
+ "ILH1",
+ "ILH1  ILI1  ILH2",
+ "ILH1 ILI1",
+ "ILH2",
+ "ILI1",
+ "INH1",
+ "INH1  INI1",
+ "INH1 INI1",
+ "INI1",
+ "KSH1",
+ "KSH1  KSI1",
+ "KSH2",
+ "KSH3",
+ "KSI1",
+ "MIH1",
+ "MN(?)1",
+ "MNH1",
+ "MNI1",
+ "MNI2",
+ "MOH1",
+ "MOH1  MOI1  MOH2  MOI2",
+ "MOH1 MOI1",
+ "MOH1-rep1",
+ "MOH1-rep2",
+ "MOH2",
+ "MOH2 MOI2 MOI3",
+ "MOI1",
+ "MOI2",
+ "NC1",
+ "NCH1",
+ "NCI1",
+ "NEH1",
+ "NEH1  NEH4",
+ "NEH1 NEI1",
+ "NEH2",
+ "NEH3",
+ "NEH3-Irrigated",
+ "NEH4",
+ "NEH4-NonIrrigated",
+ "NY?",
+ "NYH1",
+ "NYH1  NYI1",
+ "NYH1 NYI1",
+ "NYH2",
+ "NYH3  NYI2",
+ "NYH3OHH1",
+ "NYH4",
+ "NYI1",
+ "NYI2",
+ "ONH1",
+ "ONH2",
+ "PAI1",
+ "PAI1  PAI2",
+ "PAI2",
+ "SCH1",
+ "SDH1",
+ "SDI1",
+ "TXH1",
+ "TXH1  TXI1  TXI2",
+ "TXH1-Dry",
+ "TXH1-Early",
+ "TXH1-Late",
+ "TXH2",
+ "TXH2  TXI3",
+ "TXI1",
+ "TXI2",
+ "TXI3",
+ "WIH1",
+ "WIH1  WII1",
+ "WIH1 WII1",
+ "WIH2",
+ "WIH2  WII2",
+ "WII1",
+ "WII2",
+ "nan"]
+
+replaceExperimentCodes = {
+    'MOH1- rep 1': 'MOH1-rep1',
+    'MOH1- rep 2': 'MOH1-rep2',
+    'TXH1- Early': 'TXH1-Early',
+    'TXH1- Late': 'TXH1-Late',
+    'TXH1- Dry': 'TXH1-Dry',
+    'NEH3 (IRRIGATED)': 'NEH3-Irrigated',
+    'NEH4 (NON IRRIGATED)': 'NEH4-NonIrrigated'
+
+}
+
+
+# For specific datasets ----
+# For management ====
+expectedManagementCols = [
+    'ExperimentCode',
+    'Application',
+    'Product',
+    'Date',
+    'QuantityPerAcre',
+    'ApplicationUnit',
+    'Year',
+    'Plot']
+
+
+# management.Application ====
+newApplicationNames = {
+    'irrigation': ['irrigation',
+                   'Furrow Irrigation'],
+
+    'fertilizer': ['Post-fertilization',
+                   'Post-fertilization for DG2F',
+                   'Pre-emergent Herbicide',
+                   'Pre-plant fertilization',
+                   'broadcast fertilizer',
+                   'fertigation',
+                   'fertilize',
+                   'sidedress Nitrogen application',
+                   'Fertlizer',
+                  'soil remediant'],
+
+    'herbicide': ['Pre-emergent Herbicide',
+                  'Herbicide pre-emergence application',
+                  'Post-Herbicide',
+                  'pre-plant herbicide',
+                  'post-plant herbicide',
+                  'Post-Plant Herbicide',
+                  'adjuvant'],
+
+    'insecticide': ['insecticide'],
+    'fungicide': ['Fungicide '],
+
+    'ignored': ['FOR G2LA', 'FOR G2FE', 'For DG2F']
+}
+
+
+# management.ApplicationUnit ====
+expectedApplicationUnits = ['lbs/Acre', 'oz/Acre',
+                            'in/Acre', 'gal/Acre', 'units/Acre', 'ton/Acre', 'GPA']
+
+replaceApplicationUnits = {'lbs': 'lbs/Acre',
+                           'oz': 'oz/Acre',
+                           'gallons/acre': 'gal/Acre', 
+                           'Gallons/acre': 'gal/Acre'
+                           }
+
+
+# management.Product ====
+newIrrigationNames = {
+    'Water': ['water',
+              'Water',
+              'preirrigation',
+              'Overhead; recorded by weather station',
+              'irrigate',
+              'irrigated',
+              'RECORDED BY WEATHER STATION!',
+              'H2O']
+}
+ 
+newFertilizerNames = {
+    'Manure Poultry': ['Poultry manure'],
+    # npk like
+    'nkpLike21-0-0-24': ['21-0-0-24'],
+    'nkpLike28-0-0-0.5': ['28-0-0-0.5'],
+    'nkpLike28-0-0-5': ['28-0-0-5'],
+    'Starter nkpLike50-45-10-10-2': ['Starter 50-45-10-10-2'],
+
+    'npkLike24-0-0-3': ['24-0-0-3'],
+    'npkLike20-10-0-1': ['20-10-0-1s'],
+    'npkLike27-0-0-6': ['27-0-0-6s'],
+    'npkLike30-26-0-6': ['npkLike30-26-0-6', 'Starter2x2', 'Liquid Starter 2x2 planter', 'Planter starter 2x2'],
+    # per 2019
+    # Location	Application_or_treatment	Product_or_nutrient_applied	Date_of_application	Quantity_per_acre	Application_unit
+    # OHH1	fertilize	Planter starter 2x2	Friday, June 7, 2019	30-26-0-6S	lbs/Acre
+    # "Planter starter 2x2" may == "30-26-0-6S"
+    
+    'npkLike6.7-13-33.5-4.4': ['6.7-13-33.5 4.4S dry fertilizer broadcast incorp', '6.7-13-33.5 with 4.4 sulfur'],
+
+    # Readily Converted NPK ----------------------------------------------------------------------------
+    'npk0-0-32': ['0-0-32'],
+    'npk0-0-60': ['0-0-60',
+                  '0-0-60 (NPK)',
+                  '0-0-60, preplant incorporated',
+                  '0-0-60 / pre plant incorporate'],
+    'npk4-10-24': ['4-10-24'],
+    'npk5.5-26-30': ['5.5-26-30 fertilizer'],
+    'npk7-0-40': ['npk7-0-40'],
+    'npk7.5-30-30': ['npk7.5-30-30'],
+    'npk7-33-21': ['7-33-21 broadcast prior to planting',
+                   '7-33-21 broadcasted',
+                   '7-33-21�', 
+                   '7-33-21Ê' ],
+    'npk8-20-30': ['8/20/1930'],
+    'npk8.9-42.3-48.8': ['npk8.9-42.3-48.8'],
+    'npk9-24-27': ['9/24/2027'],
+    'npk9.3-31.7-0': ['9.3-31.7-0'],
+    'npk10-34-0': ['10-34-0'],
+    'npk10-10-30': ['npk10-10-30', '10-10-30 N-P-K'],
+    'npk11-37-0': ['11-37-0'],
+
+
+
+    'npk11-52-0': ['11-52-0, preplant incorporated', '11-52-0 / pre plant incorporate'],
+    'npk12.72-9.8-23.57': ['12.72-9.8-23.57'],
+    'npk13-19-24': ['13-19-24',
+                    '13-19-24�', 
+                    '13-19-24Ê'],
+    'npk14-4-29': ['14-4-29'],
+    'npk14-0-0': ['140+0+0'],  # NOTE! Presumed typo. 140 -> 14
+    'npk15-18-24': ['15-18-24'],
+    'npk15-34-0': ['15-34-0'],
+    'npk16-0-24': ['16-0-24',
+                   'Applied 16-0-24'],
+    'npk18-46-0': ['18-46-0'],
+    'npk19-18-0': ['19-18-0� (liquid planter starter)', 
+                   '19-18-0\xa0 (liquid planter starter)', 
+                   '19-18-0Ê (liquid planter starter)'
+                  ],
+     
+    'npk20-9-3': ['npk20-9-3'],
+    'npk20-10-0': ['20-10-0 (NPK)'],
+    'npk27-26-0': ['npk27-26-0'],
+    'npk28-0-0': ['28-0-0', '28%'],
+
+    'Manure npk31.5-4.3-16.3': ['Manure N31.5-P4.3-K16.3 from Digester'],
+    'npk32-0-0': ['32-0-0'],
+    'npk46-0-0': ['46-0-0'],
+
+    'npk50-50-0': ['npk50-50-0'],
+
+
+    'Starter 16-16-16': ['Starter 16-16-16'],
+    'Starter 16.55-6.59-2.03': ['Starter Fertilizer 16.55-6.59-2.03'],
+    'Starter2x2 16-16-16': ['Starter ferilizer 16-16-16 2x2'],
+    'Starter 20-10-0': ['Starter fertilizer 20-10-0'],
+
+    'npk10-0-30+12S': ['10-0-30-12%S'],  # Note extra Sulfer %
+    # Note extra Molybdenum
+    'Mono-Ammonium Phosphate npk11-52-0+Mo0.001': ['MAP 11-52-0'],
+    'npk11-37-0+4Zn': ['11-37-0 + 4 Zn'],  # Note extra zinc
+
+    # Nitrogen -----------------------------------------------------------------------------------------
+    'N28% npk28-0-0': ['28% Nitrogen',
+                       '28% Liquid Nitrogen',
+                       '28% Nitrogen',
+                       r'28% Nitrogen, Sidedress coulter injected',
+                       '28% Liquid Nitrogen',
+                      '28% N sidedress'],
+
+    'NH3': ['NH3', 'Anhydrous Ammonia'],
+    'NH3 N-serve': ['NH3 with N-serve'],
+ 
+
+    'N': ['N',
+          'Nitrogen',
+          'Nitrogen sidedress',
+          'Side dressed Nitrogen',
+          'Nitrogen - SuperU',
+          'nitrogen knifed',
+          'nitrogen (date approximate, pre plant)', 
+          'nitrogen (date approximate, post plant)'],
+
+
+    'Urea46%': ['46% Urea'],
+    'Super Urea': ['Super U',
+                   'Super Urea'],
+
+    'Urea': ['Urea', 'urea', 'Granual Urea', 'Granular Urea'],
+
+    'UAN': ['UAN', 'UAN ', 'Nitrogen base (UAN)'],
+
+    'UAN28% npk28-0-0': ['UAN 28%',
+                         '28% UAN'],
+
+    'UAN30% npk30-0-0': ['30% UAN',
+                         'Side Dressed N with 30% UAN',
+                         'UAN side dressed  30-0-0',
+                         '30% UAN protected with nitrapyrin nitrification inhibitor (Nitrogen 42 GPA knifed between rows)',
+                         'UAN 30%'],
+    'UAN32% npk32-0-0': ['UAN; 32-0-0'
+                         ],
+
+    # Phosphorus ---------------------------------------------------------------------------------------
+    'P': ['P2O5', 'Phosphorous', 'P2O'],
+    'P+K': ['Phosphorus & Potassium (unknown form)'],
+
+    # Potassium ----------------------------------------------------------------------------------------
+    'Potash': ['Pot Ash', 'potash'],
+    'Potash npk0-0-60': ['potash 0-0-60'],
+    'K': ['K', 'K2O'],
+    # Other --------------------------------------------------------------------------------------------
+    'Agrotain': ['Agrotain'],
+    # Boron ===========================================================================================
+    'B10%': ['10% Boron', 'Boron 10%'],
+    # Zinc ============================================================================================
+    'Zn': ['Zinc', 'zinc', 'Zinc\xa0\xa0 (with planter fertilizer)'],
+    'Zn planter fertilizer': ['Zinc�� (with planter fertilizer)', 'ZincÊÊ (with planter fertilizer)'],
+    'Zn sulfate': ['zinc sulfate'],
+
+    # Sulfer ==========================================================================================
+    '24S': ['24S'],
+    '24S': ['Applied 24S'],
+    'S': ['S'],
+    # Manganese =======================================================================================
+    'KickStand Manganese 4% Xtra': ['KickStand� Manganese 4% Xtra', 'KickStand® Manganese 4% Xtra'],
+    # Ammonium Sulfate ================================================================================
+    'Ammonium sulfate': ['AMS 21-0-0-24',
+                         'Am Sulfate',
+                         'Ammonium sulfate',
+                         'ammonium sulfate'
+                         ],
+
+    # Multiple Components =============================================================================
+    'Orangeburg Mix': ['Orangeburg Mix'],
+    # pH ==============================================================================================
+    'Lime': ['Lime', 'lime', 'Ag Lime', 'Lime / pre plant incorporate']
+
+}
+
+newHerbicideNames = {
+    # Aatrex -------------------------------------------------------------------------------------------
+    'Aatrex': ['Aatrex',
+               'Attrex',
+               'post emergence- Aatrex'],
+
+    # Atrazine -----------------------------------------------------------------------------------------
+    'Atrazine': ['Atrazine',
+                 'Atrazine ',
+                 'Atrazine 4L',
+                 'atrazine',
+                 'Atrazine ',
+                 'Applied Atrazine',
+                 'Atrazine '],
+
+    # Ammonium sulfate ---------------------------------------------------------------------------------
+    'Ammonium sulfate': ['AMS',
+                         'Am Sulfate',
+                         'ammonium sulfate',
+                         'AMS 21-0-0-24'],
+    'Ammonium sulfate .5%': ['AMS@.5%'],
+    # Accent Q -----------------------------------------------------------------------------------------
+    'Accent Q': ['Accent',
+                 'Accent Q',
+                 'Accent Q (DuPont)'],
+
+    # Acuron -------------------------------------------------------------------------------------------
+    'Acuron': ['Accuron',
+               'Acuron',
+               'Acuron (S-Metalochlor, Atrazine, Mesotrione)',
+               'Acuron herbicide'],
+    # Banvel -------------------------------------------------------------------------------------------
+    'Banvel': ['Banvel',
+               'post emergece- Banvel'],
+    # Bicep --------------------------------------------------------------------------------------------
+
+    'Bicep': ['Bicep', 'bicep'],
+    'Bicep Magnum': ['Bicep Magnum'],
+    'Bicep II': ['Bicep II'],
+    'Bicep II Magnum': ['Bicep II Magnum',
+                        'pre-emergence -Bicep II Magnum'],
+
+    'Bicep II Magnum Lite': ['Bicep Lite II magnum'],
+    # Buctril ------------------------------------------------------------------------------------------
+    'Buctril': ['Buctril',
+                'Buctril 4EC'],
+
+    # Callisto -----------------------------------------------------------------------------------------
+    'Callisto': ['Calisto', 'Callisto'],
+    'Callisto+Atrazine+AMS+COC': ['Calisto/Atrazine/AMS/COC'],
+
+    # Crop Oil -----------------------------------------------------------------------------------------
+    'Crop Oil': ['Crop Oil',
+                 'crop oil'],
+
+    # Dual ---------------------------------------------------------------------------------------------
+    'Dual': ['Daul ',
+             'Dual'],
+
+    'Dual Magnum': ['Dual Magnum',
+                    'Applied Dual Magnum'],
+
+    'Dual II Magnum': ['Dual II - Magnum',
+                       'Dual II Mag.',
+                       'Dual II Magnum',
+                       'Dual 2 Magnum'],
+
+    'Degree Xtra': ['Degree Extra',
+                    'Degree Xtra; Acetochlor + Atrazine'],
+    # Harness ------------------------------------------------------------------------------------------
+    'Harness': ['Harness'],
+    'Harness Xtra': ['Harness Xtra'],
+    'Harness Xtra 5.6L': ['Harness Xtra 5.6L; Acetachlor and Atrazine', 'Harness Xtra 5.6L;  Acetachlor and Atrazine'],
+    # Liberty 280SL ------------------------------------------------------------------------------------
+    'Liberty 280SL': ['Liberty 280SL'],
+    # Medal II -----------------------------------------------------------------------------------------
+    'Medal II EC': ['Medal II EC', 'Medal II (S- Metolachlor)'],
+    # NOTE: [],Presumed typo
+    'Medal II EC+Simazine+Explorer': ['Medal II, sirrazine, Explorer'],
+    # Primextra ----------------------------------------------------------------------------------------
+    'Primextra': ['Primextra'],
+    'Primextra Magnum': ['Primextra Magnum'],
+    # Prowl H2O ----------------------------------------------------------------------------------------
+    'Prowl H2O': ['Prowl',
+                  'Prowl H20 ',
+                  'Prowl H2O'],
+
+    # Roundup + Roundup PowerMAX ---------------------------------------------------------------------------------
+    'Roundup': ['Roundup', 
+                'Round up'],
+    'Roundup PowerMAX': ['Roundup PowerMAX',
+                         'Roundup PowerMax',
+                         'Applied Round Up Pwrmax',
+                         'Roundup Power Max'],
+    'Roundup PowerMax II': ['Roundup PowerMax II'],
+    # Simazine -----------------------------------------------------------------------------------------
+    'Simazine': ['Simazine',
+                 'Simizine'],
+    'Simazine 4L': ['Simazine 4L'],
+
+    # Lexar --------------------------------------------------------------------------------------------
+    'Lexar': ['Lexar'],
+    'Lexar EZ': ['Lexar EZ',
+                 'Lexar E Z'],
+    # Status -------------------------------------------------------------------------------------------
+    'Status': ['Status',
+               'status'],
+
+    'Warrant': ['Warrant',
+                'warrant'],
+    # Only One Entry -----------------------------------------------------------------------------------
+    '24D': ['24D', '24-D'],
+    'AD-MAX 90': ['AD-MAX 90'],
+    'AccuQuest WM': ['AccuQuest WM'],
+    'Aremzon': ['Aremzon'],
+    'Balance Flex herbicide': ['Balance Flex herbicide'],
+    'Basagran': ['Basagran'],
+    'Bicep Light II': ['Bicep Light II'],
+    'Brawl': ['Brawl'],
+    'Broadloom': ['Broadloom'],
+    'Buccaneer Plus': ['Buccaneer Plus'],
+    'Evik DF': ['Evik DF', 'Applied Evik DF'],
+    'Explorer': ['Explorer'],  
+    'Glyphosate': ['Glyphosate'],  
+    'Evik': ['Evik'],
+    'Integrity': ['Integrity'],
+    'Gramoxone': ['Gramoxone'],
+    'Guardsman': ['Guardsman (atrazine, metalochlor)'],
+    'Impact': ['Impact', 'Applied Impact'],
+
+    'Keystone': ['Keystone'],
+    'Laudis': ['Laudis'],
+
+    'Methylated Seed Oil 1%': ['MSO @1%'],
+    'Me Too Lachlor II': ['Me Too Lachlor II'],
+    'Nonionic Surfactant': ['NIS'],  # adjuvant
+    'Option': ['Option'],
+    'Outlook+Infantry': ['Outlook/Infantry'],
+    'Permit': ['Permit'],
+    'Princep': ['Princep', 'Pricep'],
+    'Satellite HydroCap': ['Satellite HydroCap'],  # Pendimethalin 38.7%
+
+    'Steadfast Q': ['Steadfast Q'],
+
+    # has mixed components
+    'Makaze+Glyphosate+Medal II EC+S-metolachlor+Eptam+S-ethyl dipropylthiocarbamate+Trifluralin HF+Trifluralin+Atrazine 4L+Atrazine': ['Makaze, Glyphosate (isopropylamine salt); Medal II EC, S-metolachlor; Eptam, S-ethyl dipropylthiocarbamate; Trifluralin HF, Trifluralin; Atrazine 4L, Atrazine'],
+    'Cadet+Fluthiacet-methyl': ['Cadet; Fluthiacet-methyl'],
+    'Coragen+Chlorantraniliprole': ['Coragen; Chlorantraniliprole'],
+    'Prowl+Atrazine+Basagran': ['Prowl, Atrazine, Basagran'],
+    'Impact+Atrazine': ['Impact and Atrazine'],
+    'Instigate+Bicep': ['Instigate and Bicep'],
+    'Glyphosate+2,4D+Dicamba': ['Glyphosato, 2,4D, Dicambo', 'Glyphosate, 2,4D, Dicambo'],
+    'harness+atrazine': ['harness (acetechlor) + atrazine'],
+    '2-4,D+Round Up': ['2-4,D, Round Up'],
+    'Bicep II+RoundUp': ['Bicep II, Round Up'],
+    'Laudis+Atrazine': ['Laudis, Atrazine'],
+    'Counter+Radiant+Asana XL+Prevathon': ['Counter(terbufos), Radiant (spinetoram), Asana XL (Esfenvalerate), Prevathon (Chlorantraniliprole)'],
+    'Status+Accent': ['Status + Accent (diflufenzopyr, dicamba, nicosulfuron)'],
+    'Primextra+Callisto': ['Primextra+Callisto(s-metolachlor/benoxacor/atrazine+mesotrione)'],
+    'Accent+Banvel': ['Accent and Banvel - Nicosulfuron and Dicamba'],
+    'Callisto+AI Mesotrione+Dual 2 Magnum+AI S-metolachlor+Simazine+AI Simazine': ['Tank Mix (Callisto, AI Mesotrione) (Dual 2 Magnum, AI S-metolachlor) (Simazine, AI Simazine:2-chloro-4 6-bis(ethylamino)-s-triazine)'],
+    'Lumax+Atrazine': ['Lumax + Atrazine'],
+    'Lumax+glyphosate': ['Lumax + glyphosate'],
+    'Converge Flexx+Converge 480': ['Converge Flexx; Converge 480'],
+    'Callisto+Dual 2 Magnum+Simazine 4L': ['Tank Mix (Callisto; Dual 2 Magnum; Simazine 4L)'],
+    'Roundup+Evik': ['Roundup and Evik hand sprayed as needed'],
+    'Atrazine+DualIIMagnum': ['Atrazine 4L and Dual II Magnum']
+
+}
+
+newInsecticideNames = {
+    'Counter 20G': ['Counter 20G',
+                    'Counter 20g',
+                    'Applied Counter 20G',
+                    'Coutner 20G'],
+    'Counter': ['Counter'],
+    'Force 3G': ['Force 3G',
+                 'Counter Force 3G',
+                 'Counter Force 3G (AI Tefluthrin)',
+                 'Force 3G (Tefluthrin)',
+                 'Force 3G; Tefluthrin'],
+    'Force 2G': ['Force 2G'],
+    'Lorsban 4E': ['Lorsban 4E'],
+    'Sevin XLR': ['Sevin XLR'],
+    'Sniper': ['Sniper', 'Sniper LFRÊ'],
+    # Liquid Fertilizer Ready #TODO how much fertilizer is being added through this?
+    'Sniper LFR': ['Sniper LFR�', 'Snipper LFR']
+}
+
+newFungicideNames = {
+    'Delaro 325 SC': ['Fungicide - Delaro 325 SC']
+}
+
+newMiscNames = {
+    # ignore
+    'nan': ['Disk',
+            'Field Cultivator',
+            'Hip and Rolled',
+            'Planted Corn Test',
+            'Planted Corn Filler Dyna-Grow D57VC51 RR',
+            'Begin Planting Research',
+            'nan']
+}
+
+newProductNames = {}
+newProductNames.update(newIrrigationNames)
+newProductNames.update(newFertilizerNames)
+newProductNames.update(newHerbicideNames)
+newProductNames.update(newInsecticideNames)
+newProductNames.update(newFungicideNames)
+newProductNames.update(newMiscNames)
+
+
+# Renaming Dictionaries:
+save_to_pkl = {
+    "expectedExperimentCodes" : expectedExperimentCodes,
+    "replaceExperimentCodes" : replaceExperimentCodes,
+    "expectedManagementCols" : expectedManagementCols,
+    "newApplicationNames" : newApplicationNames,
+    "expectedApplicationUnits" : expectedApplicationUnits,
+    "replaceApplicationUnits" : replaceApplicationUnits,
+    "newProductNames" : newProductNames}
+
+keys = list(save_to_pkl.keys())
+
+for key in keys:
+    with open('./data/manual/'+str(key)+'.pickle', 'wb') as f:
+        pickle.dump(save_to_pkl[key], f, pickle.HIGHEST_PROTOCOL)
