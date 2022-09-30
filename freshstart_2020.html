@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="This notebook brings the 2020 into alignment with the desired format with respect to field name, type, and grouping.">
+
+<title>g2fd - Process Data from 2020 into a consistent format.</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="g2fd - Process Data from 2020 into a consistent format.">
+<meta property="og:description" content="This notebook brings the 2020 into alignment with the desired format with respect to field name, type, and grouping.">
+<meta property="og:site-name" content="g2fd">
+<meta name="twitter:title" content="g2fd - Process Data from 2020 into a consistent format.">
+<meta name="twitter:description" content="This notebook brings the 2020 into alignment with the desired format with respect to field name, type, and grouping.">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">g2fd</span>
+    </a>
+  </div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Process Data from 2020 into a consistent format.</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">g2fd</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./core.html" class="sidebar-item-text sidebar-link"><code>g2fd</code> is the fast and easy way to access Genomes to Fields data.</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_mk_settings_documents.html" class="sidebar-item-text sidebar-link">01_mk_settings_documents.html</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./freshstart_0000.html" class="sidebar-item-text sidebar-link">Process Data from 2021 into a consistent format.</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./freshstart_2020.html" class="sidebar-item-text sidebar-link active">Process Data from 2020 into a consistent format.</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./freshstart_2021.html" class="sidebar-item-text sidebar-link">Process Data from 2021 into a consistent format.</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./standardize_deprecated.html" class="sidebar-item-text sidebar-link">Setup</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#rename" id="toc-rename" class="nav-link active" data-scroll-target="#rename">Rename</a></li>
+  <li><a href="#sanatize-id-columns-as-needed" id="toc-sanatize-id-columns-as-needed" class="nav-link" data-scroll-target="#sanatize-id-columns-as-needed">Sanatize ID columns as needed</a></li>
+  <li><a href="#rearrange-columns" id="toc-rearrange-columns" class="nav-link" data-scroll-target="#rearrange-columns">Rearrange columns</a></li>
+  <li><a href="#sanitize-non-id-columns" id="toc-sanitize-non-id-columns" class="nav-link" data-scroll-target="#sanitize-non-id-columns">Sanitize Non-ID columns</a>
+  <ul class="collapse">
+  <li><a href="#sanitization-functions" id="toc-sanitization-functions" class="nav-link" data-scroll-target="#sanitization-functions">Sanitization functions</a></li>
+  <li><a href="#sanitization-column-data-type-expectations" id="toc-sanitization-column-data-type-expectations" class="nav-link" data-scroll-target="#sanitization-column-data-type-expectations">Sanitization: Column data type expectations</a></li>
+  </ul></li>
+  <li><a href="#sanitization-alter-entries" id="toc-sanitization-alter-entries" class="nav-link" data-scroll-target="#sanitization-alter-entries">Sanitization: Alter entries</a>
+  <ul class="collapse">
+  <li><a href="#static-values-within-season" id="toc-static-values-within-season" class="nav-link" data-scroll-target="#static-values-within-season">Static values (within season)</a>
+  <ul class="collapse">
+  <li><a href="#datetime-containing-columns" id="toc-datetime-containing-columns" class="nav-link" data-scroll-target="#datetime-containing-columns">Datetime containing columns</a></li>
+  <li><a href="#simple-columns" id="toc-simple-columns" class="nav-link" data-scroll-target="#simple-columns">Simple Columns</a></li>
+  <li><a href="#check-success" id="toc-check-success" class="nav-link" data-scroll-target="#check-success">Check Success</a></li>
+  </ul></li>
+  <li><a href="#weather" id="toc-weather" class="nav-link" data-scroll-target="#weather">Weather</a>
+  <ul class="collapse">
+  <li><a href="#datetime" id="toc-datetime" class="nav-link" data-scroll-target="#datetime">Datetime</a></li>
+  <li><a href="#simple-columns-1" id="toc-simple-columns-1" class="nav-link" data-scroll-target="#simple-columns-1">Simple Columns</a></li>
+  <li><a href="#check-success-1" id="toc-check-success-1" class="nav-link" data-scroll-target="#check-success-1">Check Success</a></li>
+  </ul></li>
+  <li><a href="#management" id="toc-management" class="nav-link" data-scroll-target="#management">Management</a>
+  <ul class="collapse">
+  <li><a href="#date_datetime" id="toc-date_datetime" class="nav-link" data-scroll-target="#date_datetime">Date_Datetime</a></li>
+  <li><a href="#amount_per_acre" id="toc-amount_per_acre" class="nav-link" data-scroll-target="#amount_per_acre">Amount_Per_Acre</a></li>
+  <li><a href="#simple-columns-2" id="toc-simple-columns-2" class="nav-link" data-scroll-target="#simple-columns-2">Simple Columns</a></li>
+  <li><a href="#check-success-2" id="toc-check-success-2" class="nav-link" data-scroll-target="#check-success-2">Check Success</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#publish" id="toc-publish" class="nav-link" data-scroll-target="#publish">Publish</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/danielkick/g2fd/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Process Data from 2020 into a consistent format.</h1>
+</div>
+
+<div>
+  <div class="description">
+    This notebook brings the 2020 into alignment with the desired format with respect to field name, type, and grouping.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imports ----</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.max_columns'</span>, <span class="va">None</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> g2fd.internal <span class="im">import</span> <span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2020</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>year_string <span class="op">=</span> <span class="st">'2020'</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>meta_path <span class="op">=</span> <span class="st">'./data/raw/GenomesToFields_G2F_data_2020/z._2020_supplemental_info/g2f_2020_field_metadata.csv'</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>phno_path <span class="op">=</span> <span class="st">'./data/raw/GenomesToFields_G2F_data_2020/a._2020_phenotypic_data/g2f_2020_phenotypic_clean_data.csv'</span> </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>wthr_path <span class="op">=</span> <span class="st">'./data/raw/GenomesToFields_G2F_data_2020/b._2020_weather_data/2020_weather_cleaned.csv'</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>soil_path <span class="op">=</span> <span class="st">'./data/raw/GenomesToFields_G2F_data_2020/c._2020_soil_data/g2f_2020_soil_data.csv'</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>mgmt_path <span class="op">=</span> <span class="st">'./data/raw/GenomesToFields_G2F_data_2020/z._2020_supplemental_info/g2f_2020_agronomic_information.csv'</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>meta <span class="op">=</span> pd.read_csv(meta_path, encoding <span class="op">=</span> <span class="st">"ISO-8859-1"</span>, low_memory<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>phno <span class="op">=</span> pd.read_csv(phno_path, encoding <span class="op">=</span> <span class="st">"ISO-8859-1"</span>, low_memory<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>wthr <span class="op">=</span> pd.read_csv(wthr_path, encoding <span class="op">=</span> <span class="st">"ISO-8859-1"</span>, low_memory<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>soil <span class="op">=</span> pd.read_csv(soil_path, encoding <span class="op">=</span> <span class="st">"ISO-8859-1"</span>, low_memory<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>mgmt <span class="op">=</span> pd.read_csv(mgmt_path, encoding <span class="op">=</span> <span class="st">"ISO-8859-1"</span>, low_memory<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load dicts for column renaming</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>meta_name_dict <span class="op">=</span> mk_name_dict(name <span class="op">=</span> <span class="st">'meta'</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>phno_name_dict <span class="op">=</span> mk_name_dict(name <span class="op">=</span> <span class="st">'phno'</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>soil_name_dict <span class="op">=</span> mk_name_dict(name <span class="op">=</span> <span class="st">'soil'</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>wthr_name_dict <span class="op">=</span> mk_name_dict(name <span class="op">=</span> <span class="st">'wthr'</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>mgmt_name_dict <span class="op">=</span> mk_name_dict(name <span class="op">=</span> <span class="st">'mgmt'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="rename" class="level1">
+<h1>Rename</h1>
+<p><strong>Naming rules:</strong> - One dict for each input df - Comment out anything that shouldn’t be changed - Upper_Upper_Unit_$unit - Upper_$number - No special characters</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(find_unrecognized_columns(df <span class="op">=</span> meta, dct <span class="op">=</span> meta_name_dict),</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>find_unrecognized_columns(df <span class="op">=</span> phno, dct <span class="op">=</span> phno_name_dict),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>find_unrecognized_columns(df <span class="op">=</span> soil, dct <span class="op">=</span> soil_name_dict),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>find_unrecognized_columns(df <span class="op">=</span> wthr, dct <span class="op">=</span> wthr_name_dict),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>find_unrecognized_columns(df <span class="op">=</span> mgmt, dct <span class="op">=</span> mgmt_name_dict))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>([], [], [], [], [])</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>meta <span class="op">=</span> meta.rename(columns<span class="op">=</span>meta_name_dict)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>phno <span class="op">=</span> phno.rename(columns<span class="op">=</span>phno_name_dict)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>soil <span class="op">=</span> soil.rename(columns<span class="op">=</span>soil_name_dict)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>wthr <span class="op">=</span> wthr.rename(columns<span class="op">=</span>wthr_name_dict)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>mgmt <span class="op">=</span> mgmt.rename(columns<span class="op">=</span>mgmt_name_dict)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># add indicator columns to help with debugging merge</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>meta[<span class="st">'meta'</span>] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>phno[<span class="st">'phno'</span>] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>soil[<span class="st">'soil'</span>] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>wthr[<span class="st">'wthr'</span>] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>mgmt[<span class="st">'mgmt'</span>] <span class="op">=</span> <span class="va">True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>[e.shape <span class="cf">for</span> e <span class="kw">in</span> [meta, phno, soil, wthr, mgmt]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[(26, 55), (18754, 41), (23, 30), (289867, 24), (142, 7)]</code></pre>
+</div>
+</div>
+</section>
+<section id="sanatize-id-columns-as-needed" class="level1">
+<h1>Sanatize ID columns as needed</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>wthr <span class="op">=</span> sanitize_Experiment_Codes(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> wthr, </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    simple_renames <span class="op">=</span> {</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    }, </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    split_renames <span class="op">=</span> {</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">'NYH3_NYS1'</span>: [<span class="st">'NYS1'</span>, <span class="st">'NYH3'</span>],</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'TXH1_TXH3'</span>: [<span class="st">'TXH1'</span>, <span class="st">'TXH3'</span>]</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># for some reason there are 2227 empty rows included...</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>wthr <span class="op">=</span> wthr.loc[wthr.Experiment_Code.notna(), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># confirm everything's okay</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">'meta'</span>, find_unrecognized_experiments(meta.Experiment_Code, return_all_exps<span class="op">=</span><span class="va">False</span>), </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="st">'</span><span class="ch">\n</span><span class="st">phno'</span>, find_unrecognized_experiments(phno.Experiment_Code, return_all_exps<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="st">'</span><span class="ch">\n</span><span class="st">soil'</span>, find_unrecognized_experiments(soil.Experiment_Code, return_all_exps<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="st">'</span><span class="ch">\n</span><span class="st">wthr'</span>, find_unrecognized_experiments(wthr.Experiment_Code, return_all_exps<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="st">'</span><span class="ch">\n</span><span class="st">mgmt'</span>, find_unrecognized_experiments(mgmt.Experiment_Code, return_all_exps<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="st">'</span><span class="ch">\n</span><span class="st">all '</span>, find_unrecognized_experiments([], return_all_exps<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>meta [] 
+phno [] 
+soil [] 
+wthr [] 
+mgmt [] 
+all  ['COH1', 'DEH1', 'GAH1', 'GAH2', 'GEH1', 'IAH1', 'IAH2', 'IAH3', 'IAH4', 'ILH1', 'INH1', 'MIH1', 'MNH1', 'MOH1', 'NCH1', 'NEH1', 'NEH2', 'NEH3', 'NYH2', 'NYH3', 'NYS1', 'OHH1', 'SCH1', 'TXH1', 'TXH2', 'TXH3', 'WIH1', 'WIH2', 'WIH3']</code></pre>
+</div>
+</div>
+</section>
+<section id="rearrange-columns" class="level1">
+<h1>Rearrange columns</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># separate static and dynamic values</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>sval <span class="op">=</span> phno.merge(soil, how <span class="op">=</span> <span class="st">'outer'</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>sval <span class="op">=</span> sval.merge(meta, how <span class="op">=</span> <span class="st">'outer'</span>) <span class="co"># This introduces 3 sites that have no data</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># sval.shape # used to confirm nrow = #20574 + 3</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># these tables are different enought we'll keep them separate</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># mgmt</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># unfortunately we need multiples because at least one field treats different passes differently</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>mgmt <span class="op">=</span> phno.loc[:, [<span class="st">'Year'</span>, <span class="st">'Experiment_Code'</span>, <span class="st">'Range'</span>, <span class="st">'Pass'</span>, <span class="st">'Plot'</span>, <span class="st">'phno'</span>]</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>               ].drop_duplicates().merge(mgmt, how <span class="op">=</span> <span class="st">'outer'</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co"># confirm there are no rows in mgmt that are not in phno</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>temp <span class="op">=</span> mgmt.loc[(<span class="op">~</span>mgmt.phno <span class="op">&amp;</span> mgmt.mgmt), :]</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="dv">0</span> <span class="op">!=</span> temp.shape[<span class="dv">0</span>]:</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(temp)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    mgmt <span class="op">=</span> mgmt.loc[mgmt.mgmt.notna(), :].drop(columns <span class="op">=</span> <span class="st">'phno'</span>)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co"># wthr</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co"># There's only ever one weather station so we have to worry about imputation but not duplicates</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set each id col to a string</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> [<span class="st">'Year'</span>, <span class="st">'Experiment_Code'</span>, <span class="st">'Range'</span>, <span class="st">'Pass'</span>, <span class="st">'Plot'</span>]:</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    sval[i] <span class="op">=</span> sval[i].astype(<span class="st">'string'</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    mgmt[i]  <span class="op">=</span>  mgmt[i].astype(<span class="st">'string'</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="kw">not</span> <span class="kw">in</span> [<span class="st">'Range'</span>, <span class="st">'Pass'</span>, <span class="st">'Plot'</span>]:</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        wthr[i]  <span class="op">=</span>  wthr[i].astype(<span class="st">'string'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="sanitize-non-id-columns" class="level1">
+<h1>Sanitize Non-ID columns</h1>
+<section id="sanitization-functions" class="level2">
+<h2 class="anchored" data-anchor-id="sanitization-functions">Sanitization functions</h2>
+<p>The pattern to use is: 1. Alter the dataframe 1. Test the dataframe against expectations</p>
+<p>The main tasks that need to be completed are: 1. Identify values that can’t be converted to the expected data type. The “find_unconvertable_” family of functions should be used. 1. <code>find_unconvertable_datetimes</code></p>
+<ol type="1">
+<li>For simple renaming (e.g.&nbsp;misspellings) or splitting non-tidy data into two rows (“entry1-entry2” -&gt; “entry1”, “entry2”) use <a href="https://danielkick.github.io/g2fd/freshstart_2021.html#sanitize_col"><code>sanitize_col</code></a></li>
+<li>Move values that are ambigous but pertain to data imputation to “Imputation_Notes” using <a href="https://danielkick.github.io/g2fd/freshstart_2021.html#relocate_to_imputation_notes"><code>relocate_to_Imputation_Notes</code></a></li>
+<li>If new columns need to be added (e.g.&nbsp;mgmt.Ingredient for parsed components of Product (e.g.&nbsp;elements) ) this should be accomplished with <a href="https://danielkick.github.io/g2fd/freshstart_2021.html#safe_create_col"><code>safe_create_col</code></a>.</li>
+<li>Any one off changes should be accomplised manually.</li>
+<li>Confirm columns match the expected types with <a href="https://danielkick.github.io/g2fd/freshstart_2021.html#check_df_dtype_expectations"><code>check_df_dtype_expectations</code></a>, and report mismatches.</li>
+</ol>
+<p>These steps should be completed for each dataframe in turn to minimize the cognitive load of the reader.</p>
+</section>
+<section id="sanitization-column-data-type-expectations" class="level2">
+<h2 class="anchored" data-anchor-id="sanitization-column-data-type-expectations">Sanitization: Column data type expectations</h2>
+<p>Note: to handle missing values some columns that would otherwise be ints are floats</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>sval_col_dtypes <span class="op">=</span> mk_dtype_dict(name <span class="op">=</span> <span class="st">'sval'</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>wthr_col_dtypes <span class="op">=</span> mk_dtype_dict(name <span class="op">=</span> <span class="st">'wthr'</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>mgmt_col_dtypes <span class="op">=</span> mk_dtype_dict(name <span class="op">=</span> <span class="st">'mgmt'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="sanitization-alter-entries" class="level1">
+<h1>Sanitization: Alter entries</h1>
+<section id="static-values-within-season" class="level2">
+<h2 class="anchored" data-anchor-id="static-values-within-season">Static values (within season)</h2>
+<section id="datetime-containing-columns" class="level3">
+<h3 class="anchored" data-anchor-id="datetime-containing-columns">Datetime containing columns</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> e <span class="kw">in</span> [<span class="st">'Planted_Unit_Datetime'</span>, </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Harvested_Unit_Datetime'</span>, </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Anthesis_Unit_Datetime'</span>, </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Silking_Unit_Datetime'</span>, </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Recieved_Date_Unit_Datetime'</span>, </span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Processed_Date_Unit_Datetime'</span>, </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Weather_Station_Placed_Unit_Datetime'</span>, </span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Weather_Station_Removed_Unit_Datetime'</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    ]:</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    sval[<span class="st">'Datetime_Temp'</span>] <span class="op">=</span> pd.to_datetime(np.nan)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> code <span class="kw">in</span> <span class="bu">list</span>(sval.Experiment_Code.drop_duplicates()):</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># code = list(sval.Experiment_Code.drop_duplicates())[0]</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>        sval.loc[sval.Experiment_Code <span class="op">==</span> code, <span class="st">'Datetime_Temp'</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>                 ] <span class="op">=</span> pd.to_datetime(sval.loc[sval.Experiment_Code <span class="op">==</span> code, e])</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    sval.loc[:, e] <span class="op">=</span> sval.loc[:, <span class="st">'Datetime_Temp'</span>] </span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>sval <span class="op">=</span> sval.drop(columns <span class="op">=</span> <span class="st">'Datetime_Temp'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># convert types</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> e <span class="kw">in</span> [<span class="st">'Alley_Length_Unit_Inches'</span>, <span class="st">'Row_Spacing_Unit_Inches'</span>, <span class="st">'Pounds_Needed_Soil_Moisture'</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>         <span class="st">'Anthesis_Unit_Days'</span>, <span class="st">'Silking_Unit_Days'</span>, <span class="st">'Kernels_Per_Plot'</span>]:</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    err_list <span class="op">=</span> find_unconvertable_numerics(df_col <span class="op">=</span> sval[e], index <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> err_list <span class="op">!=</span> []:</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(e)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(err_list)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        sval[e] <span class="op">=</span> sval[e].astype(<span class="st">'float'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># to bool</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>sval <span class="op">=</span> sanitize_col(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> sval, </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    col <span class="op">=</span> <span class="st">'Discarded'</span>, </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    simple_renames<span class="op">=</span> {</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Yes'</span>:<span class="st">'True'</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'yes'</span>:<span class="st">'True'</span>}, </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    split_renames<span class="op">=</span> {})</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co"># set missing to false</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>sval.loc[sval.Discarded.isna(), <span class="st">'Discarded'</span>] <span class="op">=</span> <span class="st">'False'</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>sval.Discarded <span class="op">=</span> sval.Discarded.<span class="bu">map</span>({<span class="st">'True'</span>: <span class="va">True</span>, <span class="st">'False'</span>: <span class="va">False</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="simple-columns" class="level3">
+<h3 class="anchored" data-anchor-id="simple-columns">Simple Columns</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># to bool</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>sval[<span class="st">'phno'</span>] <span class="op">=</span> sval[<span class="st">'phno'</span>].astype(<span class="st">'bool'</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>sval[<span class="st">'soil'</span>] <span class="op">=</span> sval[<span class="st">'soil'</span>].astype(<span class="st">'bool'</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>sval[<span class="st">'meta'</span>] <span class="op">=</span> sval[<span class="st">'meta'</span>].astype(<span class="st">'bool'</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># to string</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>sval <span class="op">=</span> cols_astype_string(</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> sval, </span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    col_list <span class="op">=</span> [key <span class="cf">for</span> key <span class="kw">in</span> sval_col_dtypes.keys() <span class="cf">if</span> sval_col_dtypes[key] <span class="op">==</span> <span class="st">'string'</span>])</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>sval.Year <span class="op">=</span> year_string</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>sval.Year <span class="op">=</span> sval.Year.astype(<span class="st">'string'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="check-success" class="level3">
+<h3 class="anchored" data-anchor-id="check-success">Check Success</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>checkpoint <span class="op">=</span> check_df_dtype_expectations(df <span class="op">=</span> sval, dtype_dct <span class="op">=</span> sval_col_dtypes)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">sum</span>(checkpoint.Pass)<span class="op">/</span>checkpoint.shape[<span class="dv">0</span>] <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(checkpoint.loc[<span class="op">~</span>checkpoint.Pass, ]) <span class="co">#TODO add to template</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>120/120 Columns pass.</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="weather" class="level2">
+<h2 class="anchored" data-anchor-id="weather">Weather</h2>
+<section id="datetime" class="level3">
+<h3 class="anchored" data-anchor-id="datetime">Datetime</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 183 records from MNH1 are missing a value for time. </span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># These are not useful since we don't know if the values are daily averages or taken at a specific timepoint.</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>wthr <span class="op">=</span> wthr.loc[wthr.Time.notna(), :]</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># unfortunately these missing values also force ints (e.g. days) to be floats</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>wthr.Year <span class="op">=</span> wthr.Year.astype(<span class="bu">float</span>).astype(<span class="bu">int</span>).astype(<span class="st">'string'</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>wthr.Month <span class="op">=</span> wthr.Month.astype(<span class="bu">float</span>).astype(<span class="bu">int</span>).astype(<span class="st">'string'</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>wthr.Day <span class="op">=</span> wthr.Day.astype(<span class="bu">float</span>).astype(<span class="bu">int</span>).astype(<span class="st">'string'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># we use the fields in the df to make a consistent format</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>wthr <span class="op">=</span> cols_astype_string(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> wthr, </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    col_list <span class="op">=</span> [<span class="st">'Year'</span>, <span class="st">'Month'</span>, <span class="st">'Day'</span>, <span class="st">'Time'</span>])</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>wthr <span class="op">=</span> sanitize_col(</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> wthr,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    col <span class="op">=</span> <span class="st">'Time'</span>, </span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    simple_renames<span class="op">=</span> {}, </span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    split_renames<span class="op">=</span> {})</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>wthr[<span class="st">'Datetime_Temp'</span>] <span class="op">=</span> wthr[<span class="st">'Year'</span>]<span class="op">+</span><span class="st">'-'</span><span class="op">+</span>wthr[<span class="st">'Month'</span>]<span class="op">+</span><span class="st">'-'</span><span class="op">+</span>wthr[<span class="st">'Day'</span>]<span class="op">+</span><span class="st">' '</span><span class="op">+</span>wthr[<span class="st">'Time'</span>]</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co"># convert types</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>err_list <span class="op">=</span> find_unconvertable_datetimes(df_col<span class="op">=</span>wthr[<span class="st">'Datetime_Temp'</span>], pattern<span class="op">=</span><span class="st">'%Y-%m-</span><span class="sc">%d</span><span class="st"> %H:%M'</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> err_list <span class="op">!=</span> []:</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(err_list)</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>    wthr.Datetime_Temp <span class="op">=</span> pd.to_datetime(pd.Series(wthr.Datetime_Temp), errors<span class="op">=</span><span class="st">'coerce'</span>)</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>    wthr.Datetime <span class="op">=</span> wthr.Datetime_Temp</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>    wthr <span class="op">=</span> wthr.drop(columns<span class="op">=</span> <span class="st">'Datetime_Temp'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="simple-columns-1" class="level3">
+<h3 class="anchored" data-anchor-id="simple-columns-1">Simple Columns</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># to string</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>wthr <span class="op">=</span> cols_astype_string(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> wthr, </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    col_list <span class="op">=</span> [key <span class="cf">for</span> key <span class="kw">in</span> wthr_col_dtypes.keys() <span class="cf">if</span> wthr_col_dtypes[key] <span class="op">==</span> <span class="st">'string'</span>])</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>wthr.Year <span class="op">=</span> year_string</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>wthr.Year <span class="op">=</span> wthr.Year.astype(<span class="st">'string'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="check-success-1" class="level3">
+<h3 class="anchored" data-anchor-id="check-success-1">Check Success</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>checkpoint <span class="op">=</span> check_df_dtype_expectations(df <span class="op">=</span> wthr, dtype_dct <span class="op">=</span> wthr_col_dtypes)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">sum</span>(checkpoint.Pass)<span class="op">/</span>checkpoint.shape[<span class="dv">0</span>] <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(checkpoint.loc[<span class="op">~</span>checkpoint.Pass, ])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>24/24 Columns pass.</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="management" class="level2">
+<h2 class="anchored" data-anchor-id="management">Management</h2>
+<section id="date_datetime" class="level3">
+<h3 class="anchored" data-anchor-id="date_datetime">Date_Datetime</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>mgmt <span class="op">=</span> relocate_to_Imputation_Notes(df <span class="op">=</span> mgmt, col <span class="op">=</span> <span class="st">'Date_Datetime'</span>, val_list<span class="op">=</span> [<span class="st">'fall 2019'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># convert types</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>err_list <span class="op">=</span> find_unconvertable_datetimes(df_col<span class="op">=</span>mgmt.Date_Datetime, pattern<span class="op">=</span><span class="st">'%m/</span><span class="sc">%d</span><span class="st">/%y'</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> err_list <span class="op">!=</span> []:</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(err_list)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    mgmt.Date_Datetime <span class="op">=</span> pd.to_datetime(pd.Series(mgmt.Date_Datetime), <span class="bu">format</span> <span class="op">=</span> <span class="st">'%m/</span><span class="sc">%d</span><span class="st">/%y'</span>, errors<span class="op">=</span><span class="st">'coerce'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="amount_per_acre" class="level3">
+<h3 class="anchored" data-anchor-id="amount_per_acre">Amount_Per_Acre</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>mgmt <span class="op">=</span> relocate_to_Imputation_Notes(df <span class="op">=</span> mgmt, col <span class="op">=</span> <span class="st">'Amount_Per_Acre'</span>, val_list<span class="op">=</span> [<span class="st">'variable rate according to soil sample'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mgmt.loc[find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = True), ]</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>mgmt.loc[mgmt.Amount_Per_Acre <span class="op">==</span> <span class="st">'2 qts'</span>, :]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Year</th>
+      <th>Experiment_Code</th>
+      <th>Range</th>
+      <th>Pass</th>
+      <th>Plot</th>
+      <th>Application</th>
+      <th>Product</th>
+      <th>Date_Datetime</th>
+      <th>Amount_Per_Acre</th>
+      <th>Unit</th>
+      <th>mgmt</th>
+      <th>Imputation_Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>77802</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Broadcast</td>
+      <td>BicepMagnum II</td>
+      <td>2020-05-12</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>77803</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Broadcast</td>
+      <td>Glyphosate</td>
+      <td>2020-05-12</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>77804</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Broadcast</td>
+      <td>Atrazine</td>
+      <td>2020-06-10</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>77805</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>Broadcast</td>
+      <td>BicepMagnum II</td>
+      <td>2020-05-12</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>77806</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>Broadcast</td>
+      <td>Glyphosate</td>
+      <td>2020-05-12</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>79711</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>8.0</td>
+      <td>2</td>
+      <td>637</td>
+      <td>Broadcast</td>
+      <td>Glyphosate</td>
+      <td>2020-05-12</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>79712</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>8.0</td>
+      <td>2</td>
+      <td>637</td>
+      <td>Broadcast</td>
+      <td>Atrazine</td>
+      <td>2020-06-10</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>79713</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>8.0</td>
+      <td>1</td>
+      <td>638</td>
+      <td>Broadcast</td>
+      <td>BicepMagnum II</td>
+      <td>2020-05-12</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>79714</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>8.0</td>
+      <td>1</td>
+      <td>638</td>
+      <td>Broadcast</td>
+      <td>Glyphosate</td>
+      <td>2020-05-12</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>79715</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>8.0</td>
+      <td>1</td>
+      <td>638</td>
+      <td>Broadcast</td>
+      <td>Atrazine</td>
+      <td>2020-06-10</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>1914 rows × 12 columns</p>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> (mgmt.Amount_Per_Acre <span class="op">==</span> <span class="st">'2 qts'</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>mgmt.loc[mask, <span class="st">'Unit'</span>] <span class="op">=</span> <span class="st">'qts'</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>mgmt.loc[mask, <span class="st">'Amount_Per_Acre'</span>] <span class="op">=</span> <span class="st">'2'</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> (mgmt.Amount_Per_Acre <span class="op">==</span> <span class="st">'1.5 qts'</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>mgmt.loc[mask, <span class="st">'Unit'</span>] <span class="op">=</span> <span class="st">'qts'</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>mgmt.loc[mask, <span class="st">'Amount_Per_Acre'</span>] <span class="op">=</span> <span class="st">'1.5'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># convert types</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>err_list <span class="op">=</span> find_unconvertable_numerics(df_col <span class="op">=</span> mgmt[<span class="st">'Amount_Per_Acre'</span>], index <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> err_list <span class="op">!=</span> []:</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(err_list)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    mgmt.Amount_Per_Acre <span class="op">=</span> pd.to_numeric(mgmt.Amount_Per_Acre, errors<span class="op">=</span><span class="st">'coerce'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="simple-columns-2" class="level3">
+<h3 class="anchored" data-anchor-id="simple-columns-2">Simple Columns</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># to bool</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>mgmt[<span class="st">'mgmt'</span>] <span class="op">=</span> mgmt[<span class="st">'mgmt'</span>].astype(<span class="st">'bool'</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># to string</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> e <span class="kw">in</span> [ee <span class="cf">for</span> ee <span class="kw">in</span> [<span class="st">'Application'</span>, <span class="st">'Product'</span>, <span class="st">'Ingredient'</span>, <span class="st">'Unit'</span>, <span class="st">'Imputation_Notes'</span>] <span class="cf">if</span> ee <span class="kw">in</span> mgmt.columns]:</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    mgmt[e] <span class="op">=</span> mgmt[e].astype(<span class="st">'string'</span>)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>mgmt.Year <span class="op">=</span> year_string</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>mgmt.Year <span class="op">=</span> mgmt.Year.astype(<span class="st">'string'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="check-success-2" class="level3">
+<h3 class="anchored" data-anchor-id="check-success-2">Check Success</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>check_df_dtype_expectations(df <span class="op">=</span> mgmt, dtype_dct <span class="op">=</span> mgmt_col_dtypes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>12/12 Columns pass.</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Column</th>
+      <th>dtype</th>
+      <th>Expected_dtype</th>
+      <th>Pass</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Year</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Experiment_Code</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Range</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Pass</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Plot</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Application</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Product</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Date_Datetime</td>
+      <td>datetime64[ns]</td>
+      <td>datetime64[ns]</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Amount_Per_Acre</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Unit</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>mgmt</td>
+      <td>bool</td>
+      <td>bool</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Imputation_Notes</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="publish" class="level1">
+<h1>Publish</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>write_out_pkl(obj <span class="op">=</span> sval, path <span class="op">=</span> <span class="st">'./data/interim/'</span><span class="op">+</span>year_string<span class="op">+</span><span class="st">'sval.pickle'</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>write_out_pkl(obj <span class="op">=</span> wthr, path <span class="op">=</span> <span class="st">'./data/interim/'</span><span class="op">+</span>year_string<span class="op">+</span><span class="st">'wthr.pickle'</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>write_out_pkl(obj <span class="op">=</span> mgmt, path <span class="op">=</span> <span class="st">'./data/interim/'</span><span class="op">+</span>year_string<span class="op">+</span><span class="st">'mgmt.pickle'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
