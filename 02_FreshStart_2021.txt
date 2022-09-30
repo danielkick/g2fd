@@ -13,6 +13,12 @@ import pickle
 # import matplotlib as mpl
 # import matplotlib.pyplot as plt
 
+from g2fd.internal import *
+
+#| default_exp internal
+
+#| export
+
 # Settings ----
 # Helper functions,remove if no longer needed
 def prlst(lst): 
@@ -61,10 +67,9 @@ mgmt = pd.read_csv(mgmt_path, encoding = "ISO-8859-1", low_memory=False)
 
 # meta.columns
 
+#| export
+
 # Helper functions to match up the same data in different dataframes under different columns names
-
-
-
 
 # make a dictionary of column name : unique values
 def mk_uniq_val_dict(df1):
@@ -301,6 +306,7 @@ mgmt['mgmt'] = True
 
 [e.shape for e in [meta, phno, soil, wthr, mgmt]]
 
+#| export
 # check Experiment_Code columns for any unexpected columns
 def find_unrecognized_experiments(column, return_all_exps = False):
     known_exps = ['COH1', 'DEH1', 'GAH1', 'GAH2', 'GEH1', 'IAH1', 'IAH2', 'IAH3', 'IAH4', 'ILH1', 'INH1', 'MIH1', 'MNH1', 'NCH1', 'NEH1', 'NEH2', 'NEH3', 'NYH2', 'NYH3', 'NYS1', 'SCH1', 'TXH1', 'TXH2', 'TXH3', 'WIH1', 'WIH2', 'WIH3']
@@ -316,6 +322,8 @@ def find_unrecognized_experiments(column, return_all_exps = False):
 
 
 
+
+#| export
 
 # sanitize Experiment Codes
 
@@ -453,10 +461,10 @@ for i in ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot']:
     
     
 
-# TODO make versions of `find_unconvertable_datetimes` for other datatype
+#| export
+
+# Make versions of `find_unconvertable_datetimes` for other datatype
 # make a function to find the unexpected entries so it's easy to write the santization code
-
-
 
 # in a column, report all the values causing errors OR an index of these values
 def find_unconvertable_datetimes(df_col, pattern = '%m/%d/%y', index = False):
@@ -540,7 +548,7 @@ def cols_astype_string(df, col_list):
 
 
 
-# TODO ignore columns that don't exist in the dataframe even if they're specified in the dict
+# Ignore columns that don't exist in the dataframe even if they're specified in the dict
 # For testing that sanitization was successful
 # a function to check the type of each column 
 # shouldn't _change_ anything, just report what I need to fix
@@ -938,6 +946,7 @@ mgmt.Year = mgmt.Year.astype('string')
 
 check_df_dtype_expectations(df = mgmt, dtype_dct = mgmt_col_dtypes)
 
+#| export
 def write_out_pkl(obj, path = './temp.pickle'):
     with open(path, 'wb') as handle:
         pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)   
