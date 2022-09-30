@@ -86,175 +86,7 @@ def match_df_cols(df1, df2):
 # %% ../02_FreshStart_2021.ipynb 10
 def mk_name_dict(name # table meta, phno, soil, wthr, or mgmt
                 ):
-    'Easily share dictionaries for renaming columns across scripts.'
-
-#     meta_name_dict = {
-#     # 'Experiment_Code': 'XXXXXXX', 
-#     # 'Treatment': 'XXXXXXX', 
-#     # 'City': 'XXXXXXX', 
-#     # 'Farm': 'XXXXXXX', 
-#     # 'Field': 'XXXXXXX', 
-#     'Trial_ID (Assigned by collaborator for internal reference)': 'Trial_ID', 
-#     'Soil_Taxonomic_ID and horizon description, if known': 'Soil_Taxonomic_ID', 
-#     'Weather_Station_Serial_Number (Last four digits, e.g. m2700s#####)': 'Weather_Station_Serial_Number', 
-#     'Weather_Station_Latitude (in decimal numbers NOT DMS)': 'Weather_Station_Latitude_Unit_Decimal', 
-#     'Weather_Station_Longitude (in decimal numbers NOT DMS)': 'Weather_Station_Longitude_Unit_Decimal', 
-#     'Date_weather_station_placed': 'Weather_Station_Placed_Unit_Datetime', 
-#     'Date_weather_station_removed': 'Weather_Station_Removed_Unit_Datetime', 
-#     'In-field weather station serial number': 'Weather_Station_In_Field_Serial_Number', 
-#     'In-field_weather_station_latitude (in decimal)': 'Weather_Station_In_Field_Latitude_Unit_Decimal', 
-#     'In-field_weather_station_longitude (in decimal)': 'Weather_Station_In_Field_Longitude_Unit_Decimal', 
-#     # 'Previous_Crop': 'XXXXXXX', 
-#     'Pre-plant_tillage_method(s)': 'Pre_Plant_Tillage', 
-#     'In-season_tillage_method(s)': 'Post_Plant_Tillage', 
-#     'Plot_length (center-alley to center-alley in feet)': 'Plot_Length_Unit_Feet', 
-#     'Alley_length (in inches)': 'Alley_Length_Unit_Inches', 
-#     'Row_spacing (in inches)': 'Row_Spacing_Unit_Inches', 
-#     'Type_of_planter (fluted cone; belt cone; air planter)': 'Planter_Type', 
-#     'Number_kernels_planted_per_plot (>200 seed/pack for cone planters)': 'Kernels_Per_Plot', 
-#     # 'System_Determining_Moisture': 'XXXXXXX', 
-#     # 'Pounds_Needed_Soil_Moisture': 'XXXXXXX', 
-#     'Latitude_of_Field_Corner_#1 (lower left)': 'Field_Latitude_BL', 
-#     'Longitude_of_Field_Corner_#1 (lower left)': 'Field_Longitude_BL', 
-#     'Latitude_of_Field_Corner_#2 (lower right)': 'Field_Latitude_BR', 
-#     'Longitude_of_Field_Corner_#2 (lower right)': 'Field_Longitude_BR', 
-#     'Latitude_of_Field_Corner_#3 (upper right)': 'Field_Latitude_TR', 
-#     'Longitude_of_Field_Corner_#3 (upper right)': 'Field_Longitude_TR', 
-#     'Latitude_of_Field_Corner_#4 (upper left)': 'Field_Latitude_TL', 
-#     'Longitude_of_Field_Corner_#4 (upper left)': 'Field_Longitude_TL', 
-#     'Cardinal_Heading_Pass_1': 'Cardinal_Heading', 
-#     'Local_Check_#1_Pedigree': 'Local_Check_Pedigree_1', 
-#     'Local_Check_#1_Source': 'Local_Check_Source_1', 
-#     'Local_Check_#2_Pedigree': 'Local_Check_Pedigree_2', 
-#     'Local_Check_#2_Source': 'Local_Check_Source_2', 
-#     'Local_Check_#3_Pedigree': 'Local_Check_Pedigree_3', 
-#     'Local_Check_#3_Source': 'Local_Check_Source_3', 
-#     'Local_Check_#4_Pedigree': 'Local_Check_Pedigree_4', 
-#     'Local_Check_#4_Source': 'Local_Check_Source_4', 
-#     'Local_Check_#5_Pedigree': 'Local_Check_Pedigree_5', 
-#     'Local_Check_#5_Source': 'Local_Check_Source_5', 
-#     'Issue/comment_#1': 'Comment_1', 
-#     'Issue/comment_#2': 'Comment_2', 
-#     'Issue/comment_#3': 'Comment_3', 
-#     'Issue/comment_#4': 'Comment_4', 
-#     'Issue/comment_#5': 'Comment_5', 
-#     'Issue/comment_#6': 'Comment_6', 
-#     'Issue/comment_#7': 'Comment_7', 
-#     'Issue/comment_#8': 'Comment_8', 
-#     'Issue/comment_#9': 'Comment_9', 
-#     'Issue/comment_#10': 'Comment_70'
-#     }
-
-#     phno_name_dict = {
-#     'Year': 'Year', 
-#     'Field-Location': 'Experiment_Code', 
-#     # 'State': 'XXXXXXX', 
-#     # 'City': 'XXXXXXX', 
-#     'Plot length (center-center in feet)': 'Plot_Length_Unit_Feet', 
-#     'Plot area (ft2)': 'Plot_Area_Unit_Feet2', 
-#     'Alley length (in inches)': 'Alley_Length_Unit_Inches', 
-#     'Row spacing (in inches)': 'Row_Spacing_Unit_Inches', 
-#     'Rows per plot': 'Rows_Per_Plot', 
-#     '# Seed per plot': 'Seeds_Per_Plot', 
-#     # 'Experiment': 'XXXXXXX', 
-#     # 'Source': 'XXXXXXX', 
-#     # 'Pedigree': 'XXXXXXX', 
-#     # 'Family': 'XXXXXXX', 
-#     # 'Tester': 'XXXXXXX', 
-#     # 'Replicate': 'XXXXXXX', 
-#     # 'Block': 'XXXXXXX', 
-#     # 'Plot': 'XXXXXXX', 
-#     # 'Plot_ID': 'XXXXXXX', 
-#     # 'Range': 'XXXXXXX', 
-#     # 'Pass': 'XXXXXXX', 
-#     'Date Plot Planted [MM/DD/YY]': 'Planted_Unit_Datetime', 
-#     'Date Plot Harvested [MM/DD/YY]': 'Harvested_Unit_Datetime', 
-#     'Anthesis [MM/DD/YY]': 'Anthesis_Unit_Datetime', 
-#     'Silking [MM/DD/YY]': 'Silking_Unit_Datetime', 
-#     'Anthesis [days]': 'Anthesis_Unit_Days', 
-#     'Silking [days]': 'Silking_Unit_Days', 
-#     'Plant Height [cm]': 'Plant_Height_Unit_cm', 
-#     'Ear Height [cm]': 'Ear_Height_Unit_cm', 
-#     'Stand Count [# of plants]': 'Stand_Count_Unit_Number', 
-#     'Root Lodging [# of plants]': 'Root_Lodging_Unit_Number', 
-#     'Stalk Lodging [# of plants]': 'Stalk_Lodging_Unit_Number', 
-#     'Grain Moisture [%]': 'Grain_Moisture_Unit_Percent', 
-#     'Test Weight [lbs]': 'Test_Weight_Unit_lbs', 
-#     'Plot Weight [lbs]': 'Plot_Weight_Unit_lbs', 
-#     'Grain Yield (bu/A)': 'Grain_Yield_Unit_bu_Per_A', 
-#     "Plot Discarded [enter 'yes' or blank]": 'Discarded', 
-#     'Comments': 'Phenotype_Comments', 
-#     # 'Filler': 'XXXXXXX', 
-#     'Snap [# of plants]': 'Snap_Unit_Number'
-#     }
-
-#     soil_name_dict = {
-#     # 'Grower': 'XXXXXXX', 
-#     'Location': 'Experiment_Code', 
-#     'Date Received': 'Recieved_Date_Unit_Datetime', 
-#     'Date Reported': 'Processed_Date_Unit_Datetime', 
-#     'E Depth': 'Depth_Unit_UNK', 
-#     '1:1 Soil pH': 'Soil_1_to_1_Unit_pH', 
-#     'WDRF Buffer pH': 'WDRF_Buffer_Unit_pH', 
-#     '1:1 S Salts mmho/cm': 'Soluable_Salts_Unit_mmho_Per_cm', 
-#     'Texture No': 'Texture_Number', 
-#     'Organic Matter LOI %': 'Organic_Matter_Unit_Percent', 
-#     'Nitrate-N ppm N': 'Nitrates_Unit_ppm', 
-#     'lbs N/A': 'N_per_Acre_Unit_lbs', 
-#     'Potassium ppm K': 'K_Unit_ppm', 
-#     'Sulfate-S ppm S': 'Sulfate_Unit_ppm', 
-#     'Calcium ppm Ca': 'Ca_Unit_ppm', 
-#     'Magnesium ppm Mg': 'Mg_Unit_ppm', 
-#     'Sodium ppm Na': 'Na_Unit_ppm', 
-#     'CEC/Sum of Cations me/100g': 'Cation_Exchange_Capacity', 
-#     '%H Sat': 'H_Sat_Unit_Percent', 
-#     '%K Sat': 'K_Sat_Unit_Percent', 
-#     '%Ca Sat': 'Ca_Sat_Unit_Percent', 
-#     '%Mg Sat': 'Mg_Sat_Unit_Percent', 
-#     '%Na Sat': 'Na_Sat_Unit_Percent', 
-#     'Mehlich P-III ppm P': 'Mehlich_PIII_P_Unit_ppm', 
-#     '% Sand': 'Sand_Unit_Percent', 
-#     '% Silt': 'Silt_Unit_Percent', 
-#     '% Clay': 'Clay_Unit_Percent', 
-#     # 'Texture': 'XXXXXXX', 
-#     'Comments': 'Soil_Comments'
-#     }
-
-#     wthr_name_dict = {
-#     'Field Location': 'Experiment_Code', 
-#     'Station ID': 'Weather_Station_ID', 
-#     'NWS Network': 'NWS_Network', 
-#     'NWS Station': 'NWS_Station', 
-#     'Date_key': 'Datetime', 
-#     # 'Month': 'XXXXXXX', 
-#     # 'Day': 'XXXXXXX', 
-#     # 'Year': 'XXXXXXX', 
-#     # 'Time': 'XXXXXXX', 
-#     'Temperature [C]': 'Temperature_Unit_C', 
-#     'Dew Point [C]': 'Dew_Point_Unit_C', 
-#     'Relative Humidity [%]': 'Relative_Humidity_Unit_Percent', 
-#     'Solar Radiation [W/m2]': 'Solar_Radiation_Unit_W_per_m2', 
-#     'Rainfall [mm]': 'Rainfall_Unit_mm', 
-#     'Wind Speed [m/s]': 'Wind_Speed_Unit_m_per_s', 
-#     'Wind Direction [degrees]': 'Wind_Direction_Unit_Degrees', 
-#     'Wind Gust [m/s]': 'Wind_Gust_Unit_m_per_s', 
-#     'Soil Temperature [C]': 'Soil_Temperature_Unit_C', 
-#     'Soil Moisture [%VWC]': 'Soil_Moisture_Unit_Percent_VWC', 
-#     'Soil EC [mS/cm]': 'Soil_EC_Unit_mS_per_cm', 
-#     'UV Light [uM/m2s]': 'UV_Light_Unit_uM_per_m2s', 
-#     'PAR [uM/m2s]': 'PAR_Unit_uM_per_m2s'
-#     }
-
-#     mgmt_name_dict = {
-#     'Location': 'Experiment_Code', 
-#     'Application_or_treatment': 'Application', 
-#     'Product_or_nutrient_applied': 'Product', 
-#     'Date_of_application': 'Date_Datetime', 
-#     'Quantity_per_acre': 'Amount_Per_Acre', 
-#     'Application_unit': 'Unit'
-#     }
-
-    
+    'Easily share dictionaries for renaming columns across scripts.'  
 
     meta_name_dict = {
     'Experiment_Code': 'Experiment_Code', # Unchanged 
@@ -438,8 +270,7 @@ def mk_name_dict(name # table meta, phno, soil, wthr, or mgmt
         print('Requested name is not defined')
     
 
-# %% ../02_FreshStart_2021.ipynb 18
-#TODO move this back to 2021 notebook
+# %% ../02_FreshStart_2021.ipynb 14
 # check if there are columns that need to be aded to the naming dictionaries:
 def find_unrecognized_columns(df, dct): 
     keys_and_vals = list(dct.keys())
@@ -447,7 +278,7 @@ def find_unrecognized_columns(df, dct):
     keys_and_vals
     return([e for e in df.columns if e not in keys_and_vals])
 
-# %% ../02_FreshStart_2021.ipynb 22
+# %% ../02_FreshStart_2021.ipynb 18
 def list_known_experiments():
     'Provides a list of the experiments expected for use in `find_unrecognized_experiments`'
     known_exps = [
@@ -458,7 +289,7 @@ def list_known_experiments():
                  ]
     return(known_exps)
 
-# %% ../02_FreshStart_2021.ipynb 23
+# %% ../02_FreshStart_2021.ipynb 19
 # check Experiment_Code columns for any unexpected columns
 def find_unrecognized_experiments(column, 
                                   known_exps = list_known_experiments(), # Either a list of Experiment_Code s or a list of all provided by the default
@@ -475,7 +306,7 @@ def find_unrecognized_experiments(column,
 # find_unrecognized_experiments(soil.Experiment_Code, print_all_exps=True)
 
 
-# %% ../02_FreshStart_2021.ipynb 24
+# %% ../02_FreshStart_2021.ipynb 20
 # sanitize Experiment Codes
 
 def sanitize_Experiment_Codes(df, simple_renames= {}, split_renames= {}):
@@ -498,7 +329,7 @@ def sanitize_Experiment_Codes(df, simple_renames= {}, split_renames= {}):
 
     return(df)
 
-# %% ../02_FreshStart_2021.ipynb 35
+# %% ../02_FreshStart_2021.ipynb 30
 import pandas as pd
 # Make versions of `find_unconvertable_datetimes` for other datatype
 # make a function to find the unexpected entries so it's easy to write the santization code
@@ -513,7 +344,7 @@ def find_unconvertable_datetimes(df_col, pattern = '%m/%d/%y', index = False):
         # This list comprehension removes nan (which is otherwise stubborn to remove) because nan != nan
         return([e for e in list(set(df_col[datetime_errors])) if e == e]) 
 
-# %% ../02_FreshStart_2021.ipynb 36
+# %% ../02_FreshStart_2021.ipynb 31
 import pandas as pd
 def find_unconvertable_numerics(df_col, # Dataframe column (e.g. df['example']) to be used.
                                 index = False # Return an index of unconveratbles or a list of unique values
@@ -528,7 +359,7 @@ def find_unconvertable_numerics(df_col, # Dataframe column (e.g. df['example']) 
         # This list comprehension removes nan (which is otherwise stubborn to remove) because nan != nan
         return([e for e in list(set(df_col[numeric_errors])) if e == e]) # b  
 
-# %% ../02_FreshStart_2021.ipynb 37
+# %% ../02_FreshStart_2021.ipynb 32
 # generalized version of `sanitize_Experiment_Codes`
 def sanitize_col(df, col, simple_renames= {}, split_renames= {}):
     # simple renames
@@ -550,7 +381,7 @@ def sanitize_col(df, col, simple_renames= {}, split_renames= {}):
 
     return(df)
 
-# %% ../02_FreshStart_2021.ipynb 38
+# %% ../02_FreshStart_2021.ipynb 33
 import numpy as np
 # If the Imputation_Notes column doesnt exist, create it. So long as it wouldn't overwrite any imputation notes move each specified value and replace it with nan.
 def relocate_to_Imputation_Notes(df, col, val_list):
@@ -570,14 +401,14 @@ def relocate_to_Imputation_Notes(df, col, val_list):
             df.loc[(mask), col] = np.nan
     return(df)
 
-# %% ../02_FreshStart_2021.ipynb 39
+# %% ../02_FreshStart_2021.ipynb 34
 # helper function so we can ask for a new column don't have to worry about overwritting a if it already exists 
 def safe_create_col(df, col_name):
     if not col_name in df.columns:
         df.loc[:, col_name] = np.nan
     return(df)
 
-# %% ../02_FreshStart_2021.ipynb 40
+# %% ../02_FreshStart_2021.ipynb 35
 # little helper function to make this easier. Make all the columns in a list into dtype string.
 # require the column to exist to make this safe.
 # to make things even easier, use a list comprehension to pull out the keys in the *_col_dtype dict 
@@ -587,7 +418,7 @@ def cols_astype_string(df, col_list):
         df[e] = df[e].astype('string')
     return(df)
 
-# %% ../02_FreshStart_2021.ipynb 41
+# %% ../02_FreshStart_2021.ipynb 36
 import pandas as pd
 # Ignore columns that don't exist in the dataframe even if they're specified in the dict
 # For testing that sanitization was successful
@@ -614,7 +445,7 @@ def check_df_dtype_expectations(df, dtype_dct):
 
 # each df should get individual treatment with these steps. Probably most readable
 
-# %% ../02_FreshStart_2021.ipynb 46
+# %% ../02_FreshStart_2021.ipynb 38
 def mk_dtype_dict(name # table sval, wthr, or mgmt
                 ):
     'Easily share dictionaries of expected datatypes of the columns across scripts.'
@@ -796,7 +627,7 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
         print('Requested name is not defined')
     
 
-# %% ../02_FreshStart_2021.ipynb 84
+# %% ../02_FreshStart_2021.ipynb 76
 import pickle
 def write_out_pkl(obj, path = './temp.pickle'):
     with open(path, 'wb') as handle:
