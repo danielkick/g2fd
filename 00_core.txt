@@ -1,12 +1,20 @@
+---
+description: This module enables easy access to data from the [Genomes to Fields initiative](https://www.genomes2fields.org/).
+  Not all data provided through cyverse is available here and decisions on data inclusion
+  and imputation have been made that may not meet your needs. Data organization is
+  based on the workflow in [Kick et al. 2022](https://www.biorxiv.org/content/10.1101/2022.07.29.502051v1)
+output-file: core.html
+title: '`g2fd` is the fast and easy way to access Genomes to Fields data.'
+
+---
+
+
 #| default_exp core
 
-#| hide
 from nbdev.showdoc import *
 
-#| export
 # def foo(): pass
 
-#| hide
 import nbdev; nbdev.nbdev_export()
 
 

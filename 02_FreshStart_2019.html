@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>02_FreshStart_0000</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>02_FreshStart_2019</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -14259,8 +14259,8 @@ a.anchor-link {
 
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Process-Data-from-2021-into-a-consistent-format.">Process Data from 2021 into a consistent format.<a class="anchor-link" href="#Process-Data-from-2021-into-a-consistent-format.">&#182;</a></h1><blockquote>
-<p>This notebook brings the 2021 into alignment with the desired format with respect to field name, type, and grouping.</p>
+<h1 id="Process-Data-from-2019-into-a-consistent-format.">Process Data from 2019 into a consistent format.<a class="anchor-link" href="#Process-Data-from-2019-into-a-consistent-format.">&#182;</a></h1><blockquote>
+<p>This notebook brings the 2019 into alignment with the desired format with respect to field name, type, and grouping.</p>
 </blockquote>
 
 </div>
@@ -14317,15 +14317,14 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 2021</span>
-<span class="n">year_string</span> <span class="o">=</span> <span class="s1">&#39;2021&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 2019</span>
+<span class="n">year_string</span> <span class="o">=</span> <span class="s1">&#39;2019&#39;</span>
 
-<span class="n">meta_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2021/z._2021_supplemental_info/g2f_2021_field_metadata.csv&#39;</span>
-<span class="n">phno_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2021/a._2021_phenotypic_data/g2f_2021_phenotypic_clean_data.csv&#39;</span> <span class="c1"># also contains &#39;g2f_2021_phenotypic_raw_data.csv&#39; </span>
-<span class="n">wthr_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2021/b._2021_weather_data/g2f_2021_weather_cleaned.csv&#39;</span>
-<span class="n">soil_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2021/c._2021_soil_data/g2f_2021_soil_data.csv&#39;</span>
-<span class="n">mgmt_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2021/z._2021_supplemental_info/g2f_2021_agronomic_information.csv&#39;</span>
-
+<span class="n">meta_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_data_2019/z._2019_supplemental_info/g2f_2019_field_metadata.csv&#39;</span>
+<span class="n">phno_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_data_2019/a._2019_phenotypic_data/g2f_2019_phenotypic_clean_data.csv&#39;</span>
+<span class="n">wthr_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_data_2019/b._2019_weather_data/2019_weather_cleaned.csv&#39;</span>
+<span class="n">soil_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_data_2019/c._2019_soil_data/g2f_2019_soil_data.csv&#39;</span>
+<span class="n">mgmt_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_data_2019/z._2019_supplemental_info/g2f_2019_agronomic_information.csv&#39;</span>
 
 <span class="n">meta</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">meta_path</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;ISO-8859-1&quot;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">phno</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">phno_path</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;ISO-8859-1&quot;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -14465,7 +14464,7 @@ a.anchor-link {
 
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>[(27, 55), (20574, 41), (22, 30), (172618, 23), (196, 7)]</pre>
+<pre>[(29, 55), (20952, 45), (25, 30), (232437, 24), (92, 7)]</pre>
 </div>
 
 </div>
@@ -14548,8 +14547,8 @@ a.anchor-link {
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>meta [] 
 phno [] 
-soil [&#39;NEH2_NEH3&#39;, &#39;W1H3&#39;] 
-wthr [&#39;NEH2_NEH3&#39;, &#39;NYH3_NYS1&#39;, &#39;TXH1_TXH3&#39;] 
+soil [] 
+wthr [] 
 mgmt [] 
 all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&#39;, &#39;GEH2&#39;, &#39;IAH1&#39;, &#39;IAH2&#39;, &#39;IAH2 &#39;, &#39;IAH3&#39;, &#39;IAH3 &#39;, &#39;IAH4&#39;, &#39;IAH4 &#39;, &#39;ILH1&#39;, &#39;INH1&#39;, &#39;MIH1&#39;, &#39;MNH1&#39;, &#39;MOH1&#39;, &#39;MOH1 &#39;, &#39;NCH1&#39;, &#39;NEH1&#39;, &#39;NEH2&#39;, &#39;NEH3&#39;, &#39;NYH1&#39;, &#39;NYH1&#39;, &#39;NYH2&#39;, &#39;NYH3&#39;, &#39;NYS1&#39;, &#39;OHH1&#39;, &#39;ONH2&#39;, &#39;SCH1&#39;, &#39;TXH1&#39;, &#39;TXH2&#39;, &#39;TXH3&#39;, &#39;TXH4&#39;, &#39;W1H1&#39;, &#39;W1H2&#39;, &#39;WIH1&#39;, &#39;WIH2&#39;, &#39;WIH3&#39;]
 </pre>
@@ -14716,35 +14715,22 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Datetime-containing-columns">Datetime containing columns<a class="anchor-link" href="#Datetime-containing-columns">&#182;</a></h3>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># # convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="s1">&#39;43681&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;43682&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;43684&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;43683&#39;</span><span class="p">]</span>
 
-<span class="c1"># for e in [&#39;Planted_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Harvested_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Anthesis_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Silking_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Recieved_Date_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Processed_Date_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Placed_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Removed_Unit_Datetime&#39;</span>
-<span class="c1">#     ]:</span>
-<span class="c1"># # find_unconvertable_datetimes(df_col=sval[e], pattern=&#39;%Y-%m-%d %H:%M&#39;, index=False)</span>
-
-<span class="c1">#     sval[&#39;Datetime_Temp&#39;] = pd.to_datetime(np.nan)</span>
-
-<span class="c1">#     for code in list(sval.Experiment_Code.drop_duplicates()):</span>
-<span class="c1">#     # code = list(sval.Experiment_Code.drop_duplicates())[0]</span>
-<span class="c1">#         sval.loc[sval.Experiment_Code == code, &#39;Datetime_Temp&#39;</span>
-<span class="c1">#                  ] = pd.to_datetime(sval.loc[sval.Experiment_Code == code, e])</span>
-
-<span class="c1">#     sval.loc[:, e] = sval.loc[:, &#39;Datetime_Temp&#39;] </span>
-
-<span class="c1"># sval = sval.drop(columns = &#39;Datetime_Temp&#39;)</span>
+<span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sval</span><span class="o">.</span><span class="n">Anthesis_Unit_Datetime</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;43681&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;43682&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;43684&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;43683&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="p">,</span> <span class="p">:]</span>
+<span class="n">find_unconvertable_datetimes</span><span class="p">(</span><span class="n">df_col</span> <span class="o">=</span> <span class="n">sval</span><span class="o">.</span><span class="n">Silking_Unit_Datetime</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%y&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14752,24 +14738,155 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>[&#39;43681&#39;,
+ &#39;7/2/2019&#39;,
+ &#39;43685&#39;,
+ &#39;7/11/2019&#39;,
+ &#39;7/5/2019&#39;,
+ &#39;7/14/2019&#39;,
+ &#39;7/15/2019&#39;,
+ &#39;7/7/2019&#39;,
+ &#39;7/13/2019&#39;,
+ &#39;7/12/2019&#39;,
+ &#39;7/8/2019&#39;,
+ &#39;7/3/2019&#39;,
+ &#39;7/1/2019&#39;,
+ &#39;7/10/2019&#39;,
+ &#39;43684&#39;,
+ &#39;7/6/2019&#39;,
+ &#39;7/4/2019&#39;,
+ &#39;43686&#39;,
+ &#39;6/30/2019&#39;,
+ &#39;7/9/2019&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># # -&gt; floats</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sval</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">sval</span><span class="p">,</span> 
+    <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Anthesis_Unit_Datetime&#39;</span><span class="p">,</span> 
+    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;43681&#39;</span><span class="p">:</span> <span class="s1">&#39;8/4/2019&#39;</span><span class="p">,</span> 
+                    <span class="s1">&#39;43682&#39;</span><span class="p">:</span> <span class="s1">&#39;8/5/2019&#39;</span><span class="p">,</span> 
+                    <span class="s1">&#39;43684&#39;</span><span class="p">:</span> <span class="s1">&#39;8/7/2019&#39;</span><span class="p">,</span> 
+                    <span class="s1">&#39;43683&#39;</span><span class="p">:</span> <span class="s1">&#39;8/6/2019&#39;</span><span class="p">},</span> 
+    <span class="n">split_renames</span><span class="o">=</span> <span class="p">{})</span>
 
-<span class="c1"># # [find_unconvertable_numerics(df_col = sval[e], index = False) for e in [</span>
-<span class="c1"># #     &#39;Alley_Length_Unit_Inches&#39;,</span>
-<span class="c1"># # &#39;Row_Spacing_Unit_Inches&#39;,</span>
-<span class="c1"># # &#39;Pounds_Needed_Soil_Moisture&#39;</span>
-<span class="c1"># # ]]</span>
+<span class="n">sval</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">sval</span><span class="p">,</span> 
+    <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Silking_Unit_Datetime&#39;</span><span class="p">,</span> 
+    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;43681&#39;</span><span class="p">:</span> <span class="s1">&#39;8/4/2019&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;43686&#39;</span><span class="p">:</span> <span class="s1">&#39;8/9/2019&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;43684&#39;</span><span class="p">:</span> <span class="s1">&#39;8/7/2019&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;43685&#39;</span><span class="p">:</span> <span class="s1">&#39;8/8/2019&#39;</span><span class="p">,},</span> 
+    <span class="n">split_renames</span><span class="o">=</span> <span class="p">{})</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.</span>
+
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Planted_Unit_Datetime&#39;</span><span class="p">,</span> 
+          <span class="s1">&#39;Harvested_Unit_Datetime&#39;</span><span class="p">,</span> 
+          <span class="s1">&#39;Anthesis_Unit_Datetime&#39;</span><span class="p">,</span> 
+          <span class="s1">&#39;Silking_Unit_Datetime&#39;</span><span class="p">,</span> 
+          <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
+          <span class="s1">&#39;Processed_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
+          <span class="s1">&#39;Weather_Station_Placed_Unit_Datetime&#39;</span><span class="p">,</span> 
+          <span class="s1">&#39;Weather_Station_Removed_Unit_Datetime&#39;</span>
+    <span class="p">]:</span>
+<span class="c1"># find_unconvertable_datetimes(df_col=sval[e], pattern=&#39;%Y-%m-%d %H:%M&#39;, index=False)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">sval</span><span class="p">[</span><span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">code</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">sval</span><span class="o">.</span><span class="n">Experiment_Code</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()):</span>
+    <span class="c1"># code = list(sval.Experiment_Code.drop_duplicates())[0]</span>
+        <span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sval</span><span class="o">.</span><span class="n">Experiment_Code</span> <span class="o">==</span> <span class="n">code</span><span class="p">,</span> <span class="s1">&#39;Datetime_Temp&#39;</span>
+                 <span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sval</span><span class="o">.</span><span class="n">Experiment_Code</span> <span class="o">==</span> <span class="n">code</span><span class="p">,</span> <span class="n">e</span><span class="p">])</span>
+
+    <span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">]</span> 
+
+<span class="n">sval</span> <span class="o">=</span> <span class="n">sval</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Planted_Unit_Datetime
+Harvested_Unit_Datetime
+Anthesis_Unit_Datetime
+Silking_Unit_Datetime
+Recieved_Date_Unit_Datetime
+Processed_Date_Unit_Datetime
+Weather_Station_Placed_Unit_Datetime
+Weather_Station_Removed_Unit_Datetime
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># -&gt; floats</span>
 
 <span class="n">sval</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">sval</span><span class="p">,</span> 
     <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">,</span> 
-    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;3 to 4&#39;</span><span class="p">:</span><span class="s1">&#39;3.5&#39;</span><span class="p">},</span> 
+    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;3 to 4&#39;</span><span class="p">:</span><span class="s1">&#39;3.5&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;56 lb/bu and adjusted to 15.5% moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;56&#39;</span><span class="p">},</span> 
     <span class="n">split_renames</span><span class="o">=</span> <span class="p">{})</span>
 </pre></div>
 
@@ -14806,6 +14923,20 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># to bool</span>
 <span class="n">sval</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">sval</span><span class="p">,</span> 
@@ -14825,19 +14956,13 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div>
 </div>
 
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Simple-Columns">Simple Columns<a class="anchor-link" href="#Simple-Columns">&#182;</a></h3>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># to float</span>
-<span class="c1"># sval.Pounds_Needed_Soil_Moisture.astype(float)</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
      </div>
@@ -14845,6 +14970,11 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div>
 </div>
 
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Simple-Columns">Simple Columns<a class="anchor-link" href="#Simple-Columns">&#182;</a></h3>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
@@ -14907,17 +15037,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>112/120 Columns pass.
-                                   Column   dtype  Expected_dtype   Pass
-21                  Planted_Unit_Datetime  object  datetime64[ns]  False
-22                Harvested_Unit_Datetime  object  datetime64[ns]  False
-23                 Anthesis_Unit_Datetime  object  datetime64[ns]  False
-24                  Silking_Unit_Datetime  object  datetime64[ns]  False
-42            Recieved_Date_Unit_Datetime  object  datetime64[ns]  False
-43           Processed_Date_Unit_Datetime  object  datetime64[ns]  False
-78   Weather_Station_Placed_Unit_Datetime  object  datetime64[ns]  False
-79  Weather_Station_Removed_Unit_Datetime  object  datetime64[ns]  False
-
+<pre>124/124 Columns pass.
 </pre>
 </div>
 </div>
@@ -14936,6 +15056,23 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Datetime">Datetime<a class="anchor-link" href="#Datetime">&#182;</a></h3>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># wthr.loc[:, [&#39;Year&#39;,</span>
+<span class="c1"># &#39;Month&#39;,</span>
+<span class="c1"># &#39;Day&#39;,</span>
+<span class="c1"># &#39;Time&#39;]].info()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
@@ -14961,16 +15098,63 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <span class="c1">#     simple_renames= {&#39;24:00:00&#39;: &#39;00:00:00&#39;}, # this could be day + 24 h instead of a miscoded day + 0 h</span>
 <span class="c1">#     split_renames= {})</span>
 
-<span class="c1"># wthr[&#39;Datetime_Temp&#39;] = wthr[&#39;Year&#39;]+&#39;-&#39;+wthr[&#39;Month&#39;]+&#39;-&#39;+wthr[&#39;Day&#39;]+&#39; &#39;+wthr[&#39;Time&#39;]</span>
+<span class="n">wthr</span><span class="o">.</span><span class="n">Month</span> <span class="o">=</span> <span class="n">wthr</span><span class="o">.</span><span class="n">Month</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+<span class="n">wthr</span><span class="o">.</span><span class="n">Day</span> <span class="o">=</span> <span class="n">wthr</span><span class="o">.</span><span class="n">Day</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
 
-<span class="c1"># # convert types</span>
-<span class="c1"># err_list = find_unconvertable_datetimes(df_col=wthr[&#39;Datetime_Temp&#39;], pattern=&#39;%Y-%m-%d %H:%M&#39;, index=False)</span>
+<span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Day&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span>
+
+<span class="c1"># convert types</span>
+<span class="n">err_list</span> <span class="o">=</span> <span class="n">find_unconvertable_datetimes</span><span class="p">(</span><span class="n">df_col</span><span class="o">=</span><span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">],</span> <span class="n">pattern</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">err_list</span> <span class="o">!=</span> <span class="p">[]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">err_list</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">wthr</span><span class="o">.</span><span class="n">Datetime_Temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">wthr</span><span class="o">.</span><span class="n">Datetime_Temp</span><span class="p">),</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span>
+    <span class="n">wthr</span><span class="o">.</span><span class="n">Datetime</span> <span class="o">=</span> <span class="n">wthr</span><span class="o">.</span><span class="n">Datetime_Temp</span>
+    <span class="n">wthr</span> <span class="o">=</span> <span class="n">wthr</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span> <span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Wind_Gust_Unit_m_per_s">Wind_Gust_Unit_m_per_s<a class="anchor-link" href="#Wind_Gust_Unit_m_per_s">&#182;</a></h3>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">wthr</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">,</span>
+    <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Wind_Gust_Unit_m_per_s&#39;</span><span class="p">,</span> 
+    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;#REF!&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">},</span> <span class="c1"># this could be day + 24 h instead of a miscoded day + 0 h</span>
+    <span class="n">split_renames</span><span class="o">=</span> <span class="p">{})</span>
+
+<span class="c1"># convert types</span>
+<span class="c1"># err_list = find_unconvertable_numerics(wthr.Wind_Gust_Unit_m_per_s)</span>
 <span class="c1"># if err_list != []:</span>
 <span class="c1">#     print(err_list)</span>
 <span class="c1"># else:</span>
-<span class="c1">#     wthr.Datetime_Temp = pd.to_datetime(pd.Series(wthr.Datetime_Temp), errors=&#39;coerce&#39;)</span>
-<span class="c1">#     wthr.Datetime = wthr.Datetime_Temp</span>
-<span class="c1">#     wthr = wthr.drop(columns= &#39;Datetime_Temp&#39;)</span>
+<span class="n">wthr</span><span class="o">.</span><span class="n">Wind_Gust_Unit_m_per_s</span> <span class="o">=</span> <span class="n">wthr</span><span class="o">.</span><span class="n">Wind_Gust_Unit_m_per_s</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
      </div>
@@ -15008,7 +15192,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Check-Success">Check Success<a class="anchor-link" href="#Check-Success">&#182;</a></h3>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
@@ -15027,6 +15211,27 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>24/24 Columns pass.
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
@@ -15043,7 +15248,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">relocate_to_Imputation_Notes</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">,</span> <span class="n">val_list</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Before Planting&#39;</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt = relocate_to_Imputation_Notes(df = mgmt, col = &#39;Date_Datetime&#39;, val_list= [&#39;Before Planting&#39;])</span>
 </pre></div>
 
      </div>
@@ -15101,6 +15306,40 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># incompatable values are of the form:</span>
+<span class="c1"># 64        Thursday, May 9, 2019</span>
+<span class="c1"># 65        Monday, June 10, 2019</span>
+<span class="c1"># 66        Thursday, May 9, 2019</span>
+<span class="c1"># so we rename each before transformation</span>
+<span class="n">err</span> <span class="o">=</span> <span class="n">find_unconvertable_datetimes</span><span class="p">(</span><span class="n">df_col</span><span class="o">=</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Date_Datetime</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%y&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">Date_Datetime</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">Date_Datetime</span><span class="o">.</span><span class="n">map</span><span class="p">(</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">))</span> <span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># convert types</span>
 <span class="n">err_list</span> <span class="o">=</span> <span class="n">find_unconvertable_datetimes</span><span class="p">(</span><span class="n">df_col</span><span class="o">=</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Date_Datetime</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%y&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">err_list</span> <span class="o">!=</span> <span class="p">[]:</span>
@@ -15139,13 +15378,14 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt = sanitize_col(</span>
-<span class="c1">#     df = mgmt, </span>
-<span class="c1">#     col = &#39;Amount_Per_Acre&#39;, </span>
-<span class="c1">#     simple_renames= {&#39;170 lb (actual N)&#39;: &#39;170 (N)&#39;}, </span>
-<span class="c1">#     split_renames= {&#39;51.75, 40.7, 111.7 (N,P,K)&#39;: [&#39;51.75 (N)&#39;, &#39;40.7 (P)&#39;, &#39;111.7 (K)&#39;],</span>
-<span class="c1">#                     &#39;31-150-138&#39;: [&#39;31 (N)&#39;, &#39;150 (P)&#39;, &#39;138 (K)&#39;],</span>
-<span class="c1">#                     &#39;16 (N), 41 (P)&#39;: [&#39;16 (N)&#39;, &#39;41 (P)&#39;]})</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> 
+    <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> 
+    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;100 of N&#39;</span><span class="p">:</span> <span class="s1">&#39;100 (N)&#39;</span><span class="p">},</span> 
+    <span class="n">split_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;30-26-0-6S&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;30 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;26 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;6 (S)&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;21/48&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;21 (Outlook)&#39;</span><span class="p">,</span> <span class="s1">&#39;48 (Infantry)&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;3/32/2.5%/1%&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;3 (Calisto)&#39;</span><span class="p">,</span> <span class="s1">&#39;32 (Atrazine)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.025 (AMS)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.01 (COC)&#39;</span><span class="p">]</span>
+                    <span class="p">})</span>
 </pre></div>
 
      </div>
@@ -15159,18 +15399,18 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt = safe_create_col(mgmt, &quot;Ingredient&quot;)</span>
-<span class="c1"># mask = mgmt.Ingredient.isna()</span>
-<span class="c1"># mgmt.loc[mask, &#39;Ingredient&#39;] = mgmt.loc[mask, &#39;Product&#39;]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">safe_create_col</span><span class="p">(</span><span class="n">mgmt</span><span class="p">,</span> <span class="s2">&quot;Ingredient&quot;</span><span class="p">)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">Ingredient</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Ingredient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Product&#39;</span><span class="p">]</span>
 
-<span class="c1"># # assume each string is formated as &#39;val (key)&#39;. `sanitize_col` should be used to enforce this.</span>
-<span class="c1"># for e in [&#39;150 (P)&#39;, &#39;36.6 (N)&#39;, &#39;138 (K)&#39;, &#39;111.7 (K)&#39;, &#39;41 (P)&#39;, &#39;16 (N)&#39;, &#39;170 (N)&#39;, &#39;35.7 (N)&#39;, &#39;51.75 (N)&#39;, &#39;31 (N)&#39;, &#39;40.7 (P)&#39;]:</span>
-<span class="c1">#     val = re.findall(&#39;^\d+[.]*\d*&#39;, e)[0]</span>
-<span class="c1">#     key = re.findall(&#39;\(.+\)&#39;,      e)[0].replace(&#39;(&#39;, &#39;&#39;).replace(&#39;)&#39;, &#39;&#39;)</span>
+<span class="c1"># assume each string is formated as &#39;val (key)&#39;. `sanitize_col` should be used to enforce this.</span>
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;26 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;32 (Atrazine)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.01 (COC)&#39;</span><span class="p">,</span> <span class="s1">&#39;48 (Infantry)&#39;</span><span class="p">,</span> <span class="s1">&#39;3 (Calisto)&#39;</span><span class="p">,</span> <span class="s1">&#39;100 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.025 (AMS)&#39;</span><span class="p">,</span> <span class="s1">&#39;6 (S)&#39;</span><span class="p">,</span> <span class="s1">&#39;30 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;21 (Outlook)&#39;</span><span class="p">]:</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;^\d+[.]*\d*&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;\(.+\)&#39;</span><span class="p">,</span>      <span class="n">e</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
     
-<span class="c1">#     mask = (mgmt[&#39;Amount_Per_Acre&#39;] == e)</span>
-<span class="c1">#     mgmt.loc[mask, &#39;Ingredient&#39;] = key</span>
-<span class="c1">#     mgmt.loc[mask, &#39;Amount_Per_Acre&#39;] = val</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="p">[</span><span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">e</span><span class="p">)</span>
+    <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Ingredient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
+    <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
 </pre></div>
 
      </div>
@@ -15250,7 +15490,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Check-Success">Check Success<a class="anchor-link" href="#Check-Success">&#182;</a></h3>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
@@ -15262,6 +15502,151 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>12/12 Columns pass.
+</pre>
+</div>
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Column</th>
+      <th>dtype</th>
+      <th>Expected_dtype</th>
+      <th>Pass</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Year</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Experiment_Code</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Range</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Pass</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Plot</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Application</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Product</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Date_Datetime</td>
+      <td>datetime64[ns]</td>
+      <td>datetime64[ns]</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Amount_Per_Acre</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Unit</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>mgmt</td>
+      <td>bool</td>
+      <td>bool</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Ingredient</td>
+      <td>string</td>
+      <td>string</td>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>

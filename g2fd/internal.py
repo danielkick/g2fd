@@ -185,7 +185,16 @@ def mk_name_dict(name # table meta, phno, soil, wthr, or mgmt
     "Plot Discarded [enter 'yes' or blank]": 'Discarded', 
     'Comments': 'Phenotype_Comments', 
     'Filler': 'Filler', # Unchanged 
-    'Snap [# of plants]': 'Snap_Unit_Number'
+    'Snap [# of plants]': 'Snap_Unit_Number',
+    # 2019
+    'Kernels/Packet' : 'Kernels_Per_Packet',
+    "Filler [enter 'filler' or blank]" : 'Filler',
+    'Possible subs' : 'Possible_Subs',
+    'Confirmed subs' : 'Confirmed_Subs',
+    'Single Plant Biomass in July(g)' : 'Biomass_July_Unit_g',
+    'Single Plant Biomass in August(g)' : 'Biomass_Aug_Unit_g',
+    'RootPullingForce(kgf)_July' : 'Root_Pulling_Force_July_Unit_kgf',
+    'RootPullingForce(kgf)_August' : 'Root_Pulling_Force_Aug_Unit_kgf'
     }
 
     soil_name_dict = {
@@ -285,7 +294,9 @@ def list_known_experiments():
         'COH1', 'DEH1', 'GAH1', 'GAH2', 'GEH1', 'IAH1', 'IAH2', 'IAH3', 'IAH4', 'ILH1', 'INH1', 
         'MIH1', 'MNH1', 'NCH1', 'NEH1', 'NEH2', 'NEH3', 'NYH2', 'NYH3', 'NYS1', 'SCH1', 'TXH1', 
         'TXH2', 'TXH3', 'WIH1', 'WIH2', 'WIH3',
-        'MOH1', 'OHH1' # 2020
+        'MOH1', 'OHH1', # 2020
+        'NYH1', 'ONH2', 'TXH4', # 2019
+        'GEH2', 'IAH2 ', 'IAH3 ', 'IAH4 ', 'MOH1 ', 'NYH1', 'W1H1', 'W1H2'
                  ]
     return(known_exps)
 
@@ -570,9 +581,20 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
         'Comment_9': 'string', 
         'Comment_70': 'string', 
     'meta': 'bool',
-        'Imputation_Notes': 'string'
+        'Imputation_Notes': 'string',
+         # 2019
+        'Possible_Subs': 'string',
+        'Confirmed_Subs': 'string',
+        'Kernels_Per_Packet': 'float64',
+        'Biomass_July_Unit_g': 'float64',
+        'Biomass_Aug_Unit_g': 'float64',
+        'Root_Pulling_Force_July_Unit_kgf': 'float64',
+        'Root_Pulling_Force_Aug_Unit_kgf': 'float64'       
     }
 
+    
+
+    
     wthr_col_dtypes = {
         'Experiment_Code': 'string', 
         'Weather_Station_ID': 'string', 

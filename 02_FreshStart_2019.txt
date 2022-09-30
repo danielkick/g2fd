@@ -9,15 +9,14 @@ from g2fd.internal import *
 
 #| default_exp internal
 
-# 2021
-year_string = '2021'
+# 2019
+year_string = '2019'
 
-meta_path = './data/raw/GenomesToFields_G2F_data_2021/z._2021_supplemental_info/g2f_2021_field_metadata.csv'
-phno_path = './data/raw/GenomesToFields_G2F_data_2021/a._2021_phenotypic_data/g2f_2021_phenotypic_clean_data.csv' # also contains 'g2f_2021_phenotypic_raw_data.csv' 
-wthr_path = './data/raw/GenomesToFields_G2F_data_2021/b._2021_weather_data/g2f_2021_weather_cleaned.csv'
-soil_path = './data/raw/GenomesToFields_G2F_data_2021/c._2021_soil_data/g2f_2021_soil_data.csv'
-mgmt_path = './data/raw/GenomesToFields_G2F_data_2021/z._2021_supplemental_info/g2f_2021_agronomic_information.csv'
-
+meta_path = './data/raw/GenomesToFields_data_2019/z._2019_supplemental_info/g2f_2019_field_metadata.csv'
+phno_path = './data/raw/GenomesToFields_data_2019/a._2019_phenotypic_data/g2f_2019_phenotypic_clean_data.csv'
+wthr_path = './data/raw/GenomesToFields_data_2019/b._2019_weather_data/2019_weather_cleaned.csv'
+soil_path = './data/raw/GenomesToFields_data_2019/c._2019_soil_data/g2f_2019_soil_data.csv'
+mgmt_path = './data/raw/GenomesToFields_data_2019/z._2019_supplemental_info/g2f_2019_agronomic_information.csv'
 
 meta = pd.read_csv(meta_path, encoding = "ISO-8859-1", low_memory=False)
 phno = pd.read_csv(phno_path, encoding = "ISO-8859-1", low_memory=False)
@@ -133,42 +132,70 @@ sval_col_dtypes = mk_dtype_dict(name = 'sval')
 wthr_col_dtypes = mk_dtype_dict(name = 'wthr')
 mgmt_col_dtypes = mk_dtype_dict(name = 'mgmt')
 
-# # convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.
+['43681', 
+'43682', 
+'43684', 
+'43683']
 
-# for e in ['Planted_Unit_Datetime', 
-#     'Harvested_Unit_Datetime', 
-#     'Anthesis_Unit_Datetime', 
-#     'Silking_Unit_Datetime', 
-#     'Recieved_Date_Unit_Datetime', 
-#     'Processed_Date_Unit_Datetime', 
-#     'Weather_Station_Placed_Unit_Datetime', 
-#     'Weather_Station_Removed_Unit_Datetime'
-#     ]:
-# # find_unconvertable_datetimes(df_col=sval[e], pattern='%Y-%m-%d %H:%M', index=False)
+sval.loc[sval.Anthesis_Unit_Datetime == ['43681', 
+'43682', 
+'43684', 
+'43683'][0] , :]
+find_unconvertable_datetimes(df_col = sval.Silking_Unit_Datetime, pattern='%m/%d/%y', index=False)
 
-#     sval['Datetime_Temp'] = pd.to_datetime(np.nan)
 
-#     for code in list(sval.Experiment_Code.drop_duplicates()):
-#     # code = list(sval.Experiment_Code.drop_duplicates())[0]
-#         sval.loc[sval.Experiment_Code == code, 'Datetime_Temp'
-#                  ] = pd.to_datetime(sval.loc[sval.Experiment_Code == code, e])
+sval = sanitize_col(
+    df = sval, 
+    col = 'Anthesis_Unit_Datetime', 
+    simple_renames= {'43681': '8/4/2019', 
+                    '43682': '8/5/2019', 
+                    '43684': '8/7/2019', 
+                    '43683': '8/6/2019'}, 
+    split_renames= {})
 
-#     sval.loc[:, e] = sval.loc[:, 'Datetime_Temp'] 
+sval = sanitize_col(
+    df = sval, 
+    col = 'Silking_Unit_Datetime', 
+    simple_renames= {'43681': '8/4/2019',
+                    '43686': '8/9/2019',
+                    '43684': '8/7/2019',
+                    '43685': '8/8/2019',}, 
+    split_renames= {})
 
-# sval = sval.drop(columns = 'Datetime_Temp')
 
-# # -> floats
 
-# # [find_unconvertable_numerics(df_col = sval[e], index = False) for e in [
-# #     'Alley_Length_Unit_Inches',
-# # 'Row_Spacing_Unit_Inches',
-# # 'Pounds_Needed_Soil_Moisture'
-# # ]]
+
+# convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.
+
+for e in ['Planted_Unit_Datetime', 
+          'Harvested_Unit_Datetime', 
+          'Anthesis_Unit_Datetime', 
+          'Silking_Unit_Datetime', 
+          'Recieved_Date_Unit_Datetime', 
+          'Processed_Date_Unit_Datetime', 
+          'Weather_Station_Placed_Unit_Datetime', 
+          'Weather_Station_Removed_Unit_Datetime'
+    ]:
+# find_unconvertable_datetimes(df_col=sval[e], pattern='%Y-%m-%d %H:%M', index=False)
+    print(e)
+    sval['Datetime_Temp'] = pd.to_datetime(np.nan)
+
+    for code in list(sval.Experiment_Code.drop_duplicates()):
+    # code = list(sval.Experiment_Code.drop_duplicates())[0]
+        sval.loc[sval.Experiment_Code == code, 'Datetime_Temp'
+                 ] = pd.to_datetime(sval.loc[sval.Experiment_Code == code, e])
+
+    sval.loc[:, e] = sval.loc[:, 'Datetime_Temp'] 
+
+sval = sval.drop(columns = 'Datetime_Temp')
+
+# -> floats
 
 sval = sanitize_col(
     df = sval, 
     col = 'Pounds_Needed_Soil_Moisture', 
-    simple_renames= {'3 to 4':'3.5'}, 
+    simple_renames= {'3 to 4':'3.5',
+                     '56 lb/bu and adjusted to 15.5% moisture': '56'}, 
     split_renames= {})
 
 # convert types
@@ -180,6 +207,8 @@ for e in ['Alley_Length_Unit_Inches', 'Row_Spacing_Unit_Inches', 'Pounds_Needed_
         print(err_list)
     else:
         sval[e] = sval[e].astype('float')
+
+
 
 # to bool
 sval = sanitize_col(
@@ -194,8 +223,7 @@ sval = sanitize_col(
 sval.loc[sval.Discarded.isna(), 'Discarded'] = 'False'
 sval.Discarded = sval.Discarded.map({'True': True, 'False': False})
 
-# to float
-# sval.Pounds_Needed_Soil_Moisture.astype(float)
+
 
 # to bool
 sval['phno'] = sval['phno'].astype('bool')
@@ -218,6 +246,12 @@ else:
     print(checkpoint.loc[~checkpoint.Pass, ]) 
     print()
 
+# wthr.loc[:, ['Year',
+# 'Month',
+# 'Day',
+# 'Time']].info()
+
+
 # # instead of writing regexes to figure out the mose likely format for each datetime, we assume each experiment will be consistent withing that experiment
 # # and let pd figure it out.
 # # wthr['Datetime_Temp'] = pd.to_datetime(np.nan)
@@ -237,16 +271,34 @@ else:
 #     simple_renames= {'24:00:00': '00:00:00'}, # this could be day + 24 h instead of a miscoded day + 0 h
 #     split_renames= {})
 
-# wthr['Datetime_Temp'] = wthr['Year']+'-'+wthr['Month']+'-'+wthr['Day']+' '+wthr['Time']
+wthr.Month = wthr.Month.astype('string')
+wthr.Day = wthr.Day.astype('string')
 
-# # convert types
-# err_list = find_unconvertable_datetimes(df_col=wthr['Datetime_Temp'], pattern='%Y-%m-%d %H:%M', index=False)
+wthr['Datetime_Temp'] = wthr['Year']+'-'+wthr['Month']+'-'+wthr['Day']+' '+wthr['Time']
+
+# convert types
+err_list = find_unconvertable_datetimes(df_col=wthr['Datetime_Temp'], pattern='%Y-%m-%d %H:%M', index=False)
+if err_list != []:
+    print(err_list)
+else:
+    wthr.Datetime_Temp = pd.to_datetime(pd.Series(wthr.Datetime_Temp), errors='coerce')
+    wthr.Datetime = wthr.Datetime_Temp
+    wthr = wthr.drop(columns= 'Datetime_Temp')
+
+wthr = sanitize_col(
+    df = wthr,
+    col = 'Wind_Gust_Unit_m_per_s', 
+    simple_renames= {'#REF!': np.nan}, # this could be day + 24 h instead of a miscoded day + 0 h
+    split_renames= {})
+
+# convert types
+# err_list = find_unconvertable_numerics(wthr.Wind_Gust_Unit_m_per_s)
 # if err_list != []:
 #     print(err_list)
 # else:
-#     wthr.Datetime_Temp = pd.to_datetime(pd.Series(wthr.Datetime_Temp), errors='coerce')
-#     wthr.Datetime = wthr.Datetime_Temp
-#     wthr = wthr.drop(columns= 'Datetime_Temp')
+wthr.Wind_Gust_Unit_m_per_s = wthr.Wind_Gust_Unit_m_per_s.astype(float)
+
+
 
 # to string
 wthr = cols_astype_string(
@@ -263,7 +315,7 @@ if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
 else:
     print(checkpoint.loc[~checkpoint.Pass, ])
 
-mgmt = relocate_to_Imputation_Notes(df = mgmt, col = 'Date_Datetime', val_list= ['Before Planting'])
+# mgmt = relocate_to_Imputation_Notes(df = mgmt, col = 'Date_Datetime', val_list= ['Before Planting'])
 
 # mgmt = sanitize_col(
 #     df = mgmt, 
@@ -285,6 +337,16 @@ mgmt = relocate_to_Imputation_Notes(df = mgmt, col = 'Date_Datetime', val_list= 
 # mask = (mgmt.Date_Datetime == '7/5/21 for pass 2')
 # mgmt = mgmt.loc[~mask, :].copy()
 
+
+
+# incompatable values are of the form:
+# 64        Thursday, May 9, 2019
+# 65        Monday, June 10, 2019
+# 66        Thursday, May 9, 2019
+# so we rename each before transformation
+err = find_unconvertable_datetimes(df_col=mgmt.Date_Datetime, pattern='%m/%d/%y', index=False)
+mgmt.Date_Datetime = mgmt.Date_Datetime.map( dict(zip(err, pd.to_datetime(err) )) )
+
 # convert types
 err_list = find_unconvertable_datetimes(df_col=mgmt.Date_Datetime, pattern='%m/%d/%y', index=False)
 if err_list != []:
@@ -294,26 +356,27 @@ else:
 
 # mgmt.loc[find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = True), ]
 
-# mgmt = sanitize_col(
-#     df = mgmt, 
-#     col = 'Amount_Per_Acre', 
-#     simple_renames= {'170 lb (actual N)': '170 (N)'}, 
-#     split_renames= {'51.75, 40.7, 111.7 (N,P,K)': ['51.75 (N)', '40.7 (P)', '111.7 (K)'],
-#                     '31-150-138': ['31 (N)', '150 (P)', '138 (K)'],
-#                     '16 (N), 41 (P)': ['16 (N)', '41 (P)']})
+mgmt = sanitize_col(
+    df = mgmt, 
+    col = 'Amount_Per_Acre', 
+    simple_renames= {'100 of N': '100 (N)'}, 
+    split_renames= {'30-26-0-6S': ['30 (N)', '26 (P)', '6 (S)'],
+                    '21/48': ['21 (Outlook)', '48 (Infantry)'],
+                    '3/32/2.5%/1%': ['3 (Calisto)', '32 (Atrazine)', '0.025 (AMS)', '0.01 (COC)']
+                    })
 
-# mgmt = safe_create_col(mgmt, "Ingredient")
-# mask = mgmt.Ingredient.isna()
-# mgmt.loc[mask, 'Ingredient'] = mgmt.loc[mask, 'Product']
+mgmt = safe_create_col(mgmt, "Ingredient")
+mask = mgmt.Ingredient.isna()
+mgmt.loc[mask, 'Ingredient'] = mgmt.loc[mask, 'Product']
 
-# # assume each string is formated as 'val (key)'. `sanitize_col` should be used to enforce this.
-# for e in ['150 (P)', '36.6 (N)', '138 (K)', '111.7 (K)', '41 (P)', '16 (N)', '170 (N)', '35.7 (N)', '51.75 (N)', '31 (N)', '40.7 (P)']:
-#     val = re.findall('^\d+[.]*\d*', e)[0]
-#     key = re.findall('\(.+\)',      e)[0].replace('(', '').replace(')', '')
+# assume each string is formated as 'val (key)'. `sanitize_col` should be used to enforce this.
+for e in ['26 (P)', '32 (Atrazine)', '0.01 (COC)', '48 (Infantry)', '3 (Calisto)', '100 (N)', '0.025 (AMS)', '6 (S)', '30 (N)', '21 (Outlook)']:
+    val = re.findall('^\d+[.]*\d*', e)[0]
+    key = re.findall('\(.+\)',      e)[0].replace('(', '').replace(')', '')
     
-#     mask = (mgmt['Amount_Per_Acre'] == e)
-#     mgmt.loc[mask, 'Ingredient'] = key
-#     mgmt.loc[mask, 'Amount_Per_Acre'] = val
+    mask = (mgmt['Amount_Per_Acre'] == e)
+    mgmt.loc[mask, 'Ingredient'] = key
+    mgmt.loc[mask, 'Amount_Per_Acre'] = val
 
 # convert types
 err_list = find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = False)
