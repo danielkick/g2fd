@@ -7,6 +7,11 @@ website:
       - 01_mk_settings_documents.html
       - 01_mk_settings_documents.ipynb
       - 02_FreshStart.html
+      - 02_FreshStart_0000.html
+      - 02_FreshStart_0000.ipynb
+      - 02_FreshStart_2020.html
+      - 02_FreshStart_2020.ipynb
+      - 02_FreshStart_2021-Copy1.html
       - 02_FreshStart_2021.html
       - 02_FreshStart_2021.ipynb
       - 02_standardize.html
