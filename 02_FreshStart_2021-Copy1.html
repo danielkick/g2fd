@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>02_FreshStart_2021</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>02_FreshStart_2021-Copy1</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -14496,361 +14496,62 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="k">def</span> <span class="nf">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="c1"># table meta, phno, soil, wthr, or mgmt</span>
-                <span class="p">):</span>
-    <span class="s1">&#39;Easily share dictionaries for renaming columns across scripts.&#39;</span>
-
-<span class="c1">#     meta_name_dict = {</span>
-<span class="c1">#     # &#39;Experiment_Code&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Treatment&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;City&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Farm&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Field&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Trial_ID (Assigned by collaborator for internal reference)&#39;: &#39;Trial_ID&#39;, </span>
-<span class="c1">#     &#39;Soil_Taxonomic_ID and horizon description, if known&#39;: &#39;Soil_Taxonomic_ID&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Serial_Number (Last four digits, e.g. m2700s#####)&#39;: &#39;Weather_Station_Serial_Number&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Latitude (in decimal numbers NOT DMS)&#39;: &#39;Weather_Station_Latitude_Unit_Decimal&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Longitude (in decimal numbers NOT DMS)&#39;: &#39;Weather_Station_Longitude_Unit_Decimal&#39;, </span>
-<span class="c1">#     &#39;Date_weather_station_placed&#39;: &#39;Weather_Station_Placed_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Date_weather_station_removed&#39;: &#39;Weather_Station_Removed_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;In-field weather station serial number&#39;: &#39;Weather_Station_In_Field_Serial_Number&#39;, </span>
-<span class="c1">#     &#39;In-field_weather_station_latitude (in decimal)&#39;: &#39;Weather_Station_In_Field_Latitude_Unit_Decimal&#39;, </span>
-<span class="c1">#     &#39;In-field_weather_station_longitude (in decimal)&#39;: &#39;Weather_Station_In_Field_Longitude_Unit_Decimal&#39;, </span>
-<span class="c1">#     # &#39;Previous_Crop&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Pre-plant_tillage_method(s)&#39;: &#39;Pre_Plant_Tillage&#39;, </span>
-<span class="c1">#     &#39;In-season_tillage_method(s)&#39;: &#39;Post_Plant_Tillage&#39;, </span>
-<span class="c1">#     &#39;Plot_length (center-alley to center-alley in feet)&#39;: &#39;Plot_Length_Unit_Feet&#39;, </span>
-<span class="c1">#     &#39;Alley_length (in inches)&#39;: &#39;Alley_Length_Unit_Inches&#39;, </span>
-<span class="c1">#     &#39;Row_spacing (in inches)&#39;: &#39;Row_Spacing_Unit_Inches&#39;, </span>
-<span class="c1">#     &#39;Type_of_planter (fluted cone; belt cone; air planter)&#39;: &#39;Planter_Type&#39;, </span>
-<span class="c1">#     &#39;Number_kernels_planted_per_plot (&gt;200 seed/pack for cone planters)&#39;: &#39;Kernels_Per_Plot&#39;, </span>
-<span class="c1">#     # &#39;System_Determining_Moisture&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Pounds_Needed_Soil_Moisture&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Latitude_of_Field_Corner_#1 (lower left)&#39;: &#39;Field_Latitude_BL&#39;, </span>
-<span class="c1">#     &#39;Longitude_of_Field_Corner_#1 (lower left)&#39;: &#39;Field_Longitude_BL&#39;, </span>
-<span class="c1">#     &#39;Latitude_of_Field_Corner_#2 (lower right)&#39;: &#39;Field_Latitude_BR&#39;, </span>
-<span class="c1">#     &#39;Longitude_of_Field_Corner_#2 (lower right)&#39;: &#39;Field_Longitude_BR&#39;, </span>
-<span class="c1">#     &#39;Latitude_of_Field_Corner_#3 (upper right)&#39;: &#39;Field_Latitude_TR&#39;, </span>
-<span class="c1">#     &#39;Longitude_of_Field_Corner_#3 (upper right)&#39;: &#39;Field_Longitude_TR&#39;, </span>
-<span class="c1">#     &#39;Latitude_of_Field_Corner_#4 (upper left)&#39;: &#39;Field_Latitude_TL&#39;, </span>
-<span class="c1">#     &#39;Longitude_of_Field_Corner_#4 (upper left)&#39;: &#39;Field_Longitude_TL&#39;, </span>
-<span class="c1">#     &#39;Cardinal_Heading_Pass_1&#39;: &#39;Cardinal_Heading&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#1_Pedigree&#39;: &#39;Local_Check_Pedigree_1&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#1_Source&#39;: &#39;Local_Check_Source_1&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#2_Pedigree&#39;: &#39;Local_Check_Pedigree_2&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#2_Source&#39;: &#39;Local_Check_Source_2&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#3_Pedigree&#39;: &#39;Local_Check_Pedigree_3&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#3_Source&#39;: &#39;Local_Check_Source_3&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#4_Pedigree&#39;: &#39;Local_Check_Pedigree_4&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#4_Source&#39;: &#39;Local_Check_Source_4&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#5_Pedigree&#39;: &#39;Local_Check_Pedigree_5&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#5_Source&#39;: &#39;Local_Check_Source_5&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#1&#39;: &#39;Comment_1&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#2&#39;: &#39;Comment_2&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#3&#39;: &#39;Comment_3&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#4&#39;: &#39;Comment_4&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#5&#39;: &#39;Comment_5&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#6&#39;: &#39;Comment_6&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#7&#39;: &#39;Comment_7&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#8&#39;: &#39;Comment_8&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#9&#39;: &#39;Comment_9&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#10&#39;: &#39;Comment_70&#39;</span>
-<span class="c1">#     }</span>
-
-<span class="c1">#     phno_name_dict = {</span>
-<span class="c1">#     &#39;Year&#39;: &#39;Year&#39;, </span>
-<span class="c1">#     &#39;Field-Location&#39;: &#39;Experiment_Code&#39;, </span>
-<span class="c1">#     # &#39;State&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;City&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Plot length (center-center in feet)&#39;: &#39;Plot_Length_Unit_Feet&#39;, </span>
-<span class="c1">#     &#39;Plot area (ft2)&#39;: &#39;Plot_Area_Unit_Feet2&#39;, </span>
-<span class="c1">#     &#39;Alley length (in inches)&#39;: &#39;Alley_Length_Unit_Inches&#39;, </span>
-<span class="c1">#     &#39;Row spacing (in inches)&#39;: &#39;Row_Spacing_Unit_Inches&#39;, </span>
-<span class="c1">#     &#39;Rows per plot&#39;: &#39;Rows_Per_Plot&#39;, </span>
-<span class="c1">#     &#39;# Seed per plot&#39;: &#39;Seeds_Per_Plot&#39;, </span>
-<span class="c1">#     # &#39;Experiment&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Source&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Pedigree&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Family&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Tester&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Replicate&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Block&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Plot&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Plot_ID&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Range&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Pass&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Date Plot Planted [MM/DD/YY]&#39;: &#39;Planted_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Date Plot Harvested [MM/DD/YY]&#39;: &#39;Harvested_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Anthesis [MM/DD/YY]&#39;: &#39;Anthesis_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Silking [MM/DD/YY]&#39;: &#39;Silking_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Anthesis [days]&#39;: &#39;Anthesis_Unit_Days&#39;, </span>
-<span class="c1">#     &#39;Silking [days]&#39;: &#39;Silking_Unit_Days&#39;, </span>
-<span class="c1">#     &#39;Plant Height [cm]&#39;: &#39;Plant_Height_Unit_cm&#39;, </span>
-<span class="c1">#     &#39;Ear Height [cm]&#39;: &#39;Ear_Height_Unit_cm&#39;, </span>
-<span class="c1">#     &#39;Stand Count [# of plants]&#39;: &#39;Stand_Count_Unit_Number&#39;, </span>
-<span class="c1">#     &#39;Root Lodging [# of plants]&#39;: &#39;Root_Lodging_Unit_Number&#39;, </span>
-<span class="c1">#     &#39;Stalk Lodging [# of plants]&#39;: &#39;Stalk_Lodging_Unit_Number&#39;, </span>
-<span class="c1">#     &#39;Grain Moisture [%]&#39;: &#39;Grain_Moisture_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;Test Weight [lbs]&#39;: &#39;Test_Weight_Unit_lbs&#39;, </span>
-<span class="c1">#     &#39;Plot Weight [lbs]&#39;: &#39;Plot_Weight_Unit_lbs&#39;, </span>
-<span class="c1">#     &#39;Grain Yield (bu/A)&#39;: &#39;Grain_Yield_Unit_bu_Per_A&#39;, </span>
-<span class="c1">#     &quot;Plot Discarded [enter &#39;yes&#39; or blank]&quot;: &#39;Discarded&#39;, </span>
-<span class="c1">#     &#39;Comments&#39;: &#39;Phenotype_Comments&#39;, </span>
-<span class="c1">#     # &#39;Filler&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Snap [# of plants]&#39;: &#39;Snap_Unit_Number&#39;</span>
-<span class="c1">#     }</span>
-
-<span class="c1">#     soil_name_dict = {</span>
-<span class="c1">#     # &#39;Grower&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Location&#39;: &#39;Experiment_Code&#39;, </span>
-<span class="c1">#     &#39;Date Received&#39;: &#39;Recieved_Date_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Date Reported&#39;: &#39;Processed_Date_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;E Depth&#39;: &#39;Depth_Unit_UNK&#39;, </span>
-<span class="c1">#     &#39;1:1 Soil pH&#39;: &#39;Soil_1_to_1_Unit_pH&#39;, </span>
-<span class="c1">#     &#39;WDRF Buffer pH&#39;: &#39;WDRF_Buffer_Unit_pH&#39;, </span>
-<span class="c1">#     &#39;1:1 S Salts mmho/cm&#39;: &#39;Soluable_Salts_Unit_mmho_Per_cm&#39;, </span>
-<span class="c1">#     &#39;Texture No&#39;: &#39;Texture_Number&#39;, </span>
-<span class="c1">#     &#39;Organic Matter LOI %&#39;: &#39;Organic_Matter_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;Nitrate-N ppm N&#39;: &#39;Nitrates_Unit_ppm&#39;, </span>
-<span class="c1">#     &#39;lbs N/A&#39;: &#39;N_per_Acre_Unit_lbs&#39;, </span>
-<span class="c1">#     &#39;Potassium ppm K&#39;: &#39;K_Unit_ppm&#39;, </span>
-<span class="c1">#     &#39;Sulfate-S ppm S&#39;: &#39;Sulfate_Unit_ppm&#39;, </span>
-<span class="c1">#     &#39;Calcium ppm Ca&#39;: &#39;Ca_Unit_ppm&#39;, </span>
-<span class="c1">#     &#39;Magnesium ppm Mg&#39;: &#39;Mg_Unit_ppm&#39;, </span>
-<span class="c1">#     &#39;Sodium ppm Na&#39;: &#39;Na_Unit_ppm&#39;, </span>
-<span class="c1">#     &#39;CEC/Sum of Cations me/100g&#39;: &#39;Cation_Exchange_Capacity&#39;, </span>
-<span class="c1">#     &#39;%H Sat&#39;: &#39;H_Sat_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;%K Sat&#39;: &#39;K_Sat_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;%Ca Sat&#39;: &#39;Ca_Sat_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;%Mg Sat&#39;: &#39;Mg_Sat_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;%Na Sat&#39;: &#39;Na_Sat_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;Mehlich P-III ppm P&#39;: &#39;Mehlich_PIII_P_Unit_ppm&#39;, </span>
-<span class="c1">#     &#39;% Sand&#39;: &#39;Sand_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;% Silt&#39;: &#39;Silt_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;% Clay&#39;: &#39;Clay_Unit_Percent&#39;, </span>
-<span class="c1">#     # &#39;Texture&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Comments&#39;: &#39;Soil_Comments&#39;</span>
-<span class="c1">#     }</span>
-
-<span class="c1">#     wthr_name_dict = {</span>
-<span class="c1">#     &#39;Field Location&#39;: &#39;Experiment_Code&#39;, </span>
-<span class="c1">#     &#39;Station ID&#39;: &#39;Weather_Station_ID&#39;, </span>
-<span class="c1">#     &#39;NWS Network&#39;: &#39;NWS_Network&#39;, </span>
-<span class="c1">#     &#39;NWS Station&#39;: &#39;NWS_Station&#39;, </span>
-<span class="c1">#     &#39;Date_key&#39;: &#39;Datetime&#39;, </span>
-<span class="c1">#     # &#39;Month&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Day&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Year&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Time&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Temperature [C]&#39;: &#39;Temperature_Unit_C&#39;, </span>
-<span class="c1">#     &#39;Dew Point [C]&#39;: &#39;Dew_Point_Unit_C&#39;, </span>
-<span class="c1">#     &#39;Relative Humidity [%]&#39;: &#39;Relative_Humidity_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;Solar Radiation [W/m2]&#39;: &#39;Solar_Radiation_Unit_W_per_m2&#39;, </span>
-<span class="c1">#     &#39;Rainfall [mm]&#39;: &#39;Rainfall_Unit_mm&#39;, </span>
-<span class="c1">#     &#39;Wind Speed [m/s]&#39;: &#39;Wind_Speed_Unit_m_per_s&#39;, </span>
-<span class="c1">#     &#39;Wind Direction [degrees]&#39;: &#39;Wind_Direction_Unit_Degrees&#39;, </span>
-<span class="c1">#     &#39;Wind Gust [m/s]&#39;: &#39;Wind_Gust_Unit_m_per_s&#39;, </span>
-<span class="c1">#     &#39;Soil Temperature [C]&#39;: &#39;Soil_Temperature_Unit_C&#39;, </span>
-<span class="c1">#     &#39;Soil Moisture [%VWC]&#39;: &#39;Soil_Moisture_Unit_Percent_VWC&#39;, </span>
-<span class="c1">#     &#39;Soil EC [mS/cm]&#39;: &#39;Soil_EC_Unit_mS_per_cm&#39;, </span>
-<span class="c1">#     &#39;UV Light [uM/m2s]&#39;: &#39;UV_Light_Unit_uM_per_m2s&#39;, </span>
-<span class="c1">#     &#39;PAR [uM/m2s]&#39;: &#39;PAR_Unit_uM_per_m2s&#39;</span>
-<span class="c1">#     }</span>
-
-<span class="c1">#     mgmt_name_dict = {</span>
-<span class="c1">#     &#39;Location&#39;: &#39;Experiment_Code&#39;, </span>
-<span class="c1">#     &#39;Application_or_treatment&#39;: &#39;Application&#39;, </span>
-<span class="c1">#     &#39;Product_or_nutrient_applied&#39;: &#39;Product&#39;, </span>
-<span class="c1">#     &#39;Date_of_application&#39;: &#39;Date_Datetime&#39;, </span>
-<span class="c1">#     &#39;Quantity_per_acre&#39;: &#39;Amount_Per_Acre&#39;, </span>
-<span class="c1">#     &#39;Application_unit&#39;: &#39;Unit&#39;</span>
-<span class="c1">#     }</span>
-
-    
-
-    <span class="n">meta_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Treatment&#39;</span><span class="p">:</span> <span class="s1">&#39;Treatment&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;City&#39;</span><span class="p">:</span> <span class="s1">&#39;City&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Farm&#39;</span><span class="p">:</span> <span class="s1">&#39;Farm&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Field&#39;</span><span class="p">:</span> <span class="s1">&#39;Field&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Trial_ID (Assigned by collaborator for internal reference)&#39;</span><span class="p">:</span> <span class="s1">&#39;Trial_ID&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Soil_Taxonomic_ID and horizon description, if known&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Taxonomic_ID&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Weather_Station_Serial_Number (Last four digits, e.g. m2700s#####)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Serial_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Weather_Station_Latitude (in decimal numbers NOT DMS)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Latitude_Unit_Decimal&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Weather_Station_Longitude (in decimal numbers NOT DMS)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Longitude_Unit_Decimal&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date_weather_station_placed&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Placed_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date_weather_station_removed&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Removed_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;In-field weather station serial number&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Serial_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;In-field_weather_station_latitude (in decimal)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Latitude_Unit_Decimal&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;In-field_weather_station_longitude (in decimal)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Longitude_Unit_Decimal&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Previous_Crop&#39;</span><span class="p">:</span> <span class="s1">&#39;Previous_Crop&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Pre-plant_tillage_method(s)&#39;</span><span class="p">:</span> <span class="s1">&#39;Pre_Plant_Tillage&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;In-season_tillage_method(s)&#39;</span><span class="p">:</span> <span class="s1">&#39;Post_Plant_Tillage&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Plot_length (center-alley to center-alley in feet)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Alley_length (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Row_spacing (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Type_of_planter (fluted cone; belt cone; air planter)&#39;</span><span class="p">:</span> <span class="s1">&#39;Planter_Type&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Number_kernels_planted_per_plot (&gt;200 seed/pack for cone planters)&#39;</span><span class="p">:</span> <span class="s1">&#39;Kernels_Per_Plot&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;System_Determining_Moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;System_Determining_Moisture&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Latitude_of_Field_Corner_#1 (lower left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_BL&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Longitude_of_Field_Corner_#1 (lower left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_BL&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Latitude_of_Field_Corner_#2 (lower right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_BR&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Longitude_of_Field_Corner_#2 (lower right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_BR&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Latitude_of_Field_Corner_#3 (upper right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_TR&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Longitude_of_Field_Corner_#3 (upper right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_TR&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Latitude_of_Field_Corner_#4 (upper left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_TL&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Longitude_of_Field_Corner_#4 (upper left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_TL&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Cardinal_Heading_Pass_1&#39;</span><span class="p">:</span> <span class="s1">&#39;Cardinal_Heading&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#1_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_1&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#1_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_1&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#2_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#2_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#3_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_3&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#3_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_3&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#4_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_4&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#4_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_4&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#5_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_5&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#5_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_5&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#1&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_1&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#2&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#3&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_3&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#4&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_4&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#5&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_5&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#6&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_6&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#7&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_7&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#8&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_8&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#9&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_9&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#10&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_70&#39;</span>
-    <span class="p">}</span>
-
-    <span class="n">phno_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;Year&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Field-Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;State&#39;</span><span class="p">:</span> <span class="s1">&#39;State&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;City&#39;</span><span class="p">:</span> <span class="s1">&#39;City&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Plot length (center-center in feet)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Plot area (ft2)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Area_Unit_Feet2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Alley length (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Row spacing (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Rows per plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Rows_Per_Plot&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;# Seed per plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Seeds_Per_Plot&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Experiment&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Source&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Pedigree&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Family&#39;</span><span class="p">:</span> <span class="s1">&#39;Family&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Tester&#39;</span><span class="p">:</span> <span class="s1">&#39;Tester&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Replicate&#39;</span><span class="p">:</span> <span class="s1">&#39;Replicate&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Block&#39;</span><span class="p">:</span> <span class="s1">&#39;Block&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Plot_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_ID&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Range&#39;</span><span class="p">:</span> <span class="s1">&#39;Range&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Pass&#39;</span><span class="p">:</span> <span class="s1">&#39;Pass&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Date Plot Planted [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Planted_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date Plot Harvested [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Harvested_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Anthesis [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Anthesis_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Silking [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Silking_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Anthesis [days]&#39;</span><span class="p">:</span> <span class="s1">&#39;Anthesis_Unit_Days&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Silking [days]&#39;</span><span class="p">:</span> <span class="s1">&#39;Silking_Unit_Days&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Plant Height [cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Plant_Height_Unit_cm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Ear Height [cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Ear_Height_Unit_cm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Stand Count [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Stand_Count_Unit_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Root Lodging [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Root_Lodging_Unit_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Stalk Lodging [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Stalk_Lodging_Unit_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Grain Moisture [%]&#39;</span><span class="p">:</span> <span class="s1">&#39;Grain_Moisture_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Test Weight [lbs]&#39;</span><span class="p">:</span> <span class="s1">&#39;Test_Weight_Unit_lbs&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Plot Weight [lbs]&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Weight_Unit_lbs&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Grain Yield (bu/A)&#39;</span><span class="p">:</span> <span class="s1">&#39;Grain_Yield_Unit_bu_Per_A&#39;</span><span class="p">,</span> 
-    <span class="s2">&quot;Plot Discarded [enter &#39;yes&#39; or blank]&quot;</span><span class="p">:</span> <span class="s1">&#39;Discarded&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Phenotype_Comments&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Filler&#39;</span><span class="p">:</span> <span class="s1">&#39;Filler&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Snap [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Snap_Unit_Number&#39;</span>
-    <span class="p">}</span>
-
-    <span class="n">soil_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Grower&#39;</span><span class="p">:</span> <span class="s1">&#39;Grower&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date Received&#39;</span><span class="p">:</span> <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date Reported&#39;</span><span class="p">:</span> <span class="s1">&#39;Processed_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;E Depth&#39;</span><span class="p">:</span> <span class="s1">&#39;Depth_Unit_UNK&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;1:1 Soil pH&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_1_to_1_Unit_pH&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;WDRF Buffer pH&#39;</span><span class="p">:</span> <span class="s1">&#39;WDRF_Buffer_Unit_pH&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;1:1 S Salts mmho/cm&#39;</span><span class="p">:</span> <span class="s1">&#39;Soluable_Salts_Unit_mmho_Per_cm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Texture No&#39;</span><span class="p">:</span> <span class="s1">&#39;Texture_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Organic Matter LOI %&#39;</span><span class="p">:</span> <span class="s1">&#39;Organic_Matter_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Nitrate-N ppm N&#39;</span><span class="p">:</span> <span class="s1">&#39;Nitrates_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;lbs N/A&#39;</span><span class="p">:</span> <span class="s1">&#39;N_per_Acre_Unit_lbs&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Potassium ppm K&#39;</span><span class="p">:</span> <span class="s1">&#39;K_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Sulfate-S ppm S&#39;</span><span class="p">:</span> <span class="s1">&#39;Sulfate_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Calcium ppm Ca&#39;</span><span class="p">:</span> <span class="s1">&#39;Ca_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Magnesium ppm Mg&#39;</span><span class="p">:</span> <span class="s1">&#39;Mg_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Sodium ppm Na&#39;</span><span class="p">:</span> <span class="s1">&#39;Na_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;CEC/Sum of Cations me/100g&#39;</span><span class="p">:</span> <span class="s1">&#39;Cation_Exchange_Capacity&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%H Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;H_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%K Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;K_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%Ca Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Ca_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%Mg Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Mg_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%Na Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Na_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Mehlich P-III ppm P&#39;</span><span class="p">:</span> <span class="s1">&#39;Mehlich_PIII_P_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;% Sand&#39;</span><span class="p">:</span> <span class="s1">&#39;Sand_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;% Silt&#39;</span><span class="p">:</span> <span class="s1">&#39;Silt_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;% Clay&#39;</span><span class="p">:</span> <span class="s1">&#39;Clay_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Texture&#39;</span><span class="p">:</span> <span class="s1">&#39;Texture&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Comments&#39;</span>
-    <span class="p">}</span>
-
-    <span class="n">wthr_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Field Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Station ID&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_ID&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;NWS Network&#39;</span><span class="p">:</span> <span class="s1">&#39;NWS_Network&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;NWS Station&#39;</span><span class="p">:</span> <span class="s1">&#39;NWS_Station&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date_key&#39;</span><span class="p">:</span> <span class="s1">&#39;Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Month&#39;</span><span class="p">:</span> <span class="s1">&#39;Month&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Day&#39;</span><span class="p">:</span> <span class="s1">&#39;Day&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Time&#39;</span><span class="p">:</span> <span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Temperature_Unit_C&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Dew Point [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Dew_Point_Unit_C&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Relative Humidity [%]&#39;</span><span class="p">:</span> <span class="s1">&#39;Relative_Humidity_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Solar Radiation [W/m2]&#39;</span><span class="p">:</span> <span class="s1">&#39;Solar_Radiation_Unit_W_per_m2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Rainfall [mm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Rainfall_Unit_mm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Wind Speed [m/s]&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind_Speed_Unit_m_per_s&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Wind Direction [degrees]&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind_Direction_Unit_Degrees&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Wind Gust [m/s]&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind_Gust_Unit_m_per_s&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Soil Temperature [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Temperature_Unit_C&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Soil Moisture [%VWC]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Moisture_Unit_Percent_VWC&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Soil EC [mS/cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_EC_Unit_mS_per_cm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;UV Light [uM/m2s]&#39;</span><span class="p">:</span> <span class="s1">&#39;UV_Light_Unit_uM_per_m2s&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;PAR [uM/m2s]&#39;</span><span class="p">:</span> <span class="s1">&#39;PAR_Unit_uM_per_m2s&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;CO2 [ppm]&#39;</span><span class="p">:</span> <span class="s1">&#39;CO2_Unit_ppm&#39;</span> <span class="c1"># 2020</span>
-    <span class="p">}</span>
-
-    <span class="n">mgmt_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Application_or_treatment&#39;</span><span class="p">:</span> <span class="s1">&#39;Application&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Product_or_nutrient_applied&#39;</span><span class="p">:</span> <span class="s1">&#39;Product&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date_of_application&#39;</span><span class="p">:</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Quantity_per_acre&#39;</span><span class="p">:</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Application_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;Unit&#39;</span>
-    <span class="p">}</span>
-    
-    
-    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;meta&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">meta_name_dict</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;phno&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">phno_name_dict</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;soil&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">soil_name_dict</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;wthr&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">wthr_name_dict</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;mgmt&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">mgmt_name_dict</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Requested name is not defined&#39;</span><span class="p">)</span>
-    
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">meta_name_dict</span> <span class="o">=</span> <span class="p">{</span>
+<span class="c1"># &#39;Experiment_Code&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Treatment&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;City&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Farm&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Field&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="s1">&#39;Trial_ID (Assigned by collaborator for internal reference)&#39;</span><span class="p">:</span> <span class="s1">&#39;Trial_ID&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Soil_Taxonomic_ID and horizon description, if known&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Taxonomic_ID&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Weather_Station_Serial_Number (Last four digits, e.g. m2700s#####)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Serial_Number&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Weather_Station_Latitude (in decimal numbers NOT DMS)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Latitude_Unit_Decimal&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Weather_Station_Longitude (in decimal numbers NOT DMS)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Longitude_Unit_Decimal&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Date_weather_station_placed&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Placed_Unit_Datetime&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Date_weather_station_removed&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Removed_Unit_Datetime&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;In-field weather station serial number&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Serial_Number&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;In-field_weather_station_latitude (in decimal)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Latitude_Unit_Decimal&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;In-field_weather_station_longitude (in decimal)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Longitude_Unit_Decimal&#39;</span><span class="p">,</span> 
+<span class="c1"># &#39;Previous_Crop&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="s1">&#39;Pre-plant_tillage_method(s)&#39;</span><span class="p">:</span> <span class="s1">&#39;Pre_Plant_Tillage&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;In-season_tillage_method(s)&#39;</span><span class="p">:</span> <span class="s1">&#39;Post_Plant_Tillage&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Plot_length (center-alley to center-alley in feet)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Alley_length (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Row_spacing (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Type_of_planter (fluted cone; belt cone; air planter)&#39;</span><span class="p">:</span> <span class="s1">&#39;Planter_Type&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Number_kernels_planted_per_plot (&gt;200 seed/pack for cone planters)&#39;</span><span class="p">:</span> <span class="s1">&#39;Kernels_Per_Plot&#39;</span><span class="p">,</span> 
+<span class="c1"># &#39;System_Determining_Moisture&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Pounds_Needed_Soil_Moisture&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="s1">&#39;Latitude_of_Field_Corner_#1 (lower left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_BL&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Longitude_of_Field_Corner_#1 (lower left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_BL&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Latitude_of_Field_Corner_#2 (lower right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_BR&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Longitude_of_Field_Corner_#2 (lower right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_BR&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Latitude_of_Field_Corner_#3 (upper right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_TR&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Longitude_of_Field_Corner_#3 (upper right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_TR&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Latitude_of_Field_Corner_#4 (upper left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_TL&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Longitude_of_Field_Corner_#4 (upper left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_TL&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Cardinal_Heading_Pass_1&#39;</span><span class="p">:</span> <span class="s1">&#39;Cardinal_Heading&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Local_Check_#1_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_1&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Local_Check_#1_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_1&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Local_Check_#2_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_2&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Local_Check_#2_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_2&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Local_Check_#3_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_3&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Local_Check_#3_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_3&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Local_Check_#4_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_4&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Local_Check_#4_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_4&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Local_Check_#5_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_5&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Local_Check_#5_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_5&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Issue/comment_#1&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_1&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Issue/comment_#2&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_2&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Issue/comment_#3&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_3&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Issue/comment_#4&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_4&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Issue/comment_#5&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_5&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Issue/comment_#6&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_6&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Issue/comment_#7&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_7&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Issue/comment_#8&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_8&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Issue/comment_#9&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_9&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Issue/comment_#10&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_70&#39;</span>
+<span class="p">}</span>
 </pre></div>
 
      </div>
@@ -14864,12 +14565,48 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># load dicts for column renaming</span>
-<span class="n">meta_name_dict</span> <span class="o">=</span> <span class="n">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;meta&#39;</span><span class="p">)</span>
-<span class="n">phno_name_dict</span> <span class="o">=</span> <span class="n">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;phno&#39;</span><span class="p">)</span>
-<span class="n">soil_name_dict</span> <span class="o">=</span> <span class="n">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;soil&#39;</span><span class="p">)</span>
-<span class="n">wthr_name_dict</span> <span class="o">=</span> <span class="n">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;wthr&#39;</span><span class="p">)</span>
-<span class="n">mgmt_name_dict</span> <span class="o">=</span> <span class="n">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mgmt&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">phno_name_dict</span> <span class="o">=</span> <span class="p">{</span>
+<span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;Year&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Field-Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
+<span class="c1"># &#39;State&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;City&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="s1">&#39;Plot length (center-center in feet)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Plot area (ft2)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Area_Unit_Feet2&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Alley length (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Row spacing (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Rows per plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Rows_Per_Plot&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;# Seed per plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Seeds_Per_Plot&#39;</span><span class="p">,</span> 
+<span class="c1"># &#39;Experiment&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Source&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Pedigree&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Family&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Tester&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Replicate&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Block&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Plot&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Plot_ID&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Range&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Pass&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="s1">&#39;Date Plot Planted [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Planted_Unit_Datetime&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Date Plot Harvested [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Harvested_Unit_Datetime&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Anthesis [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Anthesis_Unit_Datetime&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Silking [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Silking_Unit_Datetime&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Anthesis [days]&#39;</span><span class="p">:</span> <span class="s1">&#39;Anthesis_Unit_Days&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Silking [days]&#39;</span><span class="p">:</span> <span class="s1">&#39;Silking_Unit_Days&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Plant Height [cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Plant_Height_Unit_cm&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Ear Height [cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Ear_Height_Unit_cm&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Stand Count [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Stand_Count_Unit_Number&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Root Lodging [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Root_Lodging_Unit_Number&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Stalk Lodging [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Stalk_Lodging_Unit_Number&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Grain Moisture [%]&#39;</span><span class="p">:</span> <span class="s1">&#39;Grain_Moisture_Unit_Percent&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Test Weight [lbs]&#39;</span><span class="p">:</span> <span class="s1">&#39;Test_Weight_Unit_lbs&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Plot Weight [lbs]&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Weight_Unit_lbs&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Grain Yield (bu/A)&#39;</span><span class="p">:</span> <span class="s1">&#39;Grain_Yield_Unit_bu_Per_A&#39;</span><span class="p">,</span> 
+<span class="s2">&quot;Plot Discarded [enter &#39;yes&#39; or blank]&quot;</span><span class="p">:</span> <span class="s1">&#39;Discarded&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Phenotype_Comments&#39;</span><span class="p">,</span> 
+<span class="c1"># &#39;Filler&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="s1">&#39;Snap [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Snap_Unit_Number&#39;</span>
+<span class="p">}</span>
 </pre></div>
 
      </div>
@@ -14883,7 +14620,37 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">soil_name_dict</span> <span class="o">=</span> <span class="p">{</span>
+<span class="c1"># &#39;Grower&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="s1">&#39;Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Date Received&#39;</span><span class="p">:</span> <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Date Reported&#39;</span><span class="p">:</span> <span class="s1">&#39;Processed_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;E Depth&#39;</span><span class="p">:</span> <span class="s1">&#39;Depth_Unit_UNK&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;1:1 Soil pH&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_1_to_1_Unit_pH&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;WDRF Buffer pH&#39;</span><span class="p">:</span> <span class="s1">&#39;WDRF_Buffer_Unit_pH&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;1:1 S Salts mmho/cm&#39;</span><span class="p">:</span> <span class="s1">&#39;Soluable_Salts_Unit_mmho_Per_cm&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Texture No&#39;</span><span class="p">:</span> <span class="s1">&#39;Texture_Number&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Organic Matter LOI %&#39;</span><span class="p">:</span> <span class="s1">&#39;Organic_Matter_Unit_Percent&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Nitrate-N ppm N&#39;</span><span class="p">:</span> <span class="s1">&#39;Nitrates_Unit_ppm&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;lbs N/A&#39;</span><span class="p">:</span> <span class="s1">&#39;N_per_Acre_Unit_lbs&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Potassium ppm K&#39;</span><span class="p">:</span> <span class="s1">&#39;K_Unit_ppm&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Sulfate-S ppm S&#39;</span><span class="p">:</span> <span class="s1">&#39;Sulfate_Unit_ppm&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Calcium ppm Ca&#39;</span><span class="p">:</span> <span class="s1">&#39;Ca_Unit_ppm&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Magnesium ppm Mg&#39;</span><span class="p">:</span> <span class="s1">&#39;Mg_Unit_ppm&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Sodium ppm Na&#39;</span><span class="p">:</span> <span class="s1">&#39;Na_Unit_ppm&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;CEC/Sum of Cations me/100g&#39;</span><span class="p">:</span> <span class="s1">&#39;Cation_Exchange_Capacity&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;%H Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;H_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;%K Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;K_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;%Ca Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Ca_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;%Mg Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Mg_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;%Na Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Na_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Mehlich P-III ppm P&#39;</span><span class="p">:</span> <span class="s1">&#39;Mehlich_PIII_P_Unit_ppm&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;% Sand&#39;</span><span class="p">:</span> <span class="s1">&#39;Sand_Unit_Percent&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;% Silt&#39;</span><span class="p">:</span> <span class="s1">&#39;Silt_Unit_Percent&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;% Clay&#39;</span><span class="p">:</span> <span class="s1">&#39;Clay_Unit_Percent&#39;</span><span class="p">,</span> 
+<span class="c1"># &#39;Texture&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="s1">&#39;Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Comments&#39;</span>
+<span class="p">}</span>
 </pre></div>
 
      </div>
@@ -14897,7 +14664,30 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">wthr_name_dict</span> <span class="o">=</span> <span class="p">{</span>
+<span class="s1">&#39;Field Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Station ID&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_ID&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;NWS Network&#39;</span><span class="p">:</span> <span class="s1">&#39;NWS_Network&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;NWS Station&#39;</span><span class="p">:</span> <span class="s1">&#39;NWS_Station&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Date_key&#39;</span><span class="p">:</span> <span class="s1">&#39;Datetime&#39;</span><span class="p">,</span> 
+<span class="c1"># &#39;Month&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Day&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Year&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="c1"># &#39;Time&#39;: &#39;XXXXXXX&#39;, </span>
+<span class="s1">&#39;Temperature [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Temperature_Unit_C&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Dew Point [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Dew_Point_Unit_C&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Relative Humidity [%]&#39;</span><span class="p">:</span> <span class="s1">&#39;Relative_Humidity_Unit_Percent&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Solar Radiation [W/m2]&#39;</span><span class="p">:</span> <span class="s1">&#39;Solar_Radiation_Unit_W_per_m2&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Rainfall [mm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Rainfall_Unit_mm&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Wind Speed [m/s]&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind_Speed_Unit_m_per_s&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Wind Direction [degrees]&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind_Direction_Unit_Degrees&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Wind Gust [m/s]&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind_Gust_Unit_m_per_s&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Soil Temperature [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Temperature_Unit_C&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Soil Moisture [%VWC]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Moisture_Unit_Percent_VWC&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Soil EC [mS/cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_EC_Unit_mS_per_cm&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;UV Light [uM/m2s]&#39;</span><span class="p">:</span> <span class="s1">&#39;UV_Light_Unit_uM_per_m2s&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;PAR [uM/m2s]&#39;</span><span class="p">:</span> <span class="s1">&#39;PAR_Unit_uM_per_m2s&#39;</span>
+<span class="p">}</span>
 </pre></div>
 
      </div>
@@ -14911,21 +14701,14 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt_name_dict</span> <span class="o">=</span> <span class="p">{</span>
+<span class="s1">&#39;Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Application_or_treatment&#39;</span><span class="p">:</span> <span class="s1">&#39;Application&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Product_or_nutrient_applied&#39;</span><span class="p">:</span> <span class="s1">&#39;Product&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Date_of_application&#39;</span><span class="p">:</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Quantity_per_acre&#39;</span><span class="p">:</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;Application_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;Unit&#39;</span>
+<span class="p">}</span>
 </pre></div>
 
      </div>
@@ -14967,69 +14750,6 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="c1">#TODO move this back to 2021 notebook</span>
-<span class="c1"># check if there are columns that need to be aded to the naming dictionaries:</span>
-<span class="k">def</span> <span class="nf">find_unrecognized_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">dct</span><span class="p">):</span> 
-    <span class="n">keys_and_vals</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dct</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-    <span class="n">keys_and_vals</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dct</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
-    <span class="n">keys_and_vals</span>
-    <span class="k">return</span><span class="p">([</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">e</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys_and_vals</span><span class="p">])</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">(</span><span class="n">find_unrecognized_columns</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">meta</span><span class="p">,</span> <span class="n">dct</span> <span class="o">=</span> <span class="n">meta_name_dict</span><span class="p">),</span>
-<span class="n">find_unrecognized_columns</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">phno</span><span class="p">,</span> <span class="n">dct</span> <span class="o">=</span> <span class="n">phno_name_dict</span><span class="p">),</span>
-<span class="n">find_unrecognized_columns</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">soil</span><span class="p">,</span> <span class="n">dct</span> <span class="o">=</span> <span class="n">soil_name_dict</span><span class="p">),</span>
-<span class="n">find_unrecognized_columns</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">,</span> <span class="n">dct</span> <span class="o">=</span> <span class="n">wthr_name_dict</span><span class="p">),</span>
-<span class="n">find_unrecognized_columns</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> <span class="n">dct</span> <span class="o">=</span> <span class="n">mgmt_name_dict</span><span class="p">))</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>([], [], [], [], [])</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">meta_name_dict</span><span class="p">)</span>
 <span class="n">phno</span> <span class="o">=</span> <span class="n">phno</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">phno_name_dict</span><span class="p">)</span>
 <span class="n">soil</span> <span class="o">=</span> <span class="n">soil</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">soil_name_dict</span><span class="p">)</span>
@@ -15049,60 +14769,13 @@ a.anchor-link {
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="n">meta</span><span class="p">,</span> <span class="n">phno</span><span class="p">,</span> <span class="n">soil</span><span class="p">,</span> <span class="n">wthr</span><span class="p">,</span> <span class="n">mgmt</span><span class="p">]]</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>[(27, 55), (20574, 41), (22, 30), (172618, 23), (196, 7)]</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="k">def</span> <span class="nf">list_known_experiments</span><span class="p">():</span>
-    <span class="s1">&#39;Provides a list of the experiments expected for use in `find_unrecognized_experiments`&#39;</span>
-    <span class="n">known_exps</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;COH1&#39;</span><span class="p">,</span> <span class="s1">&#39;DEH1&#39;</span><span class="p">,</span> <span class="s1">&#39;GAH1&#39;</span><span class="p">,</span> <span class="s1">&#39;GAH2&#39;</span><span class="p">,</span> <span class="s1">&#39;GEH1&#39;</span><span class="p">,</span> <span class="s1">&#39;IAH1&#39;</span><span class="p">,</span> <span class="s1">&#39;IAH2&#39;</span><span class="p">,</span> <span class="s1">&#39;IAH3&#39;</span><span class="p">,</span> <span class="s1">&#39;IAH4&#39;</span><span class="p">,</span> <span class="s1">&#39;ILH1&#39;</span><span class="p">,</span> <span class="s1">&#39;INH1&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;MIH1&#39;</span><span class="p">,</span> <span class="s1">&#39;MNH1&#39;</span><span class="p">,</span> <span class="s1">&#39;NCH1&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH1&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH2&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH3&#39;</span><span class="p">,</span> <span class="s1">&#39;NYH2&#39;</span><span class="p">,</span> <span class="s1">&#39;NYH3&#39;</span><span class="p">,</span> <span class="s1">&#39;NYS1&#39;</span><span class="p">,</span> <span class="s1">&#39;SCH1&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH1&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;TXH2&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH3&#39;</span><span class="p">,</span> <span class="s1">&#39;WIH1&#39;</span><span class="p">,</span> <span class="s1">&#39;WIH2&#39;</span><span class="p">,</span> <span class="s1">&#39;WIH3&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;MOH1&#39;</span><span class="p">,</span> <span class="s1">&#39;OHH1&#39;</span> <span class="c1"># 2020</span>
-                 <span class="p">]</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">known_exps</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="n">meta</span><span class="p">,</span> <span class="n">phno</span><span class="p">,</span> <span class="n">soil</span><span class="p">,</span> <span class="n">wthr</span><span class="p">,</span> <span class="n">mgmt</span><span class="p">]]</span>
 </pre></div>
 
      </div>
@@ -15118,10 +14791,8 @@ a.anchor-link {
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
 <span class="c1"># check Experiment_Code columns for any unexpected columns</span>
-<span class="k">def</span> <span class="nf">find_unrecognized_experiments</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> 
-                                  <span class="n">known_exps</span> <span class="o">=</span> <span class="n">list_known_experiments</span><span class="p">(),</span> <span class="c1"># Either a list of Experiment_Code s or a list of all provided by the default</span>
-                                  <span class="n">return_all_exps</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="c1">#     known_exps = [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&#39;, &#39;IAH1&#39;, &#39;IAH2&#39;, &#39;IAH3&#39;, &#39;IAH4&#39;, &#39;ILH1&#39;, &#39;INH1&#39;, &#39;MIH1&#39;, &#39;MNH1&#39;, &#39;NCH1&#39;, &#39;NEH1&#39;, &#39;NEH2&#39;, &#39;NEH3&#39;, &#39;NYH2&#39;, &#39;NYH3&#39;, &#39;NYS1&#39;, &#39;SCH1&#39;, &#39;TXH1&#39;, &#39;TXH2&#39;, &#39;TXH3&#39;, &#39;WIH1&#39;, &#39;WIH2&#39;, &#39;WIH3&#39;]</span>
+<span class="k">def</span> <span class="nf">find_unrecognized_experiments</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">return_all_exps</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="n">known_exps</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;COH1&#39;</span><span class="p">,</span> <span class="s1">&#39;DEH1&#39;</span><span class="p">,</span> <span class="s1">&#39;GAH1&#39;</span><span class="p">,</span> <span class="s1">&#39;GAH2&#39;</span><span class="p">,</span> <span class="s1">&#39;GEH1&#39;</span><span class="p">,</span> <span class="s1">&#39;IAH1&#39;</span><span class="p">,</span> <span class="s1">&#39;IAH2&#39;</span><span class="p">,</span> <span class="s1">&#39;IAH3&#39;</span><span class="p">,</span> <span class="s1">&#39;IAH4&#39;</span><span class="p">,</span> <span class="s1">&#39;ILH1&#39;</span><span class="p">,</span> <span class="s1">&#39;INH1&#39;</span><span class="p">,</span> <span class="s1">&#39;MIH1&#39;</span><span class="p">,</span> <span class="s1">&#39;MNH1&#39;</span><span class="p">,</span> <span class="s1">&#39;NCH1&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH1&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH2&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH3&#39;</span><span class="p">,</span> <span class="s1">&#39;NYH2&#39;</span><span class="p">,</span> <span class="s1">&#39;NYH3&#39;</span><span class="p">,</span> <span class="s1">&#39;NYS1&#39;</span><span class="p">,</span> <span class="s1">&#39;SCH1&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH1&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH2&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH3&#39;</span><span class="p">,</span> <span class="s1">&#39;WIH1&#39;</span><span class="p">,</span> <span class="s1">&#39;WIH2&#39;</span><span class="p">,</span> <span class="s1">&#39;WIH3&#39;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">return_all_exps</span><span class="p">:</span>
         <span class="n">known_exps</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
         <span class="k">return</span><span class="p">(</span><span class="n">known_exps</span><span class="p">)</span>
@@ -15131,6 +14802,20 @@ a.anchor-link {
         <span class="k">return</span><span class="p">(</span><span class="n">unknown_exps</span><span class="p">)</span>
 
 <span class="c1"># find_unrecognized_experiments(soil.Experiment_Code, print_all_exps=True)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
      </div>
@@ -15212,7 +14897,7 @@ a.anchor-link {
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
@@ -15232,32 +14917,6 @@ a.anchor-link {
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>meta [] 
-phno [] 
-soil [] 
-wthr [] 
-mgmt [] 
-all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&#39;, &#39;IAH1&#39;, &#39;IAH2&#39;, &#39;IAH3&#39;, &#39;IAH4&#39;, &#39;ILH1&#39;, &#39;INH1&#39;, &#39;MIH1&#39;, &#39;MNH1&#39;, &#39;MOH1&#39;, &#39;NCH1&#39;, &#39;NEH1&#39;, &#39;NEH2&#39;, &#39;NEH3&#39;, &#39;NYH2&#39;, &#39;NYH3&#39;, &#39;NYS1&#39;, &#39;OHH1&#39;, &#39;SCH1&#39;, &#39;TXH1&#39;, &#39;TXH2&#39;, &#39;TXH3&#39;, &#39;WIH1&#39;, &#39;WIH2&#39;, &#39;WIH3&#39;]
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
@@ -15436,9 +15095,9 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
 
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="c1"># Make versions of `find_unconvertable_datetimes` for other datatype</span>
 <span class="c1"># make a function to find the unexpected entries so it&#39;s easy to write the santization code</span>
+
 <span class="c1"># in a column, report all the values causing errors OR an index of these values</span>
 <span class="k">def</span> <span class="nf">find_unconvertable_datetimes</span><span class="p">(</span><span class="n">df_col</span><span class="p">,</span> <span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%y&#39;</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="n">datetime_errors</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">df_col</span><span class="p">),</span> <span class="nb">format</span> <span class="o">=</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span>
@@ -15449,49 +15108,19 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
         <span class="c1"># missing values can&#39;t become datetimes so nan is returned if there&#39;s a missing value</span>
         <span class="c1"># This list comprehension removes nan (which is otherwise stubborn to remove) because nan != nan</span>
         <span class="k">return</span><span class="p">([</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">df_col</span><span class="p">[</span><span class="n">datetime_errors</span><span class="p">]))</span> <span class="k">if</span> <span class="n">e</span> <span class="o">==</span> <span class="n">e</span><span class="p">])</span> 
-</pre></div>
 
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="k">def</span> <span class="nf">find_unconvertable_numerics</span><span class="p">(</span><span class="n">df_col</span><span class="p">,</span> <span class="c1"># Dataframe column (e.g. df[&#39;example&#39;]) to be used.</span>
-                                <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># Return an index of unconveratbles or a list of unique values</span>
-                               <span class="p">):</span>
-    <span class="s2">&quot;Find the values or positions of values that cannot be converted to a numeric.&quot;</span>
+    
+<span class="k">def</span> <span class="nf">find_unconvertable_numerics</span><span class="p">(</span><span class="n">df_col</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="n">numeric_errors</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">df_col</span><span class="p">),</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">numeric_errors</span><span class="p">)</span> <span class="c1"># a</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">numeric_errors</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># This is a interesting trick. Python&#39;s nan is not equal to itself.</span>
         <span class="c1"># missing values can&#39;t become datetimes so nan is returned if there&#39;s a missing value</span>
         <span class="c1"># This list comprehension removes nan (which is otherwise stubborn to remove) because nan != nan</span>
-        <span class="k">return</span><span class="p">([</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">df_col</span><span class="p">[</span><span class="n">numeric_errors</span><span class="p">]))</span> <span class="k">if</span> <span class="n">e</span> <span class="o">==</span> <span class="n">e</span><span class="p">])</span> <span class="c1"># b  </span>
-</pre></div>
+        <span class="k">return</span><span class="p">([</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">df_col</span><span class="p">[</span><span class="n">numeric_errors</span><span class="p">]))</span> <span class="k">if</span> <span class="n">e</span> <span class="o">==</span> <span class="n">e</span><span class="p">])</span> 
 
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
+    
 <span class="c1"># generalized version of `sanitize_Experiment_Codes`</span>
 <span class="k">def</span> <span class="nf">sanitize_col</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{},</span> <span class="n">split_renames</span><span class="o">=</span> <span class="p">{}):</span>
     <span class="c1"># simple renames</span>
@@ -15512,22 +15141,8 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
             <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">temp2</span><span class="p">,</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;outer&#39;</span><span class="p">)</span>
 
     <span class="k">return</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</pre></div>
 
-     </div>
-</div>
-</div>
-</div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="c1"># If the Imputation_Notes column doesnt exist, create it. So long as it wouldn&#39;t overwrite any imputation notes move each specified value and replace it with nan.</span>
 <span class="k">def</span> <span class="nf">relocate_to_Imputation_Notes</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">val_list</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Imputation_Notes&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
@@ -15545,40 +15160,14 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
             <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">mask</span><span class="p">),</span> <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">mask</span><span class="p">),</span> <span class="n">col</span><span class="p">]</span>
             <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">mask</span><span class="p">),</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">return</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</pre></div>
 
-     </div>
-</div>
-</div>
-</div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
 
 <span class="c1"># helper function so we can ask for a new column don&#39;t have to worry about overwritting a if it already exists </span>
 <span class="k">def</span> <span class="nf">safe_create_col</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col_name</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">return</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
 
 <span class="c1"># little helper function to make this easier. Make all the columns in a list into dtype string.</span>
 <span class="c1"># require the column to exist to make this safe.</span>
@@ -15588,22 +15177,9 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
     <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ee</span> <span class="k">for</span> <span class="n">ee</span> <span class="ow">in</span> <span class="n">col_list</span> <span class="k">if</span> <span class="n">ee</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]:</span>
         <span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
     <span class="k">return</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</pre></div>
 
-     </div>
-</div>
-</div>
-</div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
 
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="c1"># Ignore columns that don&#39;t exist in the dataframe even if they&#39;re specified in the dict</span>
 <span class="c1"># For testing that sanitization was successful</span>
 <span class="c1"># a function to check the type of each column </span>
@@ -15647,129 +15223,129 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># sval_col_dtypes = {</span>
-<span class="c1">#     &#39;Year&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Experiment_Code&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;State&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;City&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Plot_Length_Unit_Feet&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Plot_Area_Unit_Feet2&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Alley_Length_Unit_Inches&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Row_Spacing_Unit_Inches&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Rows_Per_Plot&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Seeds_Per_Plot&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Experiment&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Source&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Pedigree&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Family&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Tester&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Replicate&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Block&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Plot&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Plot_ID&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Range&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Pass&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Planted_Unit_Datetime&#39;: &#39;datetime64[ns]&#39;, </span>
-<span class="c1">#     &#39;Harvested_Unit_Datetime&#39;: &#39;datetime64[ns]&#39;, </span>
-<span class="c1">#     &#39;Anthesis_Unit_Datetime&#39;: &#39;datetime64[ns]&#39;, </span>
-<span class="c1">#     &#39;Silking_Unit_Datetime&#39;: &#39;datetime64[ns]&#39;, </span>
-<span class="c1">#     &#39;Anthesis_Unit_Days&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Silking_Unit_Days&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Plant_Height_Unit_cm&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Ear_Height_Unit_cm&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Stand_Count_Unit_Number&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Root_Lodging_Unit_Number&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Stalk_Lodging_Unit_Number&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Grain_Moisture_Unit_Percent&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Test_Weight_Unit_lbs&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Plot_Weight_Unit_lbs&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Grain_Yield_Unit_bu_Per_A&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Discarded&#39;: &#39;bool&#39;, </span>
-<span class="c1">#     &#39;Phenotype_Comments&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Filler&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Snap_Unit_Number&#39;: &#39;float64&#39;, </span>
-<span class="c1"># &#39;phno&#39;: &#39;bool&#39;, </span>
-<span class="c1">#     &#39;Grower&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Recieved_Date_Unit_Datetime&#39;: &#39;datetime64[ns]&#39;, </span>
-<span class="c1">#     &#39;Processed_Date_Unit_Datetime&#39;: &#39;datetime64[ns]&#39;, </span>
-<span class="c1">#     &#39;Depth_Unit_UNK&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Soil_1_to_1_Unit_pH&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;WDRF_Buffer_Unit_pH&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Soluable_Salts_Unit_mmho_Per_cm&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Texture_Number&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Organic_Matter_Unit_Percent&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Nitrates_Unit_ppm&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;N_per_Acre_Unit_lbs&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;K_Unit_ppm&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Sulfate_Unit_ppm&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Ca_Unit_ppm&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Mg_Unit_ppm&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Na_Unit_ppm&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Cation_Exchange_Capacity&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;H_Sat_Unit_Percent&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;K_Sat_Unit_Percent&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Ca_Sat_Unit_Percent&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Mg_Sat_Unit_Percent&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Na_Sat_Unit_Percent&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Mehlich_PIII_P_Unit_ppm&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Sand_Unit_Percent&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Silt_Unit_Percent&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Clay_Unit_Percent&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Texture&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Soil_Comments&#39;: &#39;string&#39;, </span>
-<span class="c1"># &#39;soil&#39;: &#39;bool&#39;, </span>
-<span class="c1">#     &#39;Treatment&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Farm&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Field&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Trial_ID&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Soil_Taxonomic_ID&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Serial_Number&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Latitude_Unit_Decimal&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Longitude_Unit_Decimal&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Placed_Unit_Datetime&#39;: &#39;datetime64[ns]&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Removed_Unit_Datetime&#39;: &#39;datetime64[ns]&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_In_Field_Serial_Number&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_In_Field_Latitude_Unit_Decimal&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_In_Field_Longitude_Unit_Decimal&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Previous_Crop&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Pre_Plant_Tillage&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Post_Plant_Tillage&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Planter_Type&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Kernels_Per_Plot&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;System_Determining_Moisture&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Pounds_Needed_Soil_Moisture&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Field_Latitude_BL&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Field_Longitude_BL&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Field_Latitude_BR&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Field_Longitude_BR&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Field_Latitude_TR&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Field_Longitude_TR&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Field_Latitude_TL&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Field_Longitude_TL&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Cardinal_Heading&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Local_Check_Pedigree_1&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Local_Check_Source_1&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Local_Check_Pedigree_2&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Local_Check_Source_2&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Local_Check_Pedigree_3&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Local_Check_Source_3&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Local_Check_Pedigree_4&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Local_Check_Source_4&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Local_Check_Pedigree_5&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Local_Check_Source_5&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Comment_1&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Comment_2&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Comment_3&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Comment_4&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Comment_5&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Comment_6&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Comment_7&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Comment_8&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Comment_9&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Comment_70&#39;: &#39;string&#39;, </span>
-<span class="c1"># &#39;meta&#39;: &#39;bool&#39;,</span>
-<span class="c1">#     &#39;Imputation_Notes&#39;: &#39;string&#39;</span>
-<span class="c1"># }</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sval_col_dtypes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;State&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;City&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Plot_Area_Unit_Feet2&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Rows_Per_Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Seeds_Per_Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Experiment&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Source&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Family&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Tester&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Replicate&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Block&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Plot_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Range&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Pass&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Planted_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Harvested_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Anthesis_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Silking_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Anthesis_Unit_Days&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Silking_Unit_Days&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Plant_Height_Unit_cm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Ear_Height_Unit_cm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Stand_Count_Unit_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Root_Lodging_Unit_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Stalk_Lodging_Unit_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Grain_Moisture_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Test_Weight_Unit_lbs&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Plot_Weight_Unit_lbs&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Grain_Yield_Unit_bu_Per_A&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Discarded&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Phenotype_Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Filler&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Snap_Unit_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;phno&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Grower&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Processed_Date_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Depth_Unit_UNK&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Soil_1_to_1_Unit_pH&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;WDRF_Buffer_Unit_pH&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Soluable_Salts_Unit_mmho_Per_cm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Texture_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Organic_Matter_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Nitrates_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;N_per_Acre_Unit_lbs&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;K_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Sulfate_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Ca_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Mg_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Na_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Cation_Exchange_Capacity&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;H_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;K_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Ca_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Mg_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Na_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Mehlich_PIII_P_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Sand_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Silt_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Clay_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Texture&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Soil_Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;soil&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Treatment&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Farm&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Field&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Trial_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Soil_Taxonomic_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Weather_Station_Serial_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Weather_Station_Latitude_Unit_Decimal&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Weather_Station_Longitude_Unit_Decimal&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Weather_Station_Placed_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Weather_Station_Removed_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Weather_Station_In_Field_Serial_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Weather_Station_In_Field_Latitude_Unit_Decimal&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Weather_Station_In_Field_Longitude_Unit_Decimal&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Previous_Crop&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Pre_Plant_Tillage&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Post_Plant_Tillage&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Planter_Type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Kernels_Per_Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;System_Determining_Moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Field_Latitude_BL&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Field_Longitude_BL&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Field_Latitude_BR&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Field_Longitude_BR&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Field_Latitude_TR&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Field_Longitude_TR&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Field_Latitude_TL&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Field_Longitude_TL&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Cardinal_Heading&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Local_Check_Pedigree_1&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Local_Check_Source_1&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Local_Check_Pedigree_2&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Local_Check_Source_2&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Local_Check_Pedigree_3&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Local_Check_Source_3&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Local_Check_Pedigree_4&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Local_Check_Source_4&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Local_Check_Pedigree_5&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Local_Check_Source_5&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Comment_1&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Comment_2&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Comment_3&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Comment_4&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Comment_5&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Comment_6&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Comment_7&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Comment_8&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Comment_9&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Comment_70&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;meta&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+<span class="p">}</span>
 </pre></div>
 
      </div>
@@ -15783,32 +15359,32 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># wthr_col_dtypes = {</span>
-<span class="c1">#     &#39;Experiment_Code&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_ID&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;NWS_Network&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;NWS_Station&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Datetime&#39;: &#39;datetime64[ns]&#39;, </span>
-<span class="c1">#     &#39;Month&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Day&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Year&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Time&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Temperature_Unit_C&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Dew_Point_Unit_C&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Relative_Humidity_Unit_Percent&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Solar_Radiation_Unit_W_per_m2&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Rainfall_Unit_mm&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Wind_Speed_Unit_m_per_s&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Wind_Direction_Unit_Degrees&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Wind_Gust_Unit_m_per_s&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Soil_Temperature_Unit_C&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Soil_Moisture_Unit_Percent_VWC&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Soil_EC_Unit_mS_per_cm&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;UV_Light_Unit_uM_per_m2s&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;PAR_Unit_uM_per_m2s&#39;: &#39;float64&#39;, </span>
-<span class="c1"># &#39;wthr&#39;: &#39;bool&#39;,</span>
-<span class="c1">#     &#39;Imputation_Notes&#39;: &#39;string&#39;</span>
-<span class="c1"># }</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">wthr_col_dtypes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Weather_Station_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;NWS_Network&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;NWS_Station&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Month&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Day&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Time&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Temperature_Unit_C&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Dew_Point_Unit_C&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Relative_Humidity_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Solar_Radiation_Unit_W_per_m2&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Rainfall_Unit_mm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Wind_Speed_Unit_m_per_s&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Wind_Direction_Unit_Degrees&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Wind_Gust_Unit_m_per_s&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Soil_Temperature_Unit_C&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Soil_Moisture_Unit_Percent_VWC&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Soil_EC_Unit_mS_per_cm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;UV_Light_Unit_uM_per_m2s&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;PAR_Unit_uM_per_m2s&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;wthr&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+<span class="p">}</span>
 </pre></div>
 
      </div>
@@ -15822,232 +15398,21 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt_col_dtypes = {</span>
-<span class="c1">#     &#39;Year&#39;: &#39;string&#39;,   </span>
-<span class="c1">#     &#39;Experiment_Code&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Range&#39;: &#39;string&#39;,</span>
-<span class="c1">#     &#39;Pass&#39;: &#39;string&#39;,</span>
-<span class="c1">#     &#39;Plot&#39;: &#39;string&#39;,</span>
-<span class="c1">#     &#39;Application&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Product&#39;: &#39;string&#39;, </span>
-<span class="c1">#     &#39;Date_Datetime&#39;: &#39;datetime64[ns]&#39;, </span>
-<span class="c1">#     &#39;Amount_Per_Acre&#39;: &#39;float64&#39;, </span>
-<span class="c1">#     &#39;Unit&#39;: &#39;string&#39;, </span>
-<span class="c1"># &#39;mgmt&#39;: &#39;bool&#39;,</span>
-<span class="c1">#     &#39;Imputation_Notes&#39;: &#39;string&#39;,</span>
-<span class="c1">#     &#39;Ingredient&#39;: &#39;string&#39;</span>
-<span class="c1"># }</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="k">def</span> <span class="nf">mk_dtype_dict</span><span class="p">(</span><span class="n">name</span> <span class="c1"># table sval, wthr, or mgmt</span>
-                <span class="p">):</span>
-    <span class="s1">&#39;Easily share dictionaries of expected datatypes of the columns across scripts.&#39;</span>
-    <span class="n">sval_col_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;State&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;City&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Plot_Area_Unit_Feet2&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Rows_Per_Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Seeds_Per_Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Experiment&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Source&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Family&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Tester&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Replicate&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Block&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Plot_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Range&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Pass&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Planted_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Harvested_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Anthesis_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Silking_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Anthesis_Unit_Days&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Silking_Unit_Days&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Plant_Height_Unit_cm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Ear_Height_Unit_cm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Stand_Count_Unit_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Root_Lodging_Unit_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Stalk_Lodging_Unit_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Grain_Moisture_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Test_Weight_Unit_lbs&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Plot_Weight_Unit_lbs&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Grain_Yield_Unit_bu_Per_A&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Discarded&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Phenotype_Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Filler&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Snap_Unit_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;phno&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Grower&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Processed_Date_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Depth_Unit_UNK&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Soil_1_to_1_Unit_pH&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;WDRF_Buffer_Unit_pH&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Soluable_Salts_Unit_mmho_Per_cm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Texture_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Organic_Matter_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Nitrates_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;N_per_Acre_Unit_lbs&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;K_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Sulfate_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Ca_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Mg_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Na_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Cation_Exchange_Capacity&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;H_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;K_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Ca_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Mg_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Na_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Mehlich_PIII_P_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Sand_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Silt_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Clay_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Texture&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Soil_Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;soil&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Treatment&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Farm&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Trial_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Soil_Taxonomic_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_Serial_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_Latitude_Unit_Decimal&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_Longitude_Unit_Decimal&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_Placed_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_Removed_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_In_Field_Serial_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_In_Field_Latitude_Unit_Decimal&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_In_Field_Longitude_Unit_Decimal&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Previous_Crop&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Pre_Plant_Tillage&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Post_Plant_Tillage&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Planter_Type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Kernels_Per_Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;System_Determining_Moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Latitude_BL&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Longitude_BL&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Latitude_BR&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Longitude_BR&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Latitude_TR&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Longitude_TR&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Latitude_TL&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Longitude_TL&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Cardinal_Heading&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Pedigree_1&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Source_1&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Pedigree_2&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Source_2&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Pedigree_3&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Source_3&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Pedigree_4&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Source_4&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Pedigree_5&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Source_5&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_1&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_2&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_3&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_4&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_5&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_6&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_7&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_8&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_9&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_70&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;meta&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
-    <span class="p">}</span>
-
-    <span class="n">wthr_col_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;NWS_Network&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;NWS_Station&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Month&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Day&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Time&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Temperature_Unit_C&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Dew_Point_Unit_C&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Relative_Humidity_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Solar_Radiation_Unit_W_per_m2&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Rainfall_Unit_mm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Wind_Speed_Unit_m_per_s&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Wind_Direction_Unit_Degrees&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Wind_Gust_Unit_m_per_s&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Soil_Temperature_Unit_C&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Soil_Moisture_Unit_Percent_VWC&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Soil_EC_Unit_mS_per_cm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;UV_Light_Unit_uM_per_m2s&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;PAR_Unit_uM_per_m2s&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;wthr&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;CO2_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="c1"># 2020</span>
-    <span class="p">}</span>
-
-    <span class="n">mgmt_col_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>   
-        <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Range&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Pass&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Application&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Product&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Unit&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;mgmt&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Ingredient&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
-    <span class="p">}</span>
-   
-    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;sval&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">sval_col_dtypes</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;wthr&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">wthr_col_dtypes</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;mgmt&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">mgmt_col_dtypes</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Requested name is not defined&#39;</span><span class="p">)</span>
-    
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sval_col_dtypes</span> <span class="o">=</span> <span class="n">mk_dtype_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;sval&#39;</span><span class="p">)</span>
-<span class="n">wthr_col_dtypes</span> <span class="o">=</span> <span class="n">mk_dtype_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;wthr&#39;</span><span class="p">)</span>
-<span class="n">mgmt_col_dtypes</span> <span class="o">=</span> <span class="n">mk_dtype_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mgmt&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt_col_dtypes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>   
+    <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Range&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Pass&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Application&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Product&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Unit&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+<span class="s1">&#39;mgmt&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Ingredient&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+<span class="p">}</span>
 </pre></div>
 
      </div>
@@ -16214,7 +15579,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Check-Success">Check Success<a class="anchor-link" href="#Check-Success">&#182;</a></h3>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
@@ -16234,27 +15599,6 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>120/120 Columns pass.
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -16339,7 +15683,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Check-Success">Check Success<a class="anchor-link" href="#Check-Success">&#182;</a></h3>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
@@ -16356,27 +15700,6 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>23/23 Columns pass.
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -16602,7 +15925,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Check-Success">Check Success<a class="anchor-link" href="#Check-Success">&#182;</a></h3>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
@@ -16614,158 +15937,6 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>13/13 Columns pass.
-</pre>
-</div>
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Column</th>
-      <th>dtype</th>
-      <th>Expected_dtype</th>
-      <th>Pass</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>Year</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Experiment_Code</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Range</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>Pass</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Plot</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>Application</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>Product</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>Date_Datetime</td>
-      <td>datetime64[ns]</td>
-      <td>datetime64[ns]</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>Amount_Per_Acre</td>
-      <td>float64</td>
-      <td>float64</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>Unit</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>mgmt</td>
-      <td>bool</td>
-      <td>bool</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>Imputation_Notes</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>Ingredient</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -16780,7 +15951,6 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
 <span class="k">def</span> <span class="nf">write_out_pkl</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./temp.pickle&#39;</span><span class="p">):</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
         <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">handle</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>   

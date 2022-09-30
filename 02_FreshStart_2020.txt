@@ -1,0 +1,588 @@
+# Imports ----
+import re
+import numpy as np 
+import pandas as pd
+pd.set_option('display.max_columns', None)
+# from datetime import date, timedelta
+import pickle
+
+from g2fd.internal import *
+
+#| default_exp internal
+
+# 2020
+year_string = '2020'
+
+meta_path = './data/raw/GenomesToFields_G2F_data_2020/z._2020_supplemental_info/g2f_2020_field_metadata.csv'
+phno_path = './data/raw/GenomesToFields_G2F_data_2020/a._2020_phenotypic_data/g2f_2020_phenotypic_clean_data.csv' 
+wthr_path = './data/raw/GenomesToFields_G2F_data_2020/b._2020_weather_data/2020_weather_cleaned.csv'
+soil_path = './data/raw/GenomesToFields_G2F_data_2020/c._2020_soil_data/g2f_2020_soil_data.csv'
+mgmt_path = './data/raw/GenomesToFields_G2F_data_2020/z._2020_supplemental_info/g2f_2020_agronomic_information.csv'
+
+meta = pd.read_csv(meta_path, encoding = "ISO-8859-1", low_memory=False)
+phno = pd.read_csv(phno_path, encoding = "ISO-8859-1", low_memory=False)
+wthr = pd.read_csv(wthr_path, encoding = "ISO-8859-1", low_memory=False)
+soil = pd.read_csv(soil_path, encoding = "ISO-8859-1", low_memory=False)
+mgmt = pd.read_csv(mgmt_path, encoding = "ISO-8859-1", low_memory=False)
+
+# load dicts for column renaming
+meta_name_dict = mk_name_dict(name = 'meta')
+phno_name_dict = mk_name_dict(name = 'phno')
+soil_name_dict = mk_name_dict(name = 'soil')
+wthr_name_dict = mk_name_dict(name = 'wthr')
+mgmt_name_dict = mk_name_dict(name = 'mgmt')
+
+# match_df_cols(df1 = meta, df2 = soil)
+# set(meta.Experiment_Code), set(soil.Location)
+
+
+
+# #TODO move this back to 2021 notebook
+# # check if there are columns that need to be aded to the naming dictionaries:
+# def find_unrecognized_columns(df, dct): 
+#     keys_and_vals = list(dct.keys())
+#     keys_and_vals.extend(list(dct.values()))
+#     keys_and_vals
+#     return([e for e in df.columns if e not in keys_and_vals])
+
+# (find_unrecognized_columns(df = meta, dct = meta_name_dict),
+# find_unrecognized_columns(df = phno, dct = phno_name_dict),
+# find_unrecognized_columns(df = soil, dct = soil_name_dict),
+# find_unrecognized_columns(df = wthr, dct = wthr_name_dict),
+# find_unrecognized_columns(df = mgmt, dct = mgmt_name_dict))
+
+
+
+meta = meta.rename(columns=meta_name_dict)
+phno = phno.rename(columns=phno_name_dict)
+soil = soil.rename(columns=soil_name_dict)
+wthr = wthr.rename(columns=wthr_name_dict)
+mgmt = mgmt.rename(columns=mgmt_name_dict)
+
+# add indicator columns to help with debugging merge
+meta['meta'] = True
+phno['phno'] = True
+soil['soil'] = True
+wthr['wthr'] = True
+mgmt['mgmt'] = True
+
+[e.shape for e in [meta, phno, soil, wthr, mgmt]]
+
+# TODO replace in `g2fd.internal`
+# check Experiment_Code columns for any unexpected columns
+# def find_unrecognized_experiments(column, return_all_exps = False):
+#     known_exps = [
+#         'COH1', 'DEH1', 'GAH1', 'GAH2', 'GEH1', 'IAH1', 'IAH2', 'IAH3', 'IAH4', 'ILH1', 'INH1', 
+#         'MIH1', 'MNH1', 'NCH1', 'NEH1', 'NEH2', 'NEH3', 'NYH2', 'NYH3', 'NYS1', 'SCH1', 'TXH1', 
+#         'TXH2', 'TXH3', 'WIH1', 'WIH2', 'WIH3',
+#         'MOH1', 'OHH1' # 2020
+#                  ]
+#     if return_all_exps:
+#         known_exps.sort()
+#         return(known_exps)
+#     else:
+#         unknown_exps = [str(e) for e in list(set(column)) if e not in known_exps]
+#         unknown_exps.sort()
+#         return(unknown_exps)
+
+# find_unrecognized_experiments(soil.Experiment_Code, print_all_exps=True)
+
+
+
+
+
+
+wthr = sanitize_Experiment_Codes(
+    df = wthr, 
+    simple_renames = {
+    }, 
+    split_renames = {
+        'NYH3_NYS1': ['NYS1', 'NYH3'],
+        'TXH1_TXH3': ['TXH1', 'TXH3']
+    })
+
+# for some reason there are 2227 empty rows included...
+wthr = wthr.loc[wthr.Experiment_Code.notna(), ]
+
+# confirm everything's okay
+print(
+  'meta', find_unrecognized_experiments(meta.Experiment_Code, return_all_exps=False), 
+'\nphno', find_unrecognized_experiments(phno.Experiment_Code, return_all_exps=False),
+'\nsoil', find_unrecognized_experiments(soil.Experiment_Code, return_all_exps=False),
+'\nwthr', find_unrecognized_experiments(wthr.Experiment_Code, return_all_exps=False),
+'\nmgmt', find_unrecognized_experiments(mgmt.Experiment_Code, return_all_exps=False),
+'\nall ', find_unrecognized_experiments([], return_all_exps=True)
+)  
+
+
+
+
+# # Independent variables
+# ## Constant in season
+
+
+# ## Variable over season
+
+
+# # Dependent variables
+# # phno
+# # Key indexing variables
+# 'Year', 'Experiment_Code', 'Range', 'Pass', 'Plot', 
+# # Location
+# 'State', 'City', 'Block', 'Plot_ID', 'Replicate',
+# # Treatment/mgmt info
+# 'Experiment', 
+# 'Plot_Length_Unit_Feet', 'Plot_Area_Unit_Feet2', 'Alley_Length_Unit_Inches',
+# 'Row_Spacing_Unit_Inches', 'Rows_Per_Plot', 'Seeds_Per_Plot',
+# # Genetic info
+# 'Source', 'Pedigree', 'Family', 'Tester', 
+# 'Filler',
+# # Plot info
+# 'Discarded',
+# 'Comments',  
+# # Response variables
+# 'Planted_Unit_Datetime',
+# 'Harvested_Unit_Datetime', 
+# 'Anthesis_Unit_Datetime', 'Silking_Unit_Datetime',
+# 'Anthesis_Unit_Days', 'Silking_Unit_Days', 'Plant_Height_Unit_cm',
+# 'Ear_Height_Unit_cm', 'Stand_Count_Unit_Number',
+# 'Root_Lodging_Unit_Number', 'Stalk_Lodging_Unit_Number',
+# 'Grain_Moisture_Unit_Percent', 'Test_Weight_Unit_lbs',
+# 'Plot_Weight_Unit_lbs', 'Grain_Yield_Unit_bu_Per_A', 
+# 'Snap_Unit_Number'
+
+# # Find minimum cols needed to index all rows
+# df = phno
+# id_cols = ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot',]
+# candidate_cols = ['State', 'City',
+#                  'Experiment', 'Source', 'Pedigree', 'Family', 'Tester', 'Replicate',
+#                   'Block',  'Plot_ID']
+# target = df.shape[0]
+
+# output = pd.DataFrame(zip(
+#     candidate_cols,
+#     [df.loc[:, id_cols+[e]].drop_duplicates().shape[0] for e in candidate_cols]
+#    ), columns=['Additional_ID', 'Uniq_Vals'])
+
+# output.assign(At_Target=lambda x:x.Uniq_Vals == target)
+
+
+
+# separate static and dynamic values
+sval = phno.merge(soil, how = 'outer')
+sval = sval.merge(meta, how = 'outer') # This introduces 3 sites that have no data
+# sval.shape # used to confirm nrow = #20574 + 3
+
+# these tables are different enought we'll keep them separate
+# mgmt
+# unfortunately we need multiples because at least one field treats different passes differently
+mgmt = phno.loc[:, ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot', 'phno']
+               ].drop_duplicates().merge(mgmt, how = 'outer')
+# confirm there are no rows in mgmt that are not in phno
+temp = mgmt.loc[(~mgmt.phno & mgmt.mgmt), :]
+if 0 != temp.shape[0]:
+    print(temp)
+else:
+    mgmt = mgmt.loc[mgmt.mgmt.notna(), :].drop(columns = 'phno')
+
+
+# wthr
+# There's only ever one weather station so we have to worry about imputation but not duplicates
+
+# Set each id col to a string
+for i in ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot']:
+    sval[i] = sval[i].astype('string')
+    mgmt[i]  =  mgmt[i].astype('string')
+    
+    if i not in ['Range', 'Pass', 'Plot']:
+        wthr[i]  =  wthr[i].astype('string')
+
+# sval_col_dtypes = {
+#     'Year': 'string', 
+#     'Experiment_Code': 'string', 
+#     'State': 'string', 
+#     'City': 'string', 
+#     'Plot_Length_Unit_Feet': 'float64', 
+#     'Plot_Area_Unit_Feet2': 'float64', 
+#     'Alley_Length_Unit_Inches': 'float64', 
+#     'Row_Spacing_Unit_Inches': 'float64', 
+#     'Rows_Per_Plot': 'float64', 
+#     'Seeds_Per_Plot': 'float64', 
+#     'Experiment': 'string', 
+#     'Source': 'string', 
+#     'Pedigree': 'string', 
+#     'Family': 'string', 
+#     'Tester': 'string', 
+#     'Replicate': 'string', 
+#     'Block': 'string', 
+#     'Plot': 'string', 
+#     'Plot_ID': 'string', 
+#     'Range': 'string', 
+#     'Pass': 'string', 
+#     'Planted_Unit_Datetime': 'datetime64[ns]', 
+#     'Harvested_Unit_Datetime': 'datetime64[ns]', 
+#     'Anthesis_Unit_Datetime': 'datetime64[ns]', 
+#     'Silking_Unit_Datetime': 'datetime64[ns]', 
+#     'Anthesis_Unit_Days': 'float64', 
+#     'Silking_Unit_Days': 'float64', 
+#     'Plant_Height_Unit_cm': 'float64', 
+#     'Ear_Height_Unit_cm': 'float64', 
+#     'Stand_Count_Unit_Number': 'float64', 
+#     'Root_Lodging_Unit_Number': 'float64', 
+#     'Stalk_Lodging_Unit_Number': 'float64', 
+#     'Grain_Moisture_Unit_Percent': 'float64', 
+#     'Test_Weight_Unit_lbs': 'float64', 
+#     'Plot_Weight_Unit_lbs': 'float64', 
+#     'Grain_Yield_Unit_bu_Per_A': 'float64', 
+#     'Discarded': 'bool', 
+#     'Phenotype_Comments': 'string', 
+#     'Filler': 'string', 
+#     'Snap_Unit_Number': 'float64', 
+# 'phno': 'bool', 
+#     'Grower': 'string', 
+#     'Recieved_Date_Unit_Datetime': 'datetime64[ns]', 
+#     'Processed_Date_Unit_Datetime': 'datetime64[ns]', 
+#     'Depth_Unit_UNK': 'float64', 
+#     'Soil_1_to_1_Unit_pH': 'float64', 
+#     'WDRF_Buffer_Unit_pH': 'float64', 
+#     'Soluable_Salts_Unit_mmho_Per_cm': 'float64', 
+#     'Texture_Number': 'float64', 
+#     'Organic_Matter_Unit_Percent': 'float64', 
+#     'Nitrates_Unit_ppm': 'float64', 
+#     'N_per_Acre_Unit_lbs': 'float64', 
+#     'K_Unit_ppm': 'float64', 
+#     'Sulfate_Unit_ppm': 'float64', 
+#     'Ca_Unit_ppm': 'float64', 
+#     'Mg_Unit_ppm': 'float64', 
+#     'Na_Unit_ppm': 'float64', 
+#     'Cation_Exchange_Capacity': 'float64', 
+#     'H_Sat_Unit_Percent': 'float64', 
+#     'K_Sat_Unit_Percent': 'float64', 
+#     'Ca_Sat_Unit_Percent': 'float64', 
+#     'Mg_Sat_Unit_Percent': 'float64', 
+#     'Na_Sat_Unit_Percent': 'float64', 
+#     'Mehlich_PIII_P_Unit_ppm': 'float64', 
+#     'Sand_Unit_Percent': 'float64', 
+#     'Silt_Unit_Percent': 'float64', 
+#     'Clay_Unit_Percent': 'float64', 
+#     'Texture': 'string', 
+#     'Soil_Comments': 'string', 
+# 'soil': 'bool', 
+#     'Treatment': 'string', 
+#     'Farm': 'string', 
+#     'Field': 'string', 
+#     'Trial_ID': 'string', 
+#     'Soil_Taxonomic_ID': 'string', 
+#     'Weather_Station_Serial_Number': 'string', 
+#     'Weather_Station_Latitude_Unit_Decimal': 'float64', 
+#     'Weather_Station_Longitude_Unit_Decimal': 'float64', 
+#     'Weather_Station_Placed_Unit_Datetime': 'datetime64[ns]', 
+#     'Weather_Station_Removed_Unit_Datetime': 'datetime64[ns]', 
+#     'Weather_Station_In_Field_Serial_Number': 'string', 
+#     'Weather_Station_In_Field_Latitude_Unit_Decimal': 'float64', 
+#     'Weather_Station_In_Field_Longitude_Unit_Decimal': 'float64', 
+#     'Previous_Crop': 'string', 
+#     'Pre_Plant_Tillage': 'string', 
+#     'Post_Plant_Tillage': 'string', 
+#     'Planter_Type': 'string', 
+#     'Kernels_Per_Plot': 'float64', 
+#     'System_Determining_Moisture': 'string', 
+#     'Pounds_Needed_Soil_Moisture': 'float64', 
+#     'Field_Latitude_BL': 'float64', 
+#     'Field_Longitude_BL': 'float64', 
+#     'Field_Latitude_BR': 'float64', 
+#     'Field_Longitude_BR': 'float64', 
+#     'Field_Latitude_TR': 'float64', 
+#     'Field_Longitude_TR': 'float64', 
+#     'Field_Latitude_TL': 'float64', 
+#     'Field_Longitude_TL': 'float64', 
+#     'Cardinal_Heading': 'float64', 
+#     'Local_Check_Pedigree_1': 'string', 
+#     'Local_Check_Source_1': 'string', 
+#     'Local_Check_Pedigree_2': 'string', 
+#     'Local_Check_Source_2': 'string', 
+#     'Local_Check_Pedigree_3': 'string', 
+#     'Local_Check_Source_3': 'string', 
+#     'Local_Check_Pedigree_4': 'string', 
+#     'Local_Check_Source_4': 'string', 
+#     'Local_Check_Pedigree_5': 'string', 
+#     'Local_Check_Source_5': 'string', 
+#     'Comment_1': 'string', 
+#     'Comment_2': 'string', 
+#     'Comment_3': 'string', 
+#     'Comment_4': 'string', 
+#     'Comment_5': 'string', 
+#     'Comment_6': 'string', 
+#     'Comment_7': 'string', 
+#     'Comment_8': 'string', 
+#     'Comment_9': 'string', 
+#     'Comment_70': 'string', 
+# 'meta': 'bool',
+#     'Imputation_Notes': 'string'
+# }
+
+# wthr_col_dtypes = {
+#     'Experiment_Code': 'string', 
+#     'Weather_Station_ID': 'string', 
+#     'NWS_Network': 'string', 
+#     'NWS_Station': 'string', 
+#     'Datetime': 'datetime64[ns]', 
+#     'Month': 'string', 
+#     'Day': 'string', 
+#     'Year': 'string', 
+#     'Time': 'string', 
+#     'Temperature_Unit_C': 'float64', 
+#     'Dew_Point_Unit_C': 'float64', 
+#     'Relative_Humidity_Unit_Percent': 'float64', 
+#     'Solar_Radiation_Unit_W_per_m2': 'float64', 
+#     'Rainfall_Unit_mm': 'float64', 
+#     'Wind_Speed_Unit_m_per_s': 'float64', 
+#     'Wind_Direction_Unit_Degrees': 'float64', 
+#     'Wind_Gust_Unit_m_per_s': 'float64', 
+#     'Soil_Temperature_Unit_C': 'float64', 
+#     'Soil_Moisture_Unit_Percent_VWC': 'float64', 
+#     'Soil_EC_Unit_mS_per_cm': 'float64', 
+#     'UV_Light_Unit_uM_per_m2s': 'float64', 
+#     'PAR_Unit_uM_per_m2s': 'float64', 
+# 'wthr': 'bool',
+#     'Imputation_Notes': 'string',
+#     'CO2_Unit_ppm': 'float64'# 2020
+# }
+
+# mgmt_col_dtypes = {
+#     'Year': 'string',   
+#     'Experiment_Code': 'string', 
+#     'Range': 'string',
+#     'Pass': 'string',
+#     'Plot': 'string',
+#     'Application': 'string', 
+#     'Product': 'string', 
+#     'Date_Datetime': 'datetime64[ns]', 
+#     'Amount_Per_Acre': 'float64', 
+#     'Unit': 'string', 
+# 'mgmt': 'bool',
+#     'Imputation_Notes': 'string',
+#     'Ingredient': 'string'
+# }
+
+
+sval_col_dtypes = mk_dtype_dict(name = 'sval')
+wthr_col_dtypes = mk_dtype_dict(name = 'wthr')
+mgmt_col_dtypes = mk_dtype_dict(name = 'mgmt')
+
+
+
+# convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.
+
+for e in ['Planted_Unit_Datetime', 
+    'Harvested_Unit_Datetime', 
+    'Anthesis_Unit_Datetime', 
+    'Silking_Unit_Datetime', 
+    'Recieved_Date_Unit_Datetime', 
+    'Processed_Date_Unit_Datetime', 
+    'Weather_Station_Placed_Unit_Datetime', 
+    'Weather_Station_Removed_Unit_Datetime'
+    ]:
+
+    sval['Datetime_Temp'] = pd.to_datetime(np.nan)
+
+    for code in list(sval.Experiment_Code.drop_duplicates()):
+    # code = list(sval.Experiment_Code.drop_duplicates())[0]
+        sval.loc[sval.Experiment_Code == code, 'Datetime_Temp'
+                 ] = pd.to_datetime(sval.loc[sval.Experiment_Code == code, e])
+
+    sval.loc[:, e] = sval.loc[:, 'Datetime_Temp'] 
+
+sval = sval.drop(columns = 'Datetime_Temp')
+
+
+
+# convert types
+for e in ['Alley_Length_Unit_Inches', 'Row_Spacing_Unit_Inches', 'Pounds_Needed_Soil_Moisture',
+         'Anthesis_Unit_Days', 'Silking_Unit_Days', 'Kernels_Per_Plot']:
+    err_list = find_unconvertable_numerics(df_col = sval[e], index = False)
+    if err_list != []:
+        print(e)
+        print(err_list)
+    else:
+        sval[e] = sval[e].astype('float')
+
+# to bool
+sval = sanitize_col(
+    df = sval, 
+    col = 'Discarded', 
+    simple_renames= {
+        'Yes':'True',
+        'yes':'True'}, 
+    split_renames= {})
+
+# set missing to false
+sval.loc[sval.Discarded.isna(), 'Discarded'] = 'False'
+sval.Discarded = sval.Discarded.map({'True': True, 'False': False})
+
+# to bool
+sval['phno'] = sval['phno'].astype('bool')
+sval['soil'] = sval['soil'].astype('bool')
+sval['meta'] = sval['meta'].astype('bool')
+
+# to string
+sval = cols_astype_string(
+    df = sval, 
+    col_list = [key for key in sval_col_dtypes.keys() if sval_col_dtypes[key] == 'string'])
+
+sval.Year = year_string
+sval.Year = sval.Year.astype('string')
+
+checkpoint = check_df_dtype_expectations(df = sval, dtype_dct = sval_col_dtypes)
+
+if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
+    pass
+else:
+    print(checkpoint.loc[~checkpoint.Pass, ]) #TODO add to template
+    print()
+
+# checkpoint.loc[~checkpoint.Pass, ]
+
+# 183 records from MNH1 are missing a value for time. 
+# These are not useful since we don't know if the values are daily averages or taken at a specific timepoint.
+wthr = wthr.loc[wthr.Time.notna(), :]
+
+# unfortunately these missing values also force ints (e.g. days) to be floats
+wthr.Year = wthr.Year.astype(float).astype(int).astype('string')
+wthr.Month = wthr.Month.astype(float).astype(int).astype('string')
+wthr.Day = wthr.Day.astype(float).astype(int).astype('string')
+
+# instead of writing regexes to figure out the mose likely format for each datetime, we assume each experiment will be consistent withing that experiment
+# and let pd figure it out.
+# wthr['Datetime_Temp'] = pd.to_datetime(np.nan)
+
+# for code in list(wthr.loc[:, 'Experiment_Code'].drop_duplicates()):
+#     wthr.loc[wthr.Experiment_Code == code, 'Datetime_Temp'] = pd.to_datetime(wthr.loc[wthr.Experiment_Code == code, 'Datetime'], errors='coerce')
+
+
+# ... or we use the fields in the df to make a consistent format
+wthr = cols_astype_string(
+    df = wthr, 
+    col_list = ['Year', 'Month', 'Day', 'Time'])
+
+wthr = sanitize_col(
+    df = wthr,
+    col = 'Time', 
+    simple_renames= {}, 
+    split_renames= {})
+
+wthr['Datetime_Temp'] = wthr['Year']+'-'+wthr['Month']+'-'+wthr['Day']+' '+wthr['Time']
+
+# convert types
+err_list = find_unconvertable_datetimes(df_col=wthr['Datetime_Temp'], pattern='%Y-%m-%d %H:%M', index=False)
+if err_list != []:
+    print(err_list)
+else:
+    wthr.Datetime_Temp = pd.to_datetime(pd.Series(wthr.Datetime_Temp), errors='coerce')
+    wthr.Datetime = wthr.Datetime_Temp
+    wthr = wthr.drop(columns= 'Datetime_Temp')
+
+# to string
+wthr = cols_astype_string(
+    df = wthr, 
+    col_list = [key for key in wthr_col_dtypes.keys() if wthr_col_dtypes[key] == 'string'])
+
+wthr.Year = year_string
+wthr.Year = wthr.Year.astype('string')
+
+checkpoint = check_df_dtype_expectations(df = wthr, dtype_dct = wthr_col_dtypes)
+
+if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
+    pass
+else:
+    print(checkpoint.loc[~checkpoint.Pass, ])
+
+mgmt = relocate_to_Imputation_Notes(df = mgmt, col = 'Date_Datetime', val_list= ['fall 2019'])
+
+# mgmt = sanitize_col(
+#     df = mgmt, 
+#     col = 'Date_Datetime', 
+#     simple_renames= {}, 
+#     split_renames= {'6/24/21 for all but plots in pass 2; 7/5/21 for pass 2' : [
+#                         '6/24/21 for all but plots in pass 2', '7/5/21 for pass 2']})
+
+# # make corrections too one-off to fix with a funciton. 
+# mask = ((mgmt.Date_Datetime == '6/24/21 for all but plots in pass 2') & (mgmt.Pass != 2.))
+# mgmt.loc[mask, 'Date_Datetime'] = '6/24/21'
+# # since we split without specifiying pass we need to remove any rows that still have the search string.
+# # and overwrite the df
+# mask = (mgmt.Date_Datetime == '6/24/21 for all but plots in pass 2')
+# mgmt = mgmt.loc[~mask, :].copy()
+
+# mask = ((mgmt.Date_Datetime == '7/5/21 for pass 2') & (mgmt.Pass == 2.))
+# mgmt.loc[mask, 'Date_Datetime'] = '7/5/21'
+# mask = (mgmt.Date_Datetime == '7/5/21 for pass 2')
+# mgmt = mgmt.loc[~mask, :].copy()
+
+# convert types
+err_list = find_unconvertable_datetimes(df_col=mgmt.Date_Datetime, pattern='%m/%d/%y', index=False)
+if err_list != []:
+    print(err_list)
+else:
+    mgmt.Date_Datetime = pd.to_datetime(pd.Series(mgmt.Date_Datetime), format = '%m/%d/%y', errors='coerce')
+
+mgmt = relocate_to_Imputation_Notes(df = mgmt, col = 'Amount_Per_Acre', val_list= ['variable rate according to soil sample'])
+
+# mgmt.loc[find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = True), ]
+
+mgmt.loc[mgmt.Amount_Per_Acre == '2 qts', :]
+
+mask = (mgmt.Amount_Per_Acre == '2 qts')
+mgmt.loc[mask, 'Unit'] = 'qts'
+mgmt.loc[mask, 'Amount_Per_Acre'] = '2'
+
+mask = (mgmt.Amount_Per_Acre == '1.5 qts')
+mgmt.loc[mask, 'Unit'] = 'qts'
+mgmt.loc[mask, 'Amount_Per_Acre'] = '1.5'
+
+# mgmt = sanitize_col(
+#     df = mgmt, 
+#     col = 'Amount_Per_Acre', 
+#     simple_renames= {'170 lb (actual N)': '170 (N)'}, 
+#     split_renames= {'51.75, 40.7, 111.7 (N,P,K)': ['51.75 (N)', '40.7 (P)', '111.7 (K)'],
+#                     '31-150-138': ['31 (N)', '150 (P)', '138 (K)'],
+#                     '16 (N), 41 (P)': ['16 (N)', '41 (P)']})
+
+# mgmt = safe_create_col(mgmt, "Ingredient")
+# mask = mgmt.Ingredient.isna()
+# mgmt.loc[mask, 'Ingredient'] = mgmt.loc[mask, 'Product']
+
+# # assume each string is formated as 'val (key)'. `sanitize_col` should be used to enforce this.
+# for e in ['150 (P)', '36.6 (N)', '138 (K)', '111.7 (K)', '41 (P)', '16 (N)', '170 (N)', '35.7 (N)', '51.75 (N)', '31 (N)', '40.7 (P)']:
+#     val = re.findall('^\d+[.]*\d*', e)[0]
+#     key = re.findall('\(.+\)',      e)[0].replace('(', '').replace(')', '')
+    
+#     mask = (mgmt['Amount_Per_Acre'] == e)
+#     mgmt.loc[mask, 'Ingredient'] = key
+#     mgmt.loc[mask, 'Amount_Per_Acre'] = val
+
+# convert types
+err_list = find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = False)
+if err_list != []:
+    print(err_list)
+else:
+    mgmt.Amount_Per_Acre = pd.to_numeric(mgmt.Amount_Per_Acre, errors='coerce')
+
+# list(mgmt.loc[:, 'Ingredient'].drop_duplicates())
+
+# to bool
+mgmt['mgmt'] = mgmt['mgmt'].astype('bool')
+
+# to string
+for e in [ee for ee in ['Application', 'Product', 'Ingredient', 'Unit', 'Imputation_Notes'] if ee in mgmt.columns]:
+    mgmt[e] = mgmt[e].astype('string')
+    
+
+mgmt.Year = year_string
+mgmt.Year = mgmt.Year.astype('string')
+
+check_df_dtype_expectations(df = mgmt, dtype_dct = mgmt_col_dtypes)
+
+write_out_pkl(obj = sval, path = './data/interim/'+year_string+'sval.pickle')
+write_out_pkl(obj = wthr, path = './data/interim/'+year_string+'wthr.pickle')
+write_out_pkl(obj = mgmt, path = './data/interim/'+year_string+'mgmt.pickle')

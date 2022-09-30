@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>02_FreshStart_2021</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>02_FreshStart_2020</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -14259,8 +14259,8 @@ a.anchor-link {
 
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Process-Data-from-2021-into-a-consistent-format.">Process Data from 2021 into a consistent format.<a class="anchor-link" href="#Process-Data-from-2021-into-a-consistent-format.">&#182;</a></h1><blockquote>
-<p>This notebook is the first template for cleaning g2f data. Earlier years will be brought up to the standard naming and format which is based off of 2021's data release.</p>
+<h1 id="Process-Data-from-2020-into-a-consistent-format.">Process Data from 2020 into a consistent format.<a class="anchor-link" href="#Process-Data-from-2020-into-a-consistent-format.">&#182;</a></h1><blockquote>
+<p>This notebook brings the 2020 into alignment with the desired format with respect to field name, type, and grouping.</p>
 </blockquote>
 
 </div>
@@ -14272,18 +14272,11 @@ a.anchor-link {
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Imports ----</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># for np.nan</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-<span class="c1"># import os   # for write_log, delete_logs</span>
-<span class="kn">import</span> <span class="nn">glob</span> <span class="c1"># for delete_all_logs</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">timedelta</span>
-
-<span class="kn">import</span> <span class="nn">json</span> <span class="c1"># for saving a dict to txt with json.dumps</span>
-
+<span class="c1"># from datetime import date, timedelta</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
-<span class="c1"># import matplotlib as mpl</span>
-<span class="c1"># import matplotlib.pyplot as plt</span>
 </pre></div>
 
      </div>
@@ -14325,58 +14318,14 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 2020</span>
+<span class="n">year_string</span> <span class="o">=</span> <span class="s1">&#39;2020&#39;</span>
 
-<span class="c1"># Settings ----</span>
-<span class="c1"># Helper functions,remove if no longer needed</span>
-<span class="k">def</span> <span class="nf">prlst</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span> 
-    <span class="s2">&quot;This is just a helper function to ease formating lists of strings with each entryon a different line.&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">e</span> <span class="o">!=</span> <span class="n">lst</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="o">+</span><span class="n">e</span><span class="o">+</span><span class="s2">&quot;&#39;, &quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="o">+</span><span class="n">e</span><span class="o">+</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">)</span>
-    
-<span class="k">def</span> <span class="nf">prlst2dct</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span> 
-    <span class="s2">&quot;This is just a helper function to ease formating lists of strings with each entryon a different line.&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;{&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">e</span> <span class="o">!=</span> <span class="n">lst</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="o">+</span><span class="n">e</span><span class="o">+</span><span class="s2">&quot;&#39;: &#39;XXXXXXX&#39;, &quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="o">+</span><span class="n">e</span><span class="o">+</span><span class="s2">&quot;&#39;: &#39;XXXXXXX&#39;&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;}&#39;</span><span class="p">)</span>
-    
-<span class="k">def</span> <span class="nf">dash80</span><span class="p">(</span><span class="n">dash</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="p">):</span> <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dash</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">80</span><span class="p">)])</span>
-
-
-<span class="c1"># prlst([])</span>
-<span class="c1"># prlst2dct([])</span>
-<span class="c1"># dash80()</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 2021</span>
-<span class="n">year_string</span> <span class="o">=</span> <span class="s1">&#39;2021&#39;</span>
-
-<span class="n">meta_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2021/z._2021_supplemental_info/g2f_2021_field_metadata.csv&#39;</span>
-<span class="n">phno_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2021/a._2021_phenotypic_data/g2f_2021_phenotypic_clean_data.csv&#39;</span> <span class="c1"># also contains &#39;g2f_2021_phenotypic_raw_data.csv&#39; </span>
-<span class="n">wthr_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2021/b._2021_weather_data/g2f_2021_weather_cleaned.csv&#39;</span>
-<span class="n">soil_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2021/c._2021_soil_data/g2f_2021_soil_data.csv&#39;</span>
-<span class="n">mgmt_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2021/z._2021_supplemental_info/g2f_2021_agronomic_information.csv&#39;</span>
-
+<span class="n">meta_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2020/z._2020_supplemental_info/g2f_2020_field_metadata.csv&#39;</span>
+<span class="n">phno_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2020/a._2020_phenotypic_data/g2f_2020_phenotypic_clean_data.csv&#39;</span> 
+<span class="n">wthr_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2020/b._2020_weather_data/2020_weather_cleaned.csv&#39;</span>
+<span class="n">soil_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2020/c._2020_soil_data/g2f_2020_soil_data.csv&#39;</span>
+<span class="n">mgmt_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2020/z._2020_supplemental_info/g2f_2020_agronomic_information.csv&#39;</span>
 
 <span class="n">meta</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">meta_path</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;ISO-8859-1&quot;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">phno</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">phno_path</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;ISO-8859-1&quot;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -14396,536 +14345,12 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># meta.columns</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="c1"># Helper functions to match up the same data in different dataframes under different columns names</span>
-
-<span class="c1"># make a dictionary of column name : unique values</span>
-<span class="k">def</span> <span class="nf">mk_uniq_val_dict</span><span class="p">(</span><span class="n">df1</span><span class="p">):</span>
-    <span class="n">uniq_val_dict</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">df1_col</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
-        <span class="n">uniq_val_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">df1_col</span><span class="p">:</span><span class="nb">set</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="n">df1_col</span><span class="p">])})</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">uniq_val_dict</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">pr_eq_list</span><span class="p">(</span><span class="n">lst1</span><span class="p">,</span> <span class="n">lst2</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">lst1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">lst2</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">lst1</span><span class="p">)</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">lst2</span><span class="p">))</span>
-
-<span class="c1"># take two dictionaries from `mk_uniq_val_dict` and a key to match, return a df of the n closest matches (based on set of column values)</span>
-<span class="k">def</span> <span class="nf">mk_df_of_n_similar_cols</span><span class="p">(</span><span class="n">dct1</span><span class="p">,</span> <span class="n">key_to_match</span><span class="p">,</span> <span class="n">dct2</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-    <span class="c1"># key_to_match = &#39;Experiment_Code&#39;        </span>
-    <span class="n">lst</span> <span class="o">=</span> <span class="n">dct1</span><span class="p">[</span><span class="n">key_to_match</span><span class="p">]</span>
-    <span class="c1"># dct2 = dict1</span>
-
-    <span class="n">keys</span> <span class="o">=</span> <span class="n">dct2</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-    <span class="n">similarities</span> <span class="o">=</span> <span class="p">[</span><span class="n">pr_eq_list</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">dct2</span><span class="p">[</span><span class="n">e</span><span class="p">])</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">dct2</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
-
-    <span class="n">similarityDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-        <span class="nb">zip</span><span class="p">(</span><span class="n">dct2</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">similarities</span><span class="p">),</span> 
-        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Column2&#39;</span><span class="p">,</span> <span class="s1">&#39;PrMatch&#39;</span><span class="p">]</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;PrMatch&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    
-    <span class="n">output</span> <span class="o">=</span> <span class="n">similarityDf</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-    <span class="n">output</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="s1">&#39;Column1&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">key_to_match</span><span class="p">)</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-
-<span class="c1"># take two dictionaries from `mk_uniq_val_dict` and find the best match for each key in dict1 in dict2. </span>
-<span class="k">def</span> <span class="nf">mk_df_of_most_similar_cols</span><span class="p">(</span><span class="n">dict1</span><span class="p">,</span> <span class="n">dict2</span><span class="p">):</span>
-    <span class="k">return</span><span class="p">(</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span> <span class="p">[</span><span class="n">mk_df_of_n_similar_cols</span><span class="p">(</span><span class="n">dct1</span> <span class="o">=</span> <span class="n">dict1</span><span class="p">,</span> <span class="n">key_to_match</span> <span class="o">=</span> <span class="n">key</span><span class="p">,</span> <span class="n">dct2</span> <span class="o">=</span> <span class="n">dict2</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dict1</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">])</span> <span class="p">)</span>
-
-<span class="c1"># Combine `mk_df_of_most_similar_cols` and `mk_uniq_val_dict` to find the closest matches between two columns in different dfs.</span>
-<span class="c1"># Should be helpful for finding columns with the same data but different names (e.g. Experiment vs Experiment_Code)</span>
-<span class="k">def</span> <span class="nf">match_df_cols</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">):</span>
-    <span class="n">df1_cols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-    <span class="n">df2_cols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-
-    <span class="n">dict1</span> <span class="o">=</span> <span class="n">mk_uniq_val_dict</span><span class="p">(</span><span class="n">df1</span><span class="p">)</span>
-    <span class="n">dict2</span> <span class="o">=</span> <span class="n">mk_uniq_val_dict</span><span class="p">(</span><span class="n">df2</span><span class="p">)</span>
-    
-    <span class="k">return</span><span class="p">(</span><span class="n">mk_df_of_most_similar_cols</span><span class="p">(</span><span class="n">dict1</span><span class="p">,</span> <span class="n">dict2</span><span class="p">))</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># match_df_cols(df1 = meta, df2 = soil)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="k">def</span> <span class="nf">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="c1"># table meta, phno, soil, wthr, or mgmt</span>
-                <span class="p">):</span>
-    <span class="s1">&#39;Easily share dictionaries for renaming columns across scripts.&#39;</span>
-
-<span class="c1">#     meta_name_dict = {</span>
-<span class="c1">#     # &#39;Experiment_Code&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Treatment&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;City&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Farm&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Field&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Trial_ID (Assigned by collaborator for internal reference)&#39;: &#39;Trial_ID&#39;, </span>
-<span class="c1">#     &#39;Soil_Taxonomic_ID and horizon description, if known&#39;: &#39;Soil_Taxonomic_ID&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Serial_Number (Last four digits, e.g. m2700s#####)&#39;: &#39;Weather_Station_Serial_Number&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Latitude (in decimal numbers NOT DMS)&#39;: &#39;Weather_Station_Latitude_Unit_Decimal&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Longitude (in decimal numbers NOT DMS)&#39;: &#39;Weather_Station_Longitude_Unit_Decimal&#39;, </span>
-<span class="c1">#     &#39;Date_weather_station_placed&#39;: &#39;Weather_Station_Placed_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Date_weather_station_removed&#39;: &#39;Weather_Station_Removed_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;In-field weather station serial number&#39;: &#39;Weather_Station_In_Field_Serial_Number&#39;, </span>
-<span class="c1">#     &#39;In-field_weather_station_latitude (in decimal)&#39;: &#39;Weather_Station_In_Field_Latitude_Unit_Decimal&#39;, </span>
-<span class="c1">#     &#39;In-field_weather_station_longitude (in decimal)&#39;: &#39;Weather_Station_In_Field_Longitude_Unit_Decimal&#39;, </span>
-<span class="c1">#     # &#39;Previous_Crop&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Pre-plant_tillage_method(s)&#39;: &#39;Pre_Plant_Tillage&#39;, </span>
-<span class="c1">#     &#39;In-season_tillage_method(s)&#39;: &#39;Post_Plant_Tillage&#39;, </span>
-<span class="c1">#     &#39;Plot_length (center-alley to center-alley in feet)&#39;: &#39;Plot_Length_Unit_Feet&#39;, </span>
-<span class="c1">#     &#39;Alley_length (in inches)&#39;: &#39;Alley_Length_Unit_Inches&#39;, </span>
-<span class="c1">#     &#39;Row_spacing (in inches)&#39;: &#39;Row_Spacing_Unit_Inches&#39;, </span>
-<span class="c1">#     &#39;Type_of_planter (fluted cone; belt cone; air planter)&#39;: &#39;Planter_Type&#39;, </span>
-<span class="c1">#     &#39;Number_kernels_planted_per_plot (&gt;200 seed/pack for cone planters)&#39;: &#39;Kernels_Per_Plot&#39;, </span>
-<span class="c1">#     # &#39;System_Determining_Moisture&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Pounds_Needed_Soil_Moisture&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Latitude_of_Field_Corner_#1 (lower left)&#39;: &#39;Field_Latitude_BL&#39;, </span>
-<span class="c1">#     &#39;Longitude_of_Field_Corner_#1 (lower left)&#39;: &#39;Field_Longitude_BL&#39;, </span>
-<span class="c1">#     &#39;Latitude_of_Field_Corner_#2 (lower right)&#39;: &#39;Field_Latitude_BR&#39;, </span>
-<span class="c1">#     &#39;Longitude_of_Field_Corner_#2 (lower right)&#39;: &#39;Field_Longitude_BR&#39;, </span>
-<span class="c1">#     &#39;Latitude_of_Field_Corner_#3 (upper right)&#39;: &#39;Field_Latitude_TR&#39;, </span>
-<span class="c1">#     &#39;Longitude_of_Field_Corner_#3 (upper right)&#39;: &#39;Field_Longitude_TR&#39;, </span>
-<span class="c1">#     &#39;Latitude_of_Field_Corner_#4 (upper left)&#39;: &#39;Field_Latitude_TL&#39;, </span>
-<span class="c1">#     &#39;Longitude_of_Field_Corner_#4 (upper left)&#39;: &#39;Field_Longitude_TL&#39;, </span>
-<span class="c1">#     &#39;Cardinal_Heading_Pass_1&#39;: &#39;Cardinal_Heading&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#1_Pedigree&#39;: &#39;Local_Check_Pedigree_1&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#1_Source&#39;: &#39;Local_Check_Source_1&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#2_Pedigree&#39;: &#39;Local_Check_Pedigree_2&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#2_Source&#39;: &#39;Local_Check_Source_2&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#3_Pedigree&#39;: &#39;Local_Check_Pedigree_3&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#3_Source&#39;: &#39;Local_Check_Source_3&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#4_Pedigree&#39;: &#39;Local_Check_Pedigree_4&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#4_Source&#39;: &#39;Local_Check_Source_4&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#5_Pedigree&#39;: &#39;Local_Check_Pedigree_5&#39;, </span>
-<span class="c1">#     &#39;Local_Check_#5_Source&#39;: &#39;Local_Check_Source_5&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#1&#39;: &#39;Comment_1&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#2&#39;: &#39;Comment_2&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#3&#39;: &#39;Comment_3&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#4&#39;: &#39;Comment_4&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#5&#39;: &#39;Comment_5&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#6&#39;: &#39;Comment_6&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#7&#39;: &#39;Comment_7&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#8&#39;: &#39;Comment_8&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#9&#39;: &#39;Comment_9&#39;, </span>
-<span class="c1">#     &#39;Issue/comment_#10&#39;: &#39;Comment_70&#39;</span>
-<span class="c1">#     }</span>
-
-<span class="c1">#     phno_name_dict = {</span>
-<span class="c1">#     &#39;Year&#39;: &#39;Year&#39;, </span>
-<span class="c1">#     &#39;Field-Location&#39;: &#39;Experiment_Code&#39;, </span>
-<span class="c1">#     # &#39;State&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;City&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Plot length (center-center in feet)&#39;: &#39;Plot_Length_Unit_Feet&#39;, </span>
-<span class="c1">#     &#39;Plot area (ft2)&#39;: &#39;Plot_Area_Unit_Feet2&#39;, </span>
-<span class="c1">#     &#39;Alley length (in inches)&#39;: &#39;Alley_Length_Unit_Inches&#39;, </span>
-<span class="c1">#     &#39;Row spacing (in inches)&#39;: &#39;Row_Spacing_Unit_Inches&#39;, </span>
-<span class="c1">#     &#39;Rows per plot&#39;: &#39;Rows_Per_Plot&#39;, </span>
-<span class="c1">#     &#39;# Seed per plot&#39;: &#39;Seeds_Per_Plot&#39;, </span>
-<span class="c1">#     # &#39;Experiment&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Source&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Pedigree&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Family&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Tester&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Replicate&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Block&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Plot&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Plot_ID&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Range&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Pass&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Date Plot Planted [MM/DD/YY]&#39;: &#39;Planted_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Date Plot Harvested [MM/DD/YY]&#39;: &#39;Harvested_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Anthesis [MM/DD/YY]&#39;: &#39;Anthesis_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Silking [MM/DD/YY]&#39;: &#39;Silking_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Anthesis [days]&#39;: &#39;Anthesis_Unit_Days&#39;, </span>
-<span class="c1">#     &#39;Silking [days]&#39;: &#39;Silking_Unit_Days&#39;, </span>
-<span class="c1">#     &#39;Plant Height [cm]&#39;: &#39;Plant_Height_Unit_cm&#39;, </span>
-<span class="c1">#     &#39;Ear Height [cm]&#39;: &#39;Ear_Height_Unit_cm&#39;, </span>
-<span class="c1">#     &#39;Stand Count [# of plants]&#39;: &#39;Stand_Count_Unit_Number&#39;, </span>
-<span class="c1">#     &#39;Root Lodging [# of plants]&#39;: &#39;Root_Lodging_Unit_Number&#39;, </span>
-<span class="c1">#     &#39;Stalk Lodging [# of plants]&#39;: &#39;Stalk_Lodging_Unit_Number&#39;, </span>
-<span class="c1">#     &#39;Grain Moisture [%]&#39;: &#39;Grain_Moisture_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;Test Weight [lbs]&#39;: &#39;Test_Weight_Unit_lbs&#39;, </span>
-<span class="c1">#     &#39;Plot Weight [lbs]&#39;: &#39;Plot_Weight_Unit_lbs&#39;, </span>
-<span class="c1">#     &#39;Grain Yield (bu/A)&#39;: &#39;Grain_Yield_Unit_bu_Per_A&#39;, </span>
-<span class="c1">#     &quot;Plot Discarded [enter &#39;yes&#39; or blank]&quot;: &#39;Discarded&#39;, </span>
-<span class="c1">#     &#39;Comments&#39;: &#39;Phenotype_Comments&#39;, </span>
-<span class="c1">#     # &#39;Filler&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Snap [# of plants]&#39;: &#39;Snap_Unit_Number&#39;</span>
-<span class="c1">#     }</span>
-
-<span class="c1">#     soil_name_dict = {</span>
-<span class="c1">#     # &#39;Grower&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Location&#39;: &#39;Experiment_Code&#39;, </span>
-<span class="c1">#     &#39;Date Received&#39;: &#39;Recieved_Date_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Date Reported&#39;: &#39;Processed_Date_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;E Depth&#39;: &#39;Depth_Unit_UNK&#39;, </span>
-<span class="c1">#     &#39;1:1 Soil pH&#39;: &#39;Soil_1_to_1_Unit_pH&#39;, </span>
-<span class="c1">#     &#39;WDRF Buffer pH&#39;: &#39;WDRF_Buffer_Unit_pH&#39;, </span>
-<span class="c1">#     &#39;1:1 S Salts mmho/cm&#39;: &#39;Soluable_Salts_Unit_mmho_Per_cm&#39;, </span>
-<span class="c1">#     &#39;Texture No&#39;: &#39;Texture_Number&#39;, </span>
-<span class="c1">#     &#39;Organic Matter LOI %&#39;: &#39;Organic_Matter_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;Nitrate-N ppm N&#39;: &#39;Nitrates_Unit_ppm&#39;, </span>
-<span class="c1">#     &#39;lbs N/A&#39;: &#39;N_per_Acre_Unit_lbs&#39;, </span>
-<span class="c1">#     &#39;Potassium ppm K&#39;: &#39;K_Unit_ppm&#39;, </span>
-<span class="c1">#     &#39;Sulfate-S ppm S&#39;: &#39;Sulfate_Unit_ppm&#39;, </span>
-<span class="c1">#     &#39;Calcium ppm Ca&#39;: &#39;Ca_Unit_ppm&#39;, </span>
-<span class="c1">#     &#39;Magnesium ppm Mg&#39;: &#39;Mg_Unit_ppm&#39;, </span>
-<span class="c1">#     &#39;Sodium ppm Na&#39;: &#39;Na_Unit_ppm&#39;, </span>
-<span class="c1">#     &#39;CEC/Sum of Cations me/100g&#39;: &#39;Cation_Exchange_Capacity&#39;, </span>
-<span class="c1">#     &#39;%H Sat&#39;: &#39;H_Sat_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;%K Sat&#39;: &#39;K_Sat_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;%Ca Sat&#39;: &#39;Ca_Sat_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;%Mg Sat&#39;: &#39;Mg_Sat_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;%Na Sat&#39;: &#39;Na_Sat_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;Mehlich P-III ppm P&#39;: &#39;Mehlich_PIII_P_Unit_ppm&#39;, </span>
-<span class="c1">#     &#39;% Sand&#39;: &#39;Sand_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;% Silt&#39;: &#39;Silt_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;% Clay&#39;: &#39;Clay_Unit_Percent&#39;, </span>
-<span class="c1">#     # &#39;Texture&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Comments&#39;: &#39;Soil_Comments&#39;</span>
-<span class="c1">#     }</span>
-
-<span class="c1">#     wthr_name_dict = {</span>
-<span class="c1">#     &#39;Field Location&#39;: &#39;Experiment_Code&#39;, </span>
-<span class="c1">#     &#39;Station ID&#39;: &#39;Weather_Station_ID&#39;, </span>
-<span class="c1">#     &#39;NWS Network&#39;: &#39;NWS_Network&#39;, </span>
-<span class="c1">#     &#39;NWS Station&#39;: &#39;NWS_Station&#39;, </span>
-<span class="c1">#     &#39;Date_key&#39;: &#39;Datetime&#39;, </span>
-<span class="c1">#     # &#39;Month&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Day&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Year&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     # &#39;Time&#39;: &#39;XXXXXXX&#39;, </span>
-<span class="c1">#     &#39;Temperature [C]&#39;: &#39;Temperature_Unit_C&#39;, </span>
-<span class="c1">#     &#39;Dew Point [C]&#39;: &#39;Dew_Point_Unit_C&#39;, </span>
-<span class="c1">#     &#39;Relative Humidity [%]&#39;: &#39;Relative_Humidity_Unit_Percent&#39;, </span>
-<span class="c1">#     &#39;Solar Radiation [W/m2]&#39;: &#39;Solar_Radiation_Unit_W_per_m2&#39;, </span>
-<span class="c1">#     &#39;Rainfall [mm]&#39;: &#39;Rainfall_Unit_mm&#39;, </span>
-<span class="c1">#     &#39;Wind Speed [m/s]&#39;: &#39;Wind_Speed_Unit_m_per_s&#39;, </span>
-<span class="c1">#     &#39;Wind Direction [degrees]&#39;: &#39;Wind_Direction_Unit_Degrees&#39;, </span>
-<span class="c1">#     &#39;Wind Gust [m/s]&#39;: &#39;Wind_Gust_Unit_m_per_s&#39;, </span>
-<span class="c1">#     &#39;Soil Temperature [C]&#39;: &#39;Soil_Temperature_Unit_C&#39;, </span>
-<span class="c1">#     &#39;Soil Moisture [%VWC]&#39;: &#39;Soil_Moisture_Unit_Percent_VWC&#39;, </span>
-<span class="c1">#     &#39;Soil EC [mS/cm]&#39;: &#39;Soil_EC_Unit_mS_per_cm&#39;, </span>
-<span class="c1">#     &#39;UV Light [uM/m2s]&#39;: &#39;UV_Light_Unit_uM_per_m2s&#39;, </span>
-<span class="c1">#     &#39;PAR [uM/m2s]&#39;: &#39;PAR_Unit_uM_per_m2s&#39;</span>
-<span class="c1">#     }</span>
-
-<span class="c1">#     mgmt_name_dict = {</span>
-<span class="c1">#     &#39;Location&#39;: &#39;Experiment_Code&#39;, </span>
-<span class="c1">#     &#39;Application_or_treatment&#39;: &#39;Application&#39;, </span>
-<span class="c1">#     &#39;Product_or_nutrient_applied&#39;: &#39;Product&#39;, </span>
-<span class="c1">#     &#39;Date_of_application&#39;: &#39;Date_Datetime&#39;, </span>
-<span class="c1">#     &#39;Quantity_per_acre&#39;: &#39;Amount_Per_Acre&#39;, </span>
-<span class="c1">#     &#39;Application_unit&#39;: &#39;Unit&#39;</span>
-<span class="c1">#     }</span>
-
-    
-
-    <span class="n">meta_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Treatment&#39;</span><span class="p">:</span> <span class="s1">&#39;Treatment&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;City&#39;</span><span class="p">:</span> <span class="s1">&#39;City&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Farm&#39;</span><span class="p">:</span> <span class="s1">&#39;Farm&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Field&#39;</span><span class="p">:</span> <span class="s1">&#39;Field&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Trial_ID (Assigned by collaborator for internal reference)&#39;</span><span class="p">:</span> <span class="s1">&#39;Trial_ID&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Soil_Taxonomic_ID and horizon description, if known&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Taxonomic_ID&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Weather_Station_Serial_Number (Last four digits, e.g. m2700s#####)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Serial_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Weather_Station_Latitude (in decimal numbers NOT DMS)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Latitude_Unit_Decimal&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Weather_Station_Longitude (in decimal numbers NOT DMS)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Longitude_Unit_Decimal&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date_weather_station_placed&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Placed_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date_weather_station_removed&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Removed_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;In-field weather station serial number&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Serial_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;In-field_weather_station_latitude (in decimal)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Latitude_Unit_Decimal&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;In-field_weather_station_longitude (in decimal)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Longitude_Unit_Decimal&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Previous_Crop&#39;</span><span class="p">:</span> <span class="s1">&#39;Previous_Crop&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Pre-plant_tillage_method(s)&#39;</span><span class="p">:</span> <span class="s1">&#39;Pre_Plant_Tillage&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;In-season_tillage_method(s)&#39;</span><span class="p">:</span> <span class="s1">&#39;Post_Plant_Tillage&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Plot_length (center-alley to center-alley in feet)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Alley_length (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Row_spacing (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Type_of_planter (fluted cone; belt cone; air planter)&#39;</span><span class="p">:</span> <span class="s1">&#39;Planter_Type&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Number_kernels_planted_per_plot (&gt;200 seed/pack for cone planters)&#39;</span><span class="p">:</span> <span class="s1">&#39;Kernels_Per_Plot&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;System_Determining_Moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;System_Determining_Moisture&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Latitude_of_Field_Corner_#1 (lower left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_BL&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Longitude_of_Field_Corner_#1 (lower left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_BL&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Latitude_of_Field_Corner_#2 (lower right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_BR&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Longitude_of_Field_Corner_#2 (lower right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_BR&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Latitude_of_Field_Corner_#3 (upper right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_TR&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Longitude_of_Field_Corner_#3 (upper right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_TR&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Latitude_of_Field_Corner_#4 (upper left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_TL&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Longitude_of_Field_Corner_#4 (upper left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_TL&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Cardinal_Heading_Pass_1&#39;</span><span class="p">:</span> <span class="s1">&#39;Cardinal_Heading&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#1_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_1&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#1_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_1&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#2_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#2_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#3_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_3&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#3_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_3&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#4_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_4&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#4_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_4&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#5_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_5&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#5_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_5&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#1&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_1&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#2&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#3&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_3&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#4&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_4&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#5&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_5&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#6&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_6&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#7&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_7&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#8&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_8&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#9&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_9&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#10&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_70&#39;</span>
-    <span class="p">}</span>
-
-    <span class="n">phno_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;Year&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Field-Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;State&#39;</span><span class="p">:</span> <span class="s1">&#39;State&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;City&#39;</span><span class="p">:</span> <span class="s1">&#39;City&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Plot length (center-center in feet)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Plot area (ft2)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Area_Unit_Feet2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Alley length (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Row spacing (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Rows per plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Rows_Per_Plot&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;# Seed per plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Seeds_Per_Plot&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Experiment&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Source&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Pedigree&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Family&#39;</span><span class="p">:</span> <span class="s1">&#39;Family&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Tester&#39;</span><span class="p">:</span> <span class="s1">&#39;Tester&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Replicate&#39;</span><span class="p">:</span> <span class="s1">&#39;Replicate&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Block&#39;</span><span class="p">:</span> <span class="s1">&#39;Block&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Plot_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_ID&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Range&#39;</span><span class="p">:</span> <span class="s1">&#39;Range&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Pass&#39;</span><span class="p">:</span> <span class="s1">&#39;Pass&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Date Plot Planted [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Planted_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date Plot Harvested [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Harvested_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Anthesis [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Anthesis_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Silking [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Silking_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Anthesis [days]&#39;</span><span class="p">:</span> <span class="s1">&#39;Anthesis_Unit_Days&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Silking [days]&#39;</span><span class="p">:</span> <span class="s1">&#39;Silking_Unit_Days&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Plant Height [cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Plant_Height_Unit_cm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Ear Height [cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Ear_Height_Unit_cm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Stand Count [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Stand_Count_Unit_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Root Lodging [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Root_Lodging_Unit_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Stalk Lodging [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Stalk_Lodging_Unit_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Grain Moisture [%]&#39;</span><span class="p">:</span> <span class="s1">&#39;Grain_Moisture_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Test Weight [lbs]&#39;</span><span class="p">:</span> <span class="s1">&#39;Test_Weight_Unit_lbs&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Plot Weight [lbs]&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Weight_Unit_lbs&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Grain Yield (bu/A)&#39;</span><span class="p">:</span> <span class="s1">&#39;Grain_Yield_Unit_bu_Per_A&#39;</span><span class="p">,</span> 
-    <span class="s2">&quot;Plot Discarded [enter &#39;yes&#39; or blank]&quot;</span><span class="p">:</span> <span class="s1">&#39;Discarded&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Phenotype_Comments&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Filler&#39;</span><span class="p">:</span> <span class="s1">&#39;Filler&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Snap [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Snap_Unit_Number&#39;</span>
-    <span class="p">}</span>
-
-    <span class="n">soil_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Grower&#39;</span><span class="p">:</span> <span class="s1">&#39;Grower&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date Received&#39;</span><span class="p">:</span> <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date Reported&#39;</span><span class="p">:</span> <span class="s1">&#39;Processed_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;E Depth&#39;</span><span class="p">:</span> <span class="s1">&#39;Depth_Unit_UNK&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;1:1 Soil pH&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_1_to_1_Unit_pH&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;WDRF Buffer pH&#39;</span><span class="p">:</span> <span class="s1">&#39;WDRF_Buffer_Unit_pH&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;1:1 S Salts mmho/cm&#39;</span><span class="p">:</span> <span class="s1">&#39;Soluable_Salts_Unit_mmho_Per_cm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Texture No&#39;</span><span class="p">:</span> <span class="s1">&#39;Texture_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Organic Matter LOI %&#39;</span><span class="p">:</span> <span class="s1">&#39;Organic_Matter_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Nitrate-N ppm N&#39;</span><span class="p">:</span> <span class="s1">&#39;Nitrates_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;lbs N/A&#39;</span><span class="p">:</span> <span class="s1">&#39;N_per_Acre_Unit_lbs&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Potassium ppm K&#39;</span><span class="p">:</span> <span class="s1">&#39;K_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Sulfate-S ppm S&#39;</span><span class="p">:</span> <span class="s1">&#39;Sulfate_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Calcium ppm Ca&#39;</span><span class="p">:</span> <span class="s1">&#39;Ca_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Magnesium ppm Mg&#39;</span><span class="p">:</span> <span class="s1">&#39;Mg_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Sodium ppm Na&#39;</span><span class="p">:</span> <span class="s1">&#39;Na_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;CEC/Sum of Cations me/100g&#39;</span><span class="p">:</span> <span class="s1">&#39;Cation_Exchange_Capacity&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%H Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;H_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%K Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;K_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%Ca Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Ca_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%Mg Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Mg_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%Na Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Na_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Mehlich P-III ppm P&#39;</span><span class="p">:</span> <span class="s1">&#39;Mehlich_PIII_P_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;% Sand&#39;</span><span class="p">:</span> <span class="s1">&#39;Sand_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;% Silt&#39;</span><span class="p">:</span> <span class="s1">&#39;Silt_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;% Clay&#39;</span><span class="p">:</span> <span class="s1">&#39;Clay_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Texture&#39;</span><span class="p">:</span> <span class="s1">&#39;Texture&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Comments&#39;</span>
-    <span class="p">}</span>
-
-    <span class="n">wthr_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Field Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Station ID&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_ID&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;NWS Network&#39;</span><span class="p">:</span> <span class="s1">&#39;NWS_Network&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;NWS Station&#39;</span><span class="p">:</span> <span class="s1">&#39;NWS_Station&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date_key&#39;</span><span class="p">:</span> <span class="s1">&#39;Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Month&#39;</span><span class="p">:</span> <span class="s1">&#39;Month&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Day&#39;</span><span class="p">:</span> <span class="s1">&#39;Day&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Time&#39;</span><span class="p">:</span> <span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Temperature_Unit_C&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Dew Point [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Dew_Point_Unit_C&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Relative Humidity [%]&#39;</span><span class="p">:</span> <span class="s1">&#39;Relative_Humidity_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Solar Radiation [W/m2]&#39;</span><span class="p">:</span> <span class="s1">&#39;Solar_Radiation_Unit_W_per_m2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Rainfall [mm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Rainfall_Unit_mm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Wind Speed [m/s]&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind_Speed_Unit_m_per_s&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Wind Direction [degrees]&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind_Direction_Unit_Degrees&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Wind Gust [m/s]&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind_Gust_Unit_m_per_s&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Soil Temperature [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Temperature_Unit_C&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Soil Moisture [%VWC]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Moisture_Unit_Percent_VWC&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Soil EC [mS/cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_EC_Unit_mS_per_cm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;UV Light [uM/m2s]&#39;</span><span class="p">:</span> <span class="s1">&#39;UV_Light_Unit_uM_per_m2s&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;PAR [uM/m2s]&#39;</span><span class="p">:</span> <span class="s1">&#39;PAR_Unit_uM_per_m2s&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;CO2 [ppm]&#39;</span><span class="p">:</span> <span class="s1">&#39;CO2_Unit_ppm&#39;</span> <span class="c1"># 2020</span>
-    <span class="p">}</span>
-
-    <span class="n">mgmt_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Application_or_treatment&#39;</span><span class="p">:</span> <span class="s1">&#39;Application&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Product_or_nutrient_applied&#39;</span><span class="p">:</span> <span class="s1">&#39;Product&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date_of_application&#39;</span><span class="p">:</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Quantity_per_acre&#39;</span><span class="p">:</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Application_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;Unit&#39;</span>
-    <span class="p">}</span>
-    
-    
-    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;meta&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">meta_name_dict</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;phno&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">phno_name_dict</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;soil&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">soil_name_dict</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;wthr&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">wthr_name_dict</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;mgmt&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">mgmt_name_dict</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Requested name is not defined&#39;</span><span class="p">)</span>
-    
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># load dicts for column renaming</span>
 <span class="n">meta_name_dict</span> <span class="o">=</span> <span class="n">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;meta&#39;</span><span class="p">)</span>
 <span class="n">phno_name_dict</span> <span class="o">=</span> <span class="n">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;phno&#39;</span><span class="p">)</span>
 <span class="n">soil_name_dict</span> <span class="o">=</span> <span class="n">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;soil&#39;</span><span class="p">)</span>
 <span class="n">wthr_name_dict</span> <span class="o">=</span> <span class="n">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;wthr&#39;</span><span class="p">)</span>
 <span class="n">mgmt_name_dict</span> <span class="o">=</span> <span class="n">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mgmt&#39;</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
      </div>
@@ -14967,15 +14392,7 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="c1">#TODO move this back to 2021 notebook</span>
-<span class="c1"># check if there are columns that need to be aded to the naming dictionaries:</span>
-<span class="k">def</span> <span class="nf">find_unrecognized_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">dct</span><span class="p">):</span> 
-    <span class="n">keys_and_vals</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dct</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-    <span class="n">keys_and_vals</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dct</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
-    <span class="n">keys_and_vals</span>
-    <span class="k">return</span><span class="p">([</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">e</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys_and_vals</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
      </div>
@@ -14983,45 +14400,30 @@ a.anchor-link {
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">(</span><span class="n">find_unrecognized_columns</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">meta</span><span class="p">,</span> <span class="n">dct</span> <span class="o">=</span> <span class="n">meta_name_dict</span><span class="p">),</span>
-<span class="n">find_unrecognized_columns</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">phno</span><span class="p">,</span> <span class="n">dct</span> <span class="o">=</span> <span class="n">phno_name_dict</span><span class="p">),</span>
-<span class="n">find_unrecognized_columns</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">soil</span><span class="p">,</span> <span class="n">dct</span> <span class="o">=</span> <span class="n">soil_name_dict</span><span class="p">),</span>
-<span class="n">find_unrecognized_columns</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">,</span> <span class="n">dct</span> <span class="o">=</span> <span class="n">wthr_name_dict</span><span class="p">),</span>
-<span class="n">find_unrecognized_columns</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> <span class="n">dct</span> <span class="o">=</span> <span class="n">mgmt_name_dict</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># #TODO move this back to 2021 notebook</span>
+<span class="c1"># # check if there are columns that need to be aded to the naming dictionaries:</span>
+<span class="c1"># def find_unrecognized_columns(df, dct): </span>
+<span class="c1">#     keys_and_vals = list(dct.keys())</span>
+<span class="c1">#     keys_and_vals.extend(list(dct.values()))</span>
+<span class="c1">#     keys_and_vals</span>
+<span class="c1">#     return([e for e in df.columns if e not in keys_and_vals])</span>
+
+<span class="c1"># (find_unrecognized_columns(df = meta, dct = meta_name_dict),</span>
+<span class="c1"># find_unrecognized_columns(df = phno, dct = phno_name_dict),</span>
+<span class="c1"># find_unrecognized_columns(df = soil, dct = soil_name_dict),</span>
+<span class="c1"># find_unrecognized_columns(df = wthr, dct = wthr_name_dict),</span>
+<span class="c1"># find_unrecognized_columns(df = mgmt, dct = mgmt_name_dict))</span>
 </pre></div>
 
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>([], [], [], [], [])</pre>
-</div>
-
-</div>
-
-</div>
-
 </div>
 
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
@@ -15077,7 +14479,7 @@ a.anchor-link {
 
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>[(27, 55), (20574, 41), (22, 30), (172618, 23), (196, 7)]</pre>
+<pre>[(26, 55), (18754, 41), (23, 30), (289867, 24), (142, 7)]</pre>
 </div>
 
 </div>
@@ -15092,43 +14494,22 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="k">def</span> <span class="nf">list_known_experiments</span><span class="p">():</span>
-    <span class="s1">&#39;Provides a list of the experiments expected for use in `find_unrecognized_experiments`&#39;</span>
-    <span class="n">known_exps</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;COH1&#39;</span><span class="p">,</span> <span class="s1">&#39;DEH1&#39;</span><span class="p">,</span> <span class="s1">&#39;GAH1&#39;</span><span class="p">,</span> <span class="s1">&#39;GAH2&#39;</span><span class="p">,</span> <span class="s1">&#39;GEH1&#39;</span><span class="p">,</span> <span class="s1">&#39;IAH1&#39;</span><span class="p">,</span> <span class="s1">&#39;IAH2&#39;</span><span class="p">,</span> <span class="s1">&#39;IAH3&#39;</span><span class="p">,</span> <span class="s1">&#39;IAH4&#39;</span><span class="p">,</span> <span class="s1">&#39;ILH1&#39;</span><span class="p">,</span> <span class="s1">&#39;INH1&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;MIH1&#39;</span><span class="p">,</span> <span class="s1">&#39;MNH1&#39;</span><span class="p">,</span> <span class="s1">&#39;NCH1&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH1&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH2&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH3&#39;</span><span class="p">,</span> <span class="s1">&#39;NYH2&#39;</span><span class="p">,</span> <span class="s1">&#39;NYH3&#39;</span><span class="p">,</span> <span class="s1">&#39;NYS1&#39;</span><span class="p">,</span> <span class="s1">&#39;SCH1&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH1&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;TXH2&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH3&#39;</span><span class="p">,</span> <span class="s1">&#39;WIH1&#39;</span><span class="p">,</span> <span class="s1">&#39;WIH2&#39;</span><span class="p">,</span> <span class="s1">&#39;WIH3&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;MOH1&#39;</span><span class="p">,</span> <span class="s1">&#39;OHH1&#39;</span> <span class="c1"># 2020</span>
-                 <span class="p">]</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">known_exps</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># TODO replace in `g2fd.internal`</span>
 <span class="c1"># check Experiment_Code columns for any unexpected columns</span>
-<span class="k">def</span> <span class="nf">find_unrecognized_experiments</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> 
-                                  <span class="n">known_exps</span> <span class="o">=</span> <span class="n">list_known_experiments</span><span class="p">(),</span> <span class="c1"># Either a list of Experiment_Code s or a list of all provided by the default</span>
-                                  <span class="n">return_all_exps</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="c1">#     known_exps = [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&#39;, &#39;IAH1&#39;, &#39;IAH2&#39;, &#39;IAH3&#39;, &#39;IAH4&#39;, &#39;ILH1&#39;, &#39;INH1&#39;, &#39;MIH1&#39;, &#39;MNH1&#39;, &#39;NCH1&#39;, &#39;NEH1&#39;, &#39;NEH2&#39;, &#39;NEH3&#39;, &#39;NYH2&#39;, &#39;NYH3&#39;, &#39;NYS1&#39;, &#39;SCH1&#39;, &#39;TXH1&#39;, &#39;TXH2&#39;, &#39;TXH3&#39;, &#39;WIH1&#39;, &#39;WIH2&#39;, &#39;WIH3&#39;]</span>
-    <span class="k">if</span> <span class="n">return_all_exps</span><span class="p">:</span>
-        <span class="n">known_exps</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">known_exps</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">unknown_exps</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">column</span><span class="p">))</span> <span class="k">if</span> <span class="n">e</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">known_exps</span><span class="p">]</span>
-        <span class="n">unknown_exps</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">unknown_exps</span><span class="p">)</span>
+<span class="c1"># def find_unrecognized_experiments(column, return_all_exps = False):</span>
+<span class="c1">#     known_exps = [</span>
+<span class="c1">#         &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&#39;, &#39;IAH1&#39;, &#39;IAH2&#39;, &#39;IAH3&#39;, &#39;IAH4&#39;, &#39;ILH1&#39;, &#39;INH1&#39;, </span>
+<span class="c1">#         &#39;MIH1&#39;, &#39;MNH1&#39;, &#39;NCH1&#39;, &#39;NEH1&#39;, &#39;NEH2&#39;, &#39;NEH3&#39;, &#39;NYH2&#39;, &#39;NYH3&#39;, &#39;NYS1&#39;, &#39;SCH1&#39;, &#39;TXH1&#39;, </span>
+<span class="c1">#         &#39;TXH2&#39;, &#39;TXH3&#39;, &#39;WIH1&#39;, &#39;WIH2&#39;, &#39;WIH3&#39;,</span>
+<span class="c1">#         &#39;MOH1&#39;, &#39;OHH1&#39; # 2020</span>
+<span class="c1">#                  ]</span>
+<span class="c1">#     if return_all_exps:</span>
+<span class="c1">#         known_exps.sort()</span>
+<span class="c1">#         return(known_exps)</span>
+<span class="c1">#     else:</span>
+<span class="c1">#         unknown_exps = [str(e) for e in list(set(column)) if e not in known_exps]</span>
+<span class="c1">#         unknown_exps.sort()</span>
+<span class="c1">#         return(unknown_exps)</span>
 
 <span class="c1"># find_unrecognized_experiments(soil.Experiment_Code, print_all_exps=True)</span>
 </pre></div>
@@ -15144,29 +14525,21 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
 
-<span class="c1"># sanitize Experiment Codes</span>
+     </div>
+</div>
+</div>
+</div>
 
-<span class="k">def</span> <span class="nf">sanitize_Experiment_Codes</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{},</span> <span class="n">split_renames</span><span class="o">=</span> <span class="p">{}):</span>
-    <span class="c1"># simple renames</span>
-    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">simple_renames</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Experiment_Code</span> <span class="o">==</span> <span class="n">e</span><span class="p">)</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">simple_renames</span><span class="p">[</span><span class="n">e</span><span class="p">]</span>
-
-    <span class="c1"># splits</span>
-    <span class="c1"># pull out the relevant multiname rows, copy, rename, append</span>
-    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">split_renames</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Experiment_Code</span> <span class="o">==</span> <span class="n">e</span><span class="p">)</span>
-        <span class="n">temp</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">:]</span> 
-
-        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">,</span> <span class="p">:]</span>
-        <span class="k">for</span> <span class="n">e2</span> <span class="ow">in</span> <span class="n">split_renames</span><span class="p">[</span><span class="n">e</span><span class="p">]:</span>
-            <span class="n">temp2</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">temp2</span><span class="p">[</span><span class="s1">&#39;Experiment_Code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e2</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">temp2</span><span class="p">,</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;outer&#39;</span><span class="p">)</span>
-
-    <span class="k">return</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
      </div>
@@ -15185,26 +14558,17 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">soil</span> <span class="o">=</span> <span class="n">sanitize_Experiment_Codes</span><span class="p">(</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">soil</span><span class="p">,</span> 
-    <span class="n">simple_renames</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;W1H1&#39;</span><span class="p">:</span> <span class="s1">&#39;WIH1&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;W1H2&#39;</span><span class="p">:</span> <span class="s1">&#39;WIH2&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;W1H3&#39;</span><span class="p">:</span> <span class="s1">&#39;WIH3&#39;</span>
-    <span class="p">},</span> 
-    <span class="n">split_renames</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;NEH2_NEH3&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;NEH2&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH3&#39;</span><span class="p">]</span>
-    <span class="p">})</span>
-
-<span class="n">wthr</span> <span class="o">=</span> <span class="n">sanitize_Experiment_Codes</span><span class="p">(</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">wthr</span> <span class="o">=</span> <span class="n">sanitize_Experiment_Codes</span><span class="p">(</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">,</span> 
     <span class="n">simple_renames</span> <span class="o">=</span> <span class="p">{</span>
     <span class="p">},</span> 
     <span class="n">split_renames</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;NEH2_NEH3&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;NEH2&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH3&#39;</span><span class="p">],</span>
         <span class="s1">&#39;NYH3_NYS1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;NYS1&#39;</span><span class="p">,</span> <span class="s1">&#39;NYH3&#39;</span><span class="p">],</span>
         <span class="s1">&#39;TXH1_TXH3&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;TXH1&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH3&#39;</span><span class="p">]</span>
     <span class="p">})</span>
+
+<span class="c1"># for some reason there are 2227 empty rows included...</span>
+<span class="n">wthr</span> <span class="o">=</span> <span class="n">wthr</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">wthr</span><span class="o">.</span><span class="n">Experiment_Code</span><span class="o">.</span><span class="n">notna</span><span class="p">(),</span> <span class="p">]</span>
 </pre></div>
 
      </div>
@@ -15258,6 +14622,20 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 
 </div>
 
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span>
+</pre></div>
+
+     </div>
+</div>
+</div>
 </div>
 
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
@@ -15384,9 +14762,6 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
     
     <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Range&#39;</span><span class="p">,</span> <span class="s1">&#39;Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Plot&#39;</span><span class="p">]:</span>
         <span class="n">wthr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">wthr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
-    
-    
-    
 </pre></div>
 
      </div>
@@ -15428,213 +14803,6 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <p>These steps should be completed for each dataframe in turn to minimize the cognitive load of the reader.</p>
 
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="c1"># Make versions of `find_unconvertable_datetimes` for other datatype</span>
-<span class="c1"># make a function to find the unexpected entries so it&#39;s easy to write the santization code</span>
-<span class="c1"># in a column, report all the values causing errors OR an index of these values</span>
-<span class="k">def</span> <span class="nf">find_unconvertable_datetimes</span><span class="p">(</span><span class="n">df_col</span><span class="p">,</span> <span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%y&#39;</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-    <span class="n">datetime_errors</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">df_col</span><span class="p">),</span> <span class="nb">format</span> <span class="o">=</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">datetime_errors</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># This is a interesting trick. Python&#39;s nan is not equal to itself.</span>
-        <span class="c1"># missing values can&#39;t become datetimes so nan is returned if there&#39;s a missing value</span>
-        <span class="c1"># This list comprehension removes nan (which is otherwise stubborn to remove) because nan != nan</span>
-        <span class="k">return</span><span class="p">([</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">df_col</span><span class="p">[</span><span class="n">datetime_errors</span><span class="p">]))</span> <span class="k">if</span> <span class="n">e</span> <span class="o">==</span> <span class="n">e</span><span class="p">])</span> 
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="k">def</span> <span class="nf">find_unconvertable_numerics</span><span class="p">(</span><span class="n">df_col</span><span class="p">,</span> <span class="c1"># Dataframe column (e.g. df[&#39;example&#39;]) to be used.</span>
-                                <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># Return an index of unconveratbles or a list of unique values</span>
-                               <span class="p">):</span>
-    <span class="s2">&quot;Find the values or positions of values that cannot be converted to a numeric.&quot;</span>
-    <span class="n">numeric_errors</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">df_col</span><span class="p">),</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">numeric_errors</span><span class="p">)</span> <span class="c1"># a</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># This is a interesting trick. Python&#39;s nan is not equal to itself.</span>
-        <span class="c1"># missing values can&#39;t become datetimes so nan is returned if there&#39;s a missing value</span>
-        <span class="c1"># This list comprehension removes nan (which is otherwise stubborn to remove) because nan != nan</span>
-        <span class="k">return</span><span class="p">([</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">df_col</span><span class="p">[</span><span class="n">numeric_errors</span><span class="p">]))</span> <span class="k">if</span> <span class="n">e</span> <span class="o">==</span> <span class="n">e</span><span class="p">])</span> <span class="c1"># b  </span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="c1"># generalized version of `sanitize_Experiment_Codes`</span>
-<span class="k">def</span> <span class="nf">sanitize_col</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{},</span> <span class="n">split_renames</span><span class="o">=</span> <span class="p">{}):</span>
-    <span class="c1"># simple renames</span>
-    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">simple_renames</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="n">e</span><span class="p">)</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">simple_renames</span><span class="p">[</span><span class="n">e</span><span class="p">]</span>
-
-    <span class="c1"># splits</span>
-    <span class="c1"># pull out the relevant multiname rows, copy, rename, append</span>
-    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">split_renames</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="n">e</span><span class="p">)</span>
-        <span class="n">temp</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">:]</span> 
-
-        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">,</span> <span class="p">:]</span>
-        <span class="k">for</span> <span class="n">e2</span> <span class="ow">in</span> <span class="n">split_renames</span><span class="p">[</span><span class="n">e</span><span class="p">]:</span>
-            <span class="n">temp2</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">temp2</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">e2</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">temp2</span><span class="p">,</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;outer&#39;</span><span class="p">)</span>
-
-    <span class="k">return</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="c1"># If the Imputation_Notes column doesnt exist, create it. So long as it wouldn&#39;t overwrite any imputation notes move each specified value and replace it with nan.</span>
-<span class="k">def</span> <span class="nf">relocate_to_Imputation_Notes</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">val_list</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Imputation_Notes&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-
-    <span class="k">for</span> <span class="n">relocate</span> <span class="ow">in</span> <span class="n">val_list</span><span class="p">:</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="n">relocate</span><span class="p">)</span>
-        <span class="n">mask_Impute_Full</span> <span class="o">=</span> <span class="p">((</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()))</span>
-        <span class="c1"># check if this contains anyting</span>
-        <span class="n">overwrite_danger</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">mask</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">mask_Impute_Full</span><span class="p">),</span> <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">overwrite_danger</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning! The following values will be overwritten. Skipping relocation.&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">overwrite_danger</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">mask</span><span class="p">),</span> <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">mask</span><span class="p">),</span> <span class="n">col</span><span class="p">]</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">mask</span><span class="p">),</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="c1"># helper function so we can ask for a new column don&#39;t have to worry about overwritting a if it already exists </span>
-<span class="k">def</span> <span class="nf">safe_create_col</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col_name</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="c1"># little helper function to make this easier. Make all the columns in a list into dtype string.</span>
-<span class="c1"># require the column to exist to make this safe.</span>
-<span class="c1"># to make things even easier, use a list comprehension to pull out the keys in the *_col_dtype dict </span>
-<span class="c1"># that have value of &#39;string&#39;!</span>
-<span class="k">def</span> <span class="nf">cols_astype_string</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col_list</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ee</span> <span class="k">for</span> <span class="n">ee</span> <span class="ow">in</span> <span class="n">col_list</span> <span class="k">if</span> <span class="n">ee</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]:</span>
-        <span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="c1"># Ignore columns that don&#39;t exist in the dataframe even if they&#39;re specified in the dict</span>
-<span class="c1"># For testing that sanitization was successful</span>
-<span class="c1"># a function to check the type of each column </span>
-<span class="c1"># shouldn&#39;t _change_ anything, just report what I need to fix</span>
-<span class="k">def</span> <span class="nf">check_df_dtype_expectations</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">dtype_dct</span><span class="p">):</span>
-    <span class="n">found</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-        <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
-    <span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Column&#39;</span><span class="p">,</span> <span class="s1">&#39;dtype&#39;</span><span class="p">])</span>
-
-
-    <span class="n">expected</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">dtype_dct</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">dtype_dct</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span>
-                 <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Column&#39;</span><span class="p">,</span> <span class="s1">&#39;Expected_dtype&#39;</span><span class="p">]</span>
-                <span class="p">)</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span> <span class="k">if</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">else</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">expected</span><span class="o">.</span><span class="n">Column</span><span class="p">]</span>
-    <span class="n">expected</span> <span class="o">=</span> <span class="n">expected</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">]</span>
-    
-    <span class="n">out</span> <span class="o">=</span> <span class="n">found</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;outer&#39;</span><span class="p">)</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">Pass</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">out</span><span class="o">.</span><span class="n">Expected_dtype</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">Pass</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">Pass</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39; Columns pass.&#39;</span><span class="p">)</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-
-<span class="c1"># each df should get individual treatment with these steps. Probably most readable</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
@@ -15770,20 +14938,8 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <span class="c1"># &#39;meta&#39;: &#39;bool&#39;,</span>
 <span class="c1">#     &#39;Imputation_Notes&#39;: &#39;string&#39;</span>
 <span class="c1"># }</span>
-</pre></div>
 
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># wthr_col_dtypes = {</span>
+<span class="c1"># wthr_col_dtypes = {</span>
 <span class="c1">#     &#39;Experiment_Code&#39;: &#39;string&#39;, </span>
 <span class="c1">#     &#39;Weather_Station_ID&#39;: &#39;string&#39;, </span>
 <span class="c1">#     &#39;NWS_Network&#39;: &#39;string&#39;, </span>
@@ -15807,22 +14963,11 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <span class="c1">#     &#39;UV_Light_Unit_uM_per_m2s&#39;: &#39;float64&#39;, </span>
 <span class="c1">#     &#39;PAR_Unit_uM_per_m2s&#39;: &#39;float64&#39;, </span>
 <span class="c1"># &#39;wthr&#39;: &#39;bool&#39;,</span>
-<span class="c1">#     &#39;Imputation_Notes&#39;: &#39;string&#39;</span>
+<span class="c1">#     &#39;Imputation_Notes&#39;: &#39;string&#39;,</span>
+<span class="c1">#     &#39;CO2_Unit_ppm&#39;: &#39;float64&#39;# 2020</span>
 <span class="c1"># }</span>
-</pre></div>
 
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt_col_dtypes = {</span>
+<span class="c1"># mgmt_col_dtypes = {</span>
 <span class="c1">#     &#39;Year&#39;: &#39;string&#39;,   </span>
 <span class="c1">#     &#39;Experiment_Code&#39;: &#39;string&#39;, </span>
 <span class="c1">#     &#39;Range&#39;: &#39;string&#39;,</span>
@@ -15850,188 +14995,9 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-
-<span class="k">def</span> <span class="nf">mk_dtype_dict</span><span class="p">(</span><span class="n">name</span> <span class="c1"># table sval, wthr, or mgmt</span>
-                <span class="p">):</span>
-    <span class="s1">&#39;Easily share dictionaries of expected datatypes of the columns across scripts.&#39;</span>
-    <span class="n">sval_col_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;State&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;City&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Plot_Area_Unit_Feet2&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Rows_Per_Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Seeds_Per_Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Experiment&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Source&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Family&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Tester&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Replicate&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Block&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Plot_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Range&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Pass&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Planted_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Harvested_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Anthesis_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Silking_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Anthesis_Unit_Days&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Silking_Unit_Days&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Plant_Height_Unit_cm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Ear_Height_Unit_cm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Stand_Count_Unit_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Root_Lodging_Unit_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Stalk_Lodging_Unit_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Grain_Moisture_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Test_Weight_Unit_lbs&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Plot_Weight_Unit_lbs&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Grain_Yield_Unit_bu_Per_A&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Discarded&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Phenotype_Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Filler&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Snap_Unit_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;phno&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Grower&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Processed_Date_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Depth_Unit_UNK&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Soil_1_to_1_Unit_pH&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;WDRF_Buffer_Unit_pH&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Soluable_Salts_Unit_mmho_Per_cm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Texture_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Organic_Matter_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Nitrates_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;N_per_Acre_Unit_lbs&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;K_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Sulfate_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Ca_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Mg_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Na_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Cation_Exchange_Capacity&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;H_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;K_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Ca_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Mg_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Na_Sat_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Mehlich_PIII_P_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Sand_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Silt_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Clay_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Texture&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Soil_Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;soil&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Treatment&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Farm&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Trial_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Soil_Taxonomic_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_Serial_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_Latitude_Unit_Decimal&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_Longitude_Unit_Decimal&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_Placed_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_Removed_Unit_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_In_Field_Serial_Number&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_In_Field_Latitude_Unit_Decimal&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_In_Field_Longitude_Unit_Decimal&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Previous_Crop&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Pre_Plant_Tillage&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Post_Plant_Tillage&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Planter_Type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Kernels_Per_Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;System_Determining_Moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Latitude_BL&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Longitude_BL&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Latitude_BR&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Longitude_BR&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Latitude_TR&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Longitude_TR&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Latitude_TL&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Field_Longitude_TL&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Cardinal_Heading&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Pedigree_1&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Source_1&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Pedigree_2&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Source_2&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Pedigree_3&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Source_3&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Pedigree_4&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Source_4&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Pedigree_5&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Local_Check_Source_5&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_1&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_2&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_3&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_4&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_5&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_6&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_7&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_8&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_9&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Comment_70&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;meta&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
-    <span class="p">}</span>
-
-    <span class="n">wthr_col_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Weather_Station_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;NWS_Network&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;NWS_Station&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Month&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Day&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Time&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Temperature_Unit_C&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Dew_Point_Unit_C&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Relative_Humidity_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Solar_Radiation_Unit_W_per_m2&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Rainfall_Unit_mm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Wind_Speed_Unit_m_per_s&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Wind_Direction_Unit_Degrees&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Wind_Gust_Unit_m_per_s&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Soil_Temperature_Unit_C&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Soil_Moisture_Unit_Percent_VWC&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Soil_EC_Unit_mS_per_cm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;UV_Light_Unit_uM_per_m2s&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;PAR_Unit_uM_per_m2s&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;wthr&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;CO2_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="c1"># 2020</span>
-    <span class="p">}</span>
-
-    <span class="n">mgmt_col_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>   
-        <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Range&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Pass&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Application&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Product&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;Unit&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;mgmt&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Ingredient&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
-    <span class="p">}</span>
-   
-    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;sval&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">sval_col_dtypes</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;wthr&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">wthr_col_dtypes</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;mgmt&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">mgmt_col_dtypes</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Requested name is not defined&#39;</span><span class="p">)</span>
-    
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sval_col_dtypes</span> <span class="o">=</span> <span class="n">mk_dtype_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;sval&#39;</span><span class="p">)</span>
+<span class="n">wthr_col_dtypes</span> <span class="o">=</span> <span class="n">mk_dtype_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;wthr&#39;</span><span class="p">)</span>
+<span class="n">mgmt_col_dtypes</span> <span class="o">=</span> <span class="n">mk_dtype_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mgmt&#39;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16045,9 +15011,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sval_col_dtypes</span> <span class="o">=</span> <span class="n">mk_dtype_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;sval&#39;</span><span class="p">)</span>
-<span class="n">wthr_col_dtypes</span> <span class="o">=</span> <span class="n">mk_dtype_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;wthr&#39;</span><span class="p">)</span>
-<span class="n">mgmt_col_dtypes</span> <span class="o">=</span> <span class="n">mk_dtype_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mgmt&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
      </div>
@@ -16087,7 +15051,6 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
     <span class="s1">&#39;Weather_Station_Placed_Unit_Datetime&#39;</span><span class="p">,</span> 
     <span class="s1">&#39;Weather_Station_Removed_Unit_Datetime&#39;</span>
     <span class="p">]:</span>
-<span class="c1"># find_unconvertable_datetimes(df_col=sval[e], pattern=&#39;%Y-%m-%d %H:%M&#39;, index=False)</span>
 
     <span class="n">sval</span><span class="p">[</span><span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
@@ -16112,19 +15075,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># -&gt; floats</span>
-
-<span class="c1"># [find_unconvertable_numerics(df_col = sval[e], index = False) for e in [</span>
-<span class="c1">#     &#39;Alley_Length_Unit_Inches&#39;,</span>
-<span class="c1"># &#39;Row_Spacing_Unit_Inches&#39;,</span>
-<span class="c1"># &#39;Pounds_Needed_Soil_Moisture&#39;</span>
-<span class="c1"># ]]</span>
-
-<span class="n">sval</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">sval</span><span class="p">,</span> 
-    <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">,</span> 
-    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;3 to 4&#39;</span><span class="p">:</span><span class="s1">&#39;3.5&#39;</span><span class="p">},</span> 
-    <span class="n">split_renames</span><span class="o">=</span> <span class="p">{})</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
      </div>
@@ -16225,7 +15176,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">Pass</span><span class="p">)</span><span class="o">/</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
     <span class="k">pass</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">Pass</span><span class="p">,</span> <span class="p">])</span> <span class="c1">#TODO add to template</span>
     <span class="nb">print</span><span class="p">()</span>
 
 <span class="c1"># checkpoint.loc[~checkpoint.Pass, ]</span>
@@ -16273,6 +15224,27 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 183 records from MNH1 are missing a value for time. </span>
+<span class="c1"># These are not useful since we don&#39;t know if the values are daily averages or taken at a specific timepoint.</span>
+<span class="n">wthr</span> <span class="o">=</span> <span class="n">wthr</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">wthr</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">notna</span><span class="p">(),</span> <span class="p">:]</span>
+
+<span class="c1"># unfortunately these missing values also force ints (e.g. days) to be floats</span>
+<span class="n">wthr</span><span class="o">.</span><span class="n">Year</span> <span class="o">=</span> <span class="n">wthr</span><span class="o">.</span><span class="n">Year</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+<span class="n">wthr</span><span class="o">.</span><span class="n">Month</span> <span class="o">=</span> <span class="n">wthr</span><span class="o">.</span><span class="n">Month</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+<span class="n">wthr</span><span class="o">.</span><span class="n">Day</span> <span class="o">=</span> <span class="n">wthr</span><span class="o">.</span><span class="n">Day</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># instead of writing regexes to figure out the mose likely format for each datetime, we assume each experiment will be consistent withing that experiment</span>
 <span class="c1"># and let pd figure it out.</span>
 <span class="c1"># wthr[&#39;Datetime_Temp&#39;] = pd.to_datetime(np.nan)</span>
@@ -16289,7 +15261,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <span class="n">wthr</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">,</span>
     <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Time&#39;</span><span class="p">,</span> 
-    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;24:00:00&#39;</span><span class="p">:</span> <span class="s1">&#39;00:00:00&#39;</span><span class="p">},</span> <span class="c1"># this could be day + 24 h instead of a miscoded day + 0 h</span>
+    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{},</span> 
     <span class="n">split_renames</span><span class="o">=</span> <span class="p">{})</span>
 
 <span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Day&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span>
@@ -16370,7 +15342,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>23/23 Columns pass.
+<pre>24/24 Columns pass.
 </pre>
 </div>
 </div>
@@ -16395,7 +15367,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">relocate_to_Imputation_Notes</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">,</span> <span class="n">val_list</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Before Planting&#39;</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">relocate_to_Imputation_Notes</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">,</span> <span class="n">val_list</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fall 2019&#39;</span><span class="p">])</span>
 </pre></div>
 
      </div>
@@ -16409,12 +15381,12 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> 
-    <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">,</span> 
-    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{},</span> 
-    <span class="n">split_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;6/24/21 for all but plots in pass 2; 7/5/21 for pass 2&#39;</span> <span class="p">:</span> <span class="p">[</span>
-                        <span class="s1">&#39;6/24/21 for all but plots in pass 2&#39;</span><span class="p">,</span> <span class="s1">&#39;7/5/21 for pass 2&#39;</span><span class="p">]})</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt = sanitize_col(</span>
+<span class="c1">#     df = mgmt, </span>
+<span class="c1">#     col = &#39;Date_Datetime&#39;, </span>
+<span class="c1">#     simple_renames= {}, </span>
+<span class="c1">#     split_renames= {&#39;6/24/21 for all but plots in pass 2; 7/5/21 for pass 2&#39; : [</span>
+<span class="c1">#                         &#39;6/24/21 for all but plots in pass 2&#39;, &#39;7/5/21 for pass 2&#39;]})</span>
 </pre></div>
 
      </div>
@@ -16428,18 +15400,18 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># make corrections too one-off to fix with a funciton. </span>
-<span class="n">mask</span> <span class="o">=</span> <span class="p">((</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Date_Datetime</span> <span class="o">==</span> <span class="s1">&#39;6/24/21 for all but plots in pass 2&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Pass</span> <span class="o">!=</span> <span class="mf">2.</span><span class="p">))</span>
-<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;6/24/21&#39;</span>
-<span class="c1"># since we split without specifiying pass we need to remove any rows that still have the search string.</span>
-<span class="c1"># and overwrite the df</span>
-<span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Date_Datetime</span> <span class="o">==</span> <span class="s1">&#39;6/24/21 for all but plots in pass 2&#39;</span><span class="p">)</span>
-<span class="n">mgmt</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># # make corrections too one-off to fix with a funciton. </span>
+<span class="c1"># mask = ((mgmt.Date_Datetime == &#39;6/24/21 for all but plots in pass 2&#39;) &amp; (mgmt.Pass != 2.))</span>
+<span class="c1"># mgmt.loc[mask, &#39;Date_Datetime&#39;] = &#39;6/24/21&#39;</span>
+<span class="c1"># # since we split without specifiying pass we need to remove any rows that still have the search string.</span>
+<span class="c1"># # and overwrite the df</span>
+<span class="c1"># mask = (mgmt.Date_Datetime == &#39;6/24/21 for all but plots in pass 2&#39;)</span>
+<span class="c1"># mgmt = mgmt.loc[~mask, :].copy()</span>
 
-<span class="n">mask</span> <span class="o">=</span> <span class="p">((</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Date_Datetime</span> <span class="o">==</span> <span class="s1">&#39;7/5/21 for pass 2&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Pass</span> <span class="o">==</span> <span class="mf">2.</span><span class="p">))</span>
-<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;7/5/21&#39;</span>
-<span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Date_Datetime</span> <span class="o">==</span> <span class="s1">&#39;7/5/21 for pass 2&#39;</span><span class="p">)</span>
-<span class="n">mgmt</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="c1"># mask = ((mgmt.Date_Datetime == &#39;7/5/21 for pass 2&#39;) &amp; (mgmt.Pass == 2.))</span>
+<span class="c1"># mgmt.loc[mask, &#39;Date_Datetime&#39;] = &#39;7/5/21&#39;</span>
+<span class="c1"># mask = (mgmt.Date_Datetime == &#39;7/5/21 for pass 2&#39;)</span>
+<span class="c1"># mgmt = mgmt.loc[~mask, :].copy()</span>
 </pre></div>
 
      </div>
@@ -16477,7 +15449,23 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">relocate_to_Imputation_Notes</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> <span class="n">val_list</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;variable rate according to soil sample&#39;</span><span class="p">])</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt.loc[find_unconvertable_numerics(df_col = mgmt[&#39;Amount_Per_Acre&#39;], index = True), ]</span>
+
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Amount_Per_Acre</span> <span class="o">==</span> <span class="s1">&#39;2 qts&#39;</span><span class="p">,</span> <span class="p">:]</span>
 </pre></div>
 
      </div>
@@ -16485,44 +15473,287 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> 
-    <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> 
-    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;170 lb (actual N)&#39;</span><span class="p">:</span> <span class="s1">&#39;170 (N)&#39;</span><span class="p">},</span> 
-    <span class="n">split_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;51.75, 40.7, 111.7 (N,P,K)&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;51.75 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;40.7 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;111.7 (K)&#39;</span><span class="p">],</span>
-                    <span class="s1">&#39;31-150-138&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;31 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;150 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;138 (K)&#39;</span><span class="p">],</span>
-                    <span class="s1">&#39;16 (N), 41 (P)&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;16 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;41 (P)&#39;</span><span class="p">]})</span>
-</pre></div>
+<div class="jp-Cell-outputWrapper">
 
-     </div>
-</div>
-</div>
-</div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">safe_create_col</span><span class="p">(</span><span class="n">mgmt</span><span class="p">,</span> <span class="s2">&quot;Ingredient&quot;</span><span class="p">)</span>
-<span class="n">mask</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">Ingredient</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span>
-<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Ingredient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Product&#39;</span><span class="p">]</span>
+<div class="jp-OutputArea jp-Cell-outputArea">
 
-<span class="c1"># assume each string is formated as &#39;val (key)&#39;. `sanitize_col` should be used to enforce this.</span>
-<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;150 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;36.6 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;138 (K)&#39;</span><span class="p">,</span> <span class="s1">&#39;111.7 (K)&#39;</span><span class="p">,</span> <span class="s1">&#39;41 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;16 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;170 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;35.7 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;51.75 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;31 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;40.7 (P)&#39;</span><span class="p">]:</span>
-    <span class="n">val</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;^\d+[.]*\d*&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">key</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;\(.+\)&#39;</span><span class="p">,</span>      <span class="n">e</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+<div class="jp-OutputArea-child">
+
     
-    <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="p">[</span><span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">e</span><span class="p">)</span>
-    <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Ingredient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
-    <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Year</th>
+      <th>Experiment_Code</th>
+      <th>Range</th>
+      <th>Pass</th>
+      <th>Plot</th>
+      <th>Application</th>
+      <th>Product</th>
+      <th>Date_Datetime</th>
+      <th>Amount_Per_Acre</th>
+      <th>Unit</th>
+      <th>mgmt</th>
+      <th>Imputation_Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>77802</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Broadcast</td>
+      <td>BicepMagnum II</td>
+      <td>2020-05-12</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>77803</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Broadcast</td>
+      <td>Glyphosate</td>
+      <td>2020-05-12</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>77804</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Broadcast</td>
+      <td>Atrazine</td>
+      <td>2020-06-10</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>77805</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>Broadcast</td>
+      <td>BicepMagnum II</td>
+      <td>2020-05-12</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>77806</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>Broadcast</td>
+      <td>Glyphosate</td>
+      <td>2020-05-12</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>79711</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>8.0</td>
+      <td>2</td>
+      <td>637</td>
+      <td>Broadcast</td>
+      <td>Glyphosate</td>
+      <td>2020-05-12</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>79712</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>8.0</td>
+      <td>2</td>
+      <td>637</td>
+      <td>Broadcast</td>
+      <td>Atrazine</td>
+      <td>2020-06-10</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>79713</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>8.0</td>
+      <td>1</td>
+      <td>638</td>
+      <td>Broadcast</td>
+      <td>BicepMagnum II</td>
+      <td>2020-05-12</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>79714</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>8.0</td>
+      <td>1</td>
+      <td>638</td>
+      <td>Broadcast</td>
+      <td>Glyphosate</td>
+      <td>2020-05-12</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>79715</th>
+      <td>2020</td>
+      <td>SCH1</td>
+      <td>8.0</td>
+      <td>1</td>
+      <td>638</td>
+      <td>Broadcast</td>
+      <td>Atrazine</td>
+      <td>2020-06-10</td>
+      <td>2 qts</td>
+      <td>NaN</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>1914 rows × 12 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Amount_Per_Acre</span> <span class="o">==</span> <span class="s1">&#39;2 qts&#39;</span><span class="p">)</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;qts&#39;</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;2&#39;</span>
+
+<span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Amount_Per_Acre</span> <span class="o">==</span> <span class="s1">&#39;1.5 qts&#39;</span><span class="p">)</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;qts&#39;</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1.5&#39;</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt = sanitize_col(</span>
+<span class="c1">#     df = mgmt, </span>
+<span class="c1">#     col = &#39;Amount_Per_Acre&#39;, </span>
+<span class="c1">#     simple_renames= {&#39;170 lb (actual N)&#39;: &#39;170 (N)&#39;}, </span>
+<span class="c1">#     split_renames= {&#39;51.75, 40.7, 111.7 (N,P,K)&#39;: [&#39;51.75 (N)&#39;, &#39;40.7 (P)&#39;, &#39;111.7 (K)&#39;],</span>
+<span class="c1">#                     &#39;31-150-138&#39;: [&#39;31 (N)&#39;, &#39;150 (P)&#39;, &#39;138 (K)&#39;],</span>
+<span class="c1">#                     &#39;16 (N), 41 (P)&#39;: [&#39;16 (N)&#39;, &#39;41 (P)&#39;]})</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt = safe_create_col(mgmt, &quot;Ingredient&quot;)</span>
+<span class="c1"># mask = mgmt.Ingredient.isna()</span>
+<span class="c1"># mgmt.loc[mask, &#39;Ingredient&#39;] = mgmt.loc[mask, &#39;Product&#39;]</span>
+
+<span class="c1"># # assume each string is formated as &#39;val (key)&#39;. `sanitize_col` should be used to enforce this.</span>
+<span class="c1"># for e in [&#39;150 (P)&#39;, &#39;36.6 (N)&#39;, &#39;138 (K)&#39;, &#39;111.7 (K)&#39;, &#39;41 (P)&#39;, &#39;16 (N)&#39;, &#39;170 (N)&#39;, &#39;35.7 (N)&#39;, &#39;51.75 (N)&#39;, &#39;31 (N)&#39;, &#39;40.7 (P)&#39;]:</span>
+<span class="c1">#     val = re.findall(&#39;^\d+[.]*\d*&#39;, e)[0]</span>
+<span class="c1">#     key = re.findall(&#39;\(.+\)&#39;,      e)[0].replace(&#39;(&#39;, &#39;&#39;).replace(&#39;)&#39;, &#39;&#39;)</span>
+    
+<span class="c1">#     mask = (mgmt[&#39;Amount_Per_Acre&#39;] == e)</span>
+<span class="c1">#     mgmt.loc[mask, &#39;Ingredient&#39;] = key</span>
+<span class="c1">#     mgmt.loc[mask, &#39;Amount_Per_Acre&#39;] = val</span>
 </pre></div>
 
      </div>
@@ -16628,7 +15859,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>13/13 Columns pass.
+<pre>12/12 Columns pass.
 </pre>
 </div>
 </div>
@@ -16750,13 +15981,6 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
       <td>string</td>
       <td>True</td>
     </tr>
-    <tr>
-      <th>12</th>
-      <td>Ingredient</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
   </tbody>
 </table>
 </div>
@@ -16773,24 +15997,6 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="Publish">Publish<a class="anchor-link" href="#Publish">&#182;</a></h1>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#| export</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
-<span class="k">def</span> <span class="nf">write_out_pkl</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./temp.pickle&#39;</span><span class="p">):</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
-        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">handle</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>   
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
