@@ -1,0 +1,849 @@
+# Imports ----
+
+import numpy as np # for np.nan
+import pandas as pd
+pd.set_option('display.max_columns', None)
+import os   # for write_log, delete_logs
+import glob # for delete_all_logs
+from datetime import date, timedelta
+
+import json # for saving a dict to txt with json.dumps
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+# Settings ----
+
+# remakeDaymet = False
+# remakeDaymet = True
+# findBestWeatherModels = False#True 
+# findBestWeatherModels = True
+
+log_path = './data/logs/' # '../data/external/'
+
+# def add_SiteYear(df):
+#     df['SiteYear'] = df['ExperimentCode'].astype(str) + '_' + df['Year'].astype(str)
+#     return(df)
+
+# metadata, 'Metadata', colGroupings
+def check_col_types(data, grouping, colGroupings
+):
+#     data = metadata
+#     grouping = 'Metadata'
+#     colGroupings = pd.read_csv('../data/external/UpdateColGroupings.csv')
+
+    considerCols = colGroupings.loc[colGroupings[grouping].notna(), (grouping, grouping+'Type')]
+    considerCols= considerCols.reset_index().drop(columns = 'index')
+    changeMessages = []
+    issueMessages  = []
+
+    for i in range(considerCols.shape[0]):
+        considerCol = considerCols.loc[i, grouping]
+        considerColType = considerCols.loc[i, grouping+'Type']
+        # print(i, considerCol, considerColType)
+        
+        if considerCol in list(data):
+            # handle nans, datetime
+            if not pd.isna(considerColType):
+                try:
+                    if considerColType == 'datetime':
+                        data[considerCol]= pd.to_datetime(data[considerCol])
+                    else:
+                        data[considerCol]= data[considerCol].astype(considerColType)
+                    changeMessage = (considerCol+' -> type '+considerColType+'')
+                    changeMessages = changeMessages + [changeMessage]
+
+                except (ValueError, TypeError):
+                    data[considerCol]= data[considerCol].astype('string')
+                    issueMessage = ('Returned as string. '+considerCol+' could not be converted to '+considerColType)
+                    issueMessages = issueMessages + [issueMessage]
+
+            else: # i.e. if type == na
+                data[considerCol]= data[considerCol].astype('string')
+                issueMessage = (considerCol+' has no type specified (na). Returned as string.')
+                issueMessages = issueMessages + [issueMessage]
+
+    return(data, changeMessages, issueMessages)
+
+
+# 'metadata2018', colGroupings
+def check_col_types_all_groupings(
+    dfNameStr, 
+    colGroupings
+):
+    reTypedColumns = {
+        'Metadata': [], 
+        'Soil': [],
+        'Phenotype': [],
+        'Genotype': [],
+        'Management': [],
+        'Weather': []
+    }
+
+    for grouping in reTypedColumns.keys(): #['Metadata', 'Soil', 'Phenotype', 'Genotype', 'Management', 'Weather']:
+    #     print(grouping)
+
+        outputList = check_col_types(data = eval(dfNameStr), grouping = grouping, colGroupings = colGroupings)
+    #     updatedDf = outputList[0]
+
+        reTypedColumns[grouping] = outputList[0]
+
+        if outputList[1] != []:
+            write_log(pathString= '../data/external/'+'log_'+dfNameStr+'_changes.txt', 
+                      message = (grouping+' ========').encode())
+            for change in outputList[1]:
+                write_log(pathString= '../data/external/'+'log_'+dfNameStr+'_changes.txt', 
+                          message = change.encode())
+
+        if outputList[2] != []:
+            write_log(pathString= '../data/external/'+'log_'+dfNameStr+'_issues.txt', 
+                      message = (grouping+' ========').encode())
+            for issue in outputList[2]:
+                write_log(pathString= '../data/external/'+'log_'+dfNameStr+'_issues.txt', 
+                          message = issue.encode())
+
+    return(reTypedColumns)
+
+
+def check_col_types_all_groupings_across_tables(
+    metadataDfNameStr, # = 'metadata2018',
+    soilDfNameStr, # = 'soil2018',
+    weatherDfNameStr, # = 'weather2018',
+    managementDfNameStr, # = 'agro2018',
+    phenotypeDfNameStr, # = 'pheno2018',
+    genotypeDfNameStr, # = '',
+    colGroupings # = colGroupings
+):
+    metadataDict = []
+    soilDict = []
+    phenoDict = []
+    genoDict = []
+    agroDict = []
+    weatherDict = []
+
+    if metadataDfNameStr != '':
+        metadataDict = check_col_types_all_groupings(dfNameStr = metadataDfNameStr, 
+                                                     colGroupings = colGroupings)
+    if soilDfNameStr != '':
+        soilDict = check_col_types_all_groupings(dfNameStr = soilDfNameStr, 
+                                                 colGroupings = colGroupings)
+    if phenotypeDfNameStr != '':
+        phenoDict = check_col_types_all_groupings(dfNameStr = phenotypeDfNameStr, 
+                                                  colGroupings = colGroupings)
+    if genotypeDfNameStr != '':
+        genoDict = check_col_types_all_groupings(dfNameStr = genotypeDfNameStr, 
+                                                 colGroupings = colGroupings)
+    if managementDfNameStr != '':
+        agroDict = check_col_types_all_groupings(dfNameStr = managementDfNameStr , 
+                                                 colGroupings = colGroupings)
+    if weatherDfNameStr != '':
+        weatherDict = check_col_types_all_groupings(dfNameStr = weatherDfNameStr, 
+                                                    colGroupings = colGroupings)
+
+    outputList = [entry for entry in [metadataDict,
+                                      soilDict,
+                                      phenoDict,
+                                      genoDict, 
+                                      agroDict, 
+                                      weatherDict] if entry != {}]
+
+    return(outputList)
+
+def combine_dfDicts(
+    key, # = 'Metadata', 
+    dfDictList, # = [], #[metadataDict, soilDict, phenoDict, agroDict, weatherDict]
+    logfileName, # = 'combineMetadata',
+    colGroupings #= colGroupings
+):
+
+    desiredCols = list(colGroupings[key].dropna())
+    accumulator = pd.DataFrame()
+    
+    for dfDict in dfDictList:
+        if dfDict != []:
+            if accumulator.shape == (0,0):
+                accumulator = dfDict[key].loc[:, [col for col in list(dfDict[key]) if col in desiredCols]].drop_duplicates()
+            else:
+                temp = dfDict[key].loc[:, [col for col in list(dfDict[key]) if col in desiredCols]].drop_duplicates()
+                
+                # Only proceed if if there are more columns shared than just identifiers.
+                if [entry for entry in list(temp) if entry not in list(colGroupings['Keys'].dropna())] != []:
+
+                    # find mismatched columns
+                    downgradeToStr = [col for col in list(temp) if col in list(accumulator)]    
+#                     downgradeToStr = [col for col in downgradeToStr if type(temp[col][0]) != type(accumulator[col][0])]
+                    # This is not done as 
+                    # downgradeToStr = [col for col in downgradeToStr if temp[col].dtype != accumulator[col].dtype]
+                    # because doing so causes TypeError: Cannot interpret 'StringDtype' as a data type
+                    # see also https://stackoverflow.com/questions/65079545/compare-dataframe-columns-typeerror-cannot-interpret-stringdtype-as-a-data-t
+
+                    for col in downgradeToStr:
+                        accumulator[col] = accumulator[col].astype(str)
+                        temp[col] = temp[col].astype(str)
+
+                        logMessage = "Set to string:"+col
+                        write_log(pathString= '../data/external/'+'log_'+logfileName+'_changes.txt', 
+                                  message = logMessage.encode())
+
+                    # merge the now compatable dfs.
+                    accumulator= accumulator.merge(temp, how = 'outer').drop_duplicates()
+    return(accumulator)
+
+
+
+# combine_dfDicts(key, dfDictList, logfileName, colGroupings) -> accumulator
+#                   ^        ^
+#      e.g. 'metadata'       |_______________________________
+#                                                           \  
+# check_col_types_all_groupings_across_tables(              |
+# metadataDfNameStr, ... weatherDfNameStr, colGroupings) -> [metadataDict ... weatherDict] if entry != {}]
+#                                 |                          ^           
+#                                 v                          |    
+# check_col_types_all_groupings(dfNameStr, colGroupings) -> {'Metadata': [], 'Soil': [], 'Phenotype': [], 'Genotype': [], 'Management': [], 'Weather': []}
+#                                 |                                      ^
+#                                 v                                      |
+#               check_col_types(data, grouping, colGroupings) -> return(data, changeMessages, issueMessages)
+
+
+
+def delete_logs(pathString = '../data/external/'):
+    logs = glob.glob(pathString+'log*.txt') 
+    for log in logs:
+        os.remove(log)
+
+def write_log(pathString= '../data/external/logfile.txt', message = 'hello'):
+    # fileName = pathString.split(sep = '/')[-1]
+    # mk log file if it doesn't exist
+#     print(os.path.isfile(pathString))
+    if os.path.isfile(pathString) == False:
+        with open(pathString, 'wb') as textFile: 
+            # wb allows for unicode 
+            # only needed because there's a non-standard character in one of the column names
+            # https://www.kite.com/python/answers/how-to-write-unicode-text-to-a-text-file-in-python
+            textFile.write(''.encode("utf8"))
+    else:    
+        with open(pathString, "ab") as textFile:
+            textFile.write(message)
+            textFile.write('\n'.encode("utf8"))
+
+delete_logs(pathString = log_path)
+
+# rm database files
+# for filePath in glob.glob('../data/interim/*.db'):
+#     os.remove(filePath)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

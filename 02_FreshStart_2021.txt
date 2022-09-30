@@ -1,0 +1,947 @@
+# Imports ----
+import re
+import numpy as np # for np.nan
+import pandas as pd
+pd.set_option('display.max_columns', None)
+# import os   # for write_log, delete_logs
+import glob # for delete_all_logs
+from datetime import date, timedelta
+
+import json # for saving a dict to txt with json.dumps
+
+import pickle
+# import matplotlib as mpl
+# import matplotlib.pyplot as plt
+
+# Settings ----
+# Helper functions,remove if no longer needed
+def prlst(lst): 
+    "This is just a helper function to ease formating lists of strings with each entryon a different line."
+    print('[')
+    for e in lst:
+        if e != lst[-1]:
+            print("'"+e+"', ")
+        else:
+            print("'"+e+"'")
+    print(']')
+    
+def prlst2dct(lst): 
+    "This is just a helper function to ease formating lists of strings with each entryon a different line."
+    print('{')
+    for e in lst:
+        if e != lst[-1]:
+            print("'"+e+"': 'XXXXXXX', ")
+        else:
+            print("'"+e+"': 'XXXXXXX'")
+    print('}')
+    
+def dash80(dash = '-'): return ''.join([dash for e in range(80)])
+
+
+# prlst([])
+# prlst2dct([])
+# dash80()
+
+# 2021
+year_string = '2021'
+
+meta_path = './data/raw/GenomesToFields_G2F_data_2021/z._2021_supplemental_info/g2f_2021_field_metadata.csv'
+phno_path = './data/raw/GenomesToFields_G2F_data_2021/a._2021_phenotypic_data/g2f_2021_phenotypic_clean_data.csv' # also contains 'g2f_2021_phenotypic_raw_data.csv' 
+wthr_path = './data/raw/GenomesToFields_G2F_data_2021/b._2021_weather_data/g2f_2021_weather_cleaned.csv'
+soil_path = './data/raw/GenomesToFields_G2F_data_2021/c._2021_soil_data/g2f_2021_soil_data.csv'
+mgmt_path = './data/raw/GenomesToFields_G2F_data_2021/z._2021_supplemental_info/g2f_2021_agronomic_information.csv'
+
+
+meta = pd.read_csv(meta_path, encoding = "ISO-8859-1", low_memory=False)
+phno = pd.read_csv(phno_path, encoding = "ISO-8859-1", low_memory=False)
+wthr = pd.read_csv(wthr_path, encoding = "ISO-8859-1", low_memory=False)
+soil = pd.read_csv(soil_path, encoding = "ISO-8859-1", low_memory=False)
+mgmt = pd.read_csv(mgmt_path, encoding = "ISO-8859-1", low_memory=False)
+
+
+# meta.columns
+
+# Helper functions to match up the same data in different dataframes under different columns names
+
+
+
+
+# make a dictionary of column name : unique values
+def mk_uniq_val_dict(df1):
+    uniq_val_dict = {}
+    for df1_col in list(df1.columns):
+        uniq_val_dict.update({df1_col:set(df1[df1_col])})
+    return(uniq_val_dict)
+
+def pr_eq_list(lst1, lst2): return len(set(lst1) & set(lst2)) / len(set(lst1) | set(lst2))
+
+# take two dictionaries from `mk_uniq_val_dict` and a key to match, return a df of the n closest matches (based on set of column values)
+def mk_df_of_n_similar_cols(dct1, key_to_match, dct2, n = 1):
+    # key_to_match = 'Experiment_Code'        
+    lst = dct1[key_to_match]
+    # dct2 = dict1
+
+    keys = dct2.keys()
+    similarities = [pr_eq_list(lst, dct2[e]) for e in dct2.keys()]
+
+    similarityDf = pd.DataFrame(
+        zip(dct2.keys(), similarities), 
+        columns=['Column2', 'PrMatch']
+    ).sort_values('PrMatch', ascending=False)
+    
+    output = similarityDf.head(n)
+    output.insert(0, column = 'Column1', value = key_to_match)
+    return(output)
+
+# take two dictionaries from `mk_uniq_val_dict` and find the best match for each key in dict1 in dict2. 
+def mk_df_of_most_similar_cols(dict1, dict2):
+    return( pd.concat( [mk_df_of_n_similar_cols(dct1 = dict1, key_to_match = key, dct2 = dict2, n = 1) for key in dict1.keys() ]) )
+
+# Combine `mk_df_of_most_similar_cols` and `mk_uniq_val_dict` to find the closest matches between two columns in different dfs.
+# Should be helpful for finding columns with the same data but different names (e.g. Experiment vs Experiment_Code)
+def match_df_cols(df1, df2):
+    df1_cols = list(df1.columns)
+    df2_cols = list(df2.columns)
+
+    dict1 = mk_uniq_val_dict(df1)
+    dict2 = mk_uniq_val_dict(df2)
+    
+    return(mk_df_of_most_similar_cols(dict1, dict2))
+
+# match_df_cols(df1 = meta, df2 = soil)
+
+
+
+meta_name_dict = {
+# 'Experiment_Code': 'XXXXXXX', 
+# 'Treatment': 'XXXXXXX', 
+# 'City': 'XXXXXXX', 
+# 'Farm': 'XXXXXXX', 
+# 'Field': 'XXXXXXX', 
+'Trial_ID (Assigned by collaborator for internal reference)': 'Trial_ID', 
+'Soil_Taxonomic_ID and horizon description, if known': 'Soil_Taxonomic_ID', 
+'Weather_Station_Serial_Number (Last four digits, e.g. m2700s#####)': 'Weather_Station_Serial_Number', 
+'Weather_Station_Latitude (in decimal numbers NOT DMS)': 'Weather_Station_Latitude_Unit_Decimal', 
+'Weather_Station_Longitude (in decimal numbers NOT DMS)': 'Weather_Station_Longitude_Unit_Decimal', 
+'Date_weather_station_placed': 'Weather_Station_Placed_Unit_Datetime', 
+'Date_weather_station_removed': 'Weather_Station_Removed_Unit_Datetime', 
+'In-field weather station serial number': 'Weather_Station_In_Field_Serial_Number', 
+'In-field_weather_station_latitude (in decimal)': 'Weather_Station_In_Field_Latitude_Unit_Decimal', 
+'In-field_weather_station_longitude (in decimal)': 'Weather_Station_In_Field_Longitude_Unit_Decimal', 
+# 'Previous_Crop': 'XXXXXXX', 
+'Pre-plant_tillage_method(s)': 'Pre_Plant_Tillage', 
+'In-season_tillage_method(s)': 'Post_Plant_Tillage', 
+'Plot_length (center-alley to center-alley in feet)': 'Plot_Length_Unit_Feet', 
+'Alley_length (in inches)': 'Alley_Length_Unit_Inches', 
+'Row_spacing (in inches)': 'Row_Spacing_Unit_Inches', 
+'Type_of_planter (fluted cone; belt cone; air planter)': 'Planter_Type', 
+'Number_kernels_planted_per_plot (>200 seed/pack for cone planters)': 'Kernels_Per_Plot', 
+# 'System_Determining_Moisture': 'XXXXXXX', 
+# 'Pounds_Needed_Soil_Moisture': 'XXXXXXX', 
+'Latitude_of_Field_Corner_#1 (lower left)': 'Field_Latitude_BL', 
+'Longitude_of_Field_Corner_#1 (lower left)': 'Field_Longitude_BL', 
+'Latitude_of_Field_Corner_#2 (lower right)': 'Field_Latitude_BR', 
+'Longitude_of_Field_Corner_#2 (lower right)': 'Field_Longitude_BR', 
+'Latitude_of_Field_Corner_#3 (upper right)': 'Field_Latitude_TR', 
+'Longitude_of_Field_Corner_#3 (upper right)': 'Field_Longitude_TR', 
+'Latitude_of_Field_Corner_#4 (upper left)': 'Field_Latitude_TL', 
+'Longitude_of_Field_Corner_#4 (upper left)': 'Field_Longitude_TL', 
+'Cardinal_Heading_Pass_1': 'Cardinal_Heading', 
+'Local_Check_#1_Pedigree': 'Local_Check_Pedigree_1', 
+'Local_Check_#1_Source': 'Local_Check_Source_1', 
+'Local_Check_#2_Pedigree': 'Local_Check_Pedigree_2', 
+'Local_Check_#2_Source': 'Local_Check_Source_2', 
+'Local_Check_#3_Pedigree': 'Local_Check_Pedigree_3', 
+'Local_Check_#3_Source': 'Local_Check_Source_3', 
+'Local_Check_#4_Pedigree': 'Local_Check_Pedigree_4', 
+'Local_Check_#4_Source': 'Local_Check_Source_4', 
+'Local_Check_#5_Pedigree': 'Local_Check_Pedigree_5', 
+'Local_Check_#5_Source': 'Local_Check_Source_5', 
+'Issue/comment_#1': 'Comment_1', 
+'Issue/comment_#2': 'Comment_2', 
+'Issue/comment_#3': 'Comment_3', 
+'Issue/comment_#4': 'Comment_4', 
+'Issue/comment_#5': 'Comment_5', 
+'Issue/comment_#6': 'Comment_6', 
+'Issue/comment_#7': 'Comment_7', 
+'Issue/comment_#8': 'Comment_8', 
+'Issue/comment_#9': 'Comment_9', 
+'Issue/comment_#10': 'Comment_70'
+}
+
+phno_name_dict = {
+'Year': 'Year', 
+'Field-Location': 'Experiment_Code', 
+# 'State': 'XXXXXXX', 
+# 'City': 'XXXXXXX', 
+'Plot length (center-center in feet)': 'Plot_Length_Unit_Feet', 
+'Plot area (ft2)': 'Plot_Area_Unit_Feet2', 
+'Alley length (in inches)': 'Alley_Length_Unit_Inches', 
+'Row spacing (in inches)': 'Row_Spacing_Unit_Inches', 
+'Rows per plot': 'Rows_Per_Plot', 
+'# Seed per plot': 'Seeds_Per_Plot', 
+# 'Experiment': 'XXXXXXX', 
+# 'Source': 'XXXXXXX', 
+# 'Pedigree': 'XXXXXXX', 
+# 'Family': 'XXXXXXX', 
+# 'Tester': 'XXXXXXX', 
+# 'Replicate': 'XXXXXXX', 
+# 'Block': 'XXXXXXX', 
+# 'Plot': 'XXXXXXX', 
+# 'Plot_ID': 'XXXXXXX', 
+# 'Range': 'XXXXXXX', 
+# 'Pass': 'XXXXXXX', 
+'Date Plot Planted [MM/DD/YY]': 'Planted_Unit_Datetime', 
+'Date Plot Harvested [MM/DD/YY]': 'Harvested_Unit_Datetime', 
+'Anthesis [MM/DD/YY]': 'Anthesis_Unit_Datetime', 
+'Silking [MM/DD/YY]': 'Silking_Unit_Datetime', 
+'Anthesis [days]': 'Anthesis_Unit_Days', 
+'Silking [days]': 'Silking_Unit_Days', 
+'Plant Height [cm]': 'Plant_Height_Unit_cm', 
+'Ear Height [cm]': 'Ear_Height_Unit_cm', 
+'Stand Count [# of plants]': 'Stand_Count_Unit_Number', 
+'Root Lodging [# of plants]': 'Root_Lodging_Unit_Number', 
+'Stalk Lodging [# of plants]': 'Stalk_Lodging_Unit_Number', 
+'Grain Moisture [%]': 'Grain_Moisture_Unit_Percent', 
+'Test Weight [lbs]': 'Test_Weight_Unit_lbs', 
+'Plot Weight [lbs]': 'Plot_Weight_Unit_lbs', 
+'Grain Yield (bu/A)': 'Grain_Yield_Unit_bu_Per_A', 
+"Plot Discarded [enter 'yes' or blank]": 'Discarded', 
+'Comments': 'Phenotype_Comments', 
+# 'Filler': 'XXXXXXX', 
+'Snap [# of plants]': 'Snap_Unit_Number'
+}
+
+
+
+soil_name_dict = {
+# 'Grower': 'XXXXXXX', 
+'Location': 'Experiment_Code', 
+'Date Received': 'Recieved_Date_Unit_Datetime', 
+'Date Reported': 'Processed_Date_Unit_Datetime', 
+'E Depth': 'Depth_Unit_UNK', 
+'1:1 Soil pH': 'Soil_1_to_1_Unit_pH', 
+'WDRF Buffer pH': 'WDRF_Buffer_Unit_pH', 
+'1:1 S Salts mmho/cm': 'Soluable_Salts_Unit_mmho_Per_cm', 
+'Texture No': 'Texture_Number', 
+'Organic Matter LOI %': 'Organic_Matter_Unit_Percent', 
+'Nitrate-N ppm N': 'Nitrates_Unit_ppm', 
+'lbs N/A': 'N_per_Acre_Unit_lbs', 
+'Potassium ppm K': 'K_Unit_ppm', 
+'Sulfate-S ppm S': 'Sulfate_Unit_ppm', 
+'Calcium ppm Ca': 'Ca_Unit_ppm', 
+'Magnesium ppm Mg': 'Mg_Unit_ppm', 
+'Sodium ppm Na': 'Na_Unit_ppm', 
+'CEC/Sum of Cations me/100g': 'Cation_Exchange_Capacity', 
+'%H Sat': 'H_Sat_Unit_Percent', 
+'%K Sat': 'K_Sat_Unit_Percent', 
+'%Ca Sat': 'Ca_Sat_Unit_Percent', 
+'%Mg Sat': 'Mg_Sat_Unit_Percent', 
+'%Na Sat': 'Na_Sat_Unit_Percent', 
+'Mehlich P-III ppm P': 'Mehlich_PIII_P_Unit_ppm', 
+'% Sand': 'Sand_Unit_Percent', 
+'% Silt': 'Silt_Unit_Percent', 
+'% Clay': 'Clay_Unit_Percent', 
+# 'Texture': 'XXXXXXX', 
+'Comments': 'Soil_Comments'
+}
+
+
+wthr_name_dict = {
+'Field Location': 'Experiment_Code', 
+'Station ID': 'Weather_Station_ID', 
+'NWS Network': 'NWS_Network', 
+'NWS Station': 'NWS_Station', 
+'Date_key': 'Datetime', 
+# 'Month': 'XXXXXXX', 
+# 'Day': 'XXXXXXX', 
+# 'Year': 'XXXXXXX', 
+# 'Time': 'XXXXXXX', 
+'Temperature [C]': 'Temperature_Unit_C', 
+'Dew Point [C]': 'Dew_Point_Unit_C', 
+'Relative Humidity [%]': 'Relative_Humidity_Unit_Percent', 
+'Solar Radiation [W/m2]': 'Solar_Radiation_Unit_W_per_m2', 
+'Rainfall [mm]': 'Rainfall_Unit_mm', 
+'Wind Speed [m/s]': 'Wind_Speed_Unit_m_per_s', 
+'Wind Direction [degrees]': 'Wind_Direction_Unit_Degrees', 
+'Wind Gust [m/s]': 'Wind_Gust_Unit_m_per_s', 
+'Soil Temperature [C]': 'Soil_Temperature_Unit_C', 
+'Soil Moisture [%VWC]': 'Soil_Moisture_Unit_Percent_VWC', 
+'Soil EC [mS/cm]': 'Soil_EC_Unit_mS_per_cm', 
+'UV Light [uM/m2s]': 'UV_Light_Unit_uM_per_m2s', 
+'PAR [uM/m2s]': 'PAR_Unit_uM_per_m2s'
+}
+
+
+mgmt_name_dict = {
+'Location': 'Experiment_Code', 
+'Application_or_treatment': 'Application', 
+'Product_or_nutrient_applied': 'Product', 
+'Date_of_application': 'Date_Datetime', 
+'Quantity_per_acre': 'Amount_Per_Acre', 
+'Application_unit': 'Unit'
+}
+
+# match_df_cols(df1 = meta, df2 = soil)
+# set(meta.Experiment_Code), set(soil.Location)
+
+
+meta = meta.rename(columns=meta_name_dict)
+phno = phno.rename(columns=phno_name_dict)
+soil = soil.rename(columns=soil_name_dict)
+wthr = wthr.rename(columns=wthr_name_dict)
+mgmt = mgmt.rename(columns=mgmt_name_dict)
+
+# add indicator columns to help with debugging merge
+meta['meta'] = True
+phno['phno'] = True
+soil['soil'] = True
+wthr['wthr'] = True
+mgmt['mgmt'] = True
+
+[e.shape for e in [meta, phno, soil, wthr, mgmt]]
+
+# check Experiment_Code columns for any unexpected columns
+def find_unrecognized_experiments(column, return_all_exps = False):
+    known_exps = ['COH1', 'DEH1', 'GAH1', 'GAH2', 'GEH1', 'IAH1', 'IAH2', 'IAH3', 'IAH4', 'ILH1', 'INH1', 'MIH1', 'MNH1', 'NCH1', 'NEH1', 'NEH2', 'NEH3', 'NYH2', 'NYH3', 'NYS1', 'SCH1', 'TXH1', 'TXH2', 'TXH3', 'WIH1', 'WIH2', 'WIH3']
+    if return_all_exps:
+        known_exps.sort()
+        return(known_exps)
+    else:
+        unknown_exps = [str(e) for e in list(set(column)) if e not in known_exps]
+        unknown_exps.sort()
+        return(unknown_exps)
+
+# find_unrecognized_experiments(soil.Experiment_Code, print_all_exps=True)
+
+
+
+
+# sanitize Experiment Codes
+
+def sanitize_Experiment_Codes(df, simple_renames= {}, split_renames= {}):
+    # simple renames
+    for e in simple_renames.keys():
+        mask = (df.Experiment_Code == e)
+        df.loc[mask, 'Experiment_Code'] = simple_renames[e]
+
+    # splits
+    # pull out the relevant multiname rows, copy, rename, append
+    for e in split_renames.keys():
+        mask = (df.Experiment_Code == e)
+        temp = df.loc[mask, :] 
+
+        df = df.loc[~mask, :]
+        for e2 in split_renames[e]:
+            temp2 = temp.copy()
+            temp2['Experiment_Code'] = e2
+            df = df.merge(temp2, how = 'outer')
+
+    return(df)
+
+soil = sanitize_Experiment_Codes(
+    df = soil, 
+    simple_renames = {
+        'W1H1': 'WIH1', 
+        'W1H2': 'WIH2', 
+        'W1H3': 'WIH3'
+    }, 
+    split_renames = {
+        'NEH2_NEH3': ['NEH2', 'NEH3']
+    })
+
+wthr = sanitize_Experiment_Codes(
+    df = wthr, 
+    simple_renames = {
+    }, 
+    split_renames = {
+        'NEH2_NEH3': ['NEH2', 'NEH3'],
+        'NYH3_NYS1': ['NYS1', 'NYH3'],
+        'TXH1_TXH3': ['TXH1', 'TXH3']
+    })
+
+# confirm everything's okay
+print(
+  'meta', find_unrecognized_experiments(meta.Experiment_Code, return_all_exps=False), 
+'\nphno', find_unrecognized_experiments(phno.Experiment_Code, return_all_exps=False),
+'\nsoil', find_unrecognized_experiments(soil.Experiment_Code, return_all_exps=False),
+'\nwthr', find_unrecognized_experiments(wthr.Experiment_Code, return_all_exps=False),
+'\nmgmt', find_unrecognized_experiments(mgmt.Experiment_Code, return_all_exps=False),
+'\nall ', find_unrecognized_experiments([], return_all_exps=True)
+)  
+
+# # Independent variables
+# ## Constant in season
+
+
+# ## Variable over season
+
+
+# # Dependent variables
+# # phno
+# # Key indexing variables
+# 'Year', 'Experiment_Code', 'Range', 'Pass', 'Plot', 
+# # Location
+# 'State', 'City', 'Block', 'Plot_ID', 'Replicate',
+# # Treatment/mgmt info
+# 'Experiment', 
+# 'Plot_Length_Unit_Feet', 'Plot_Area_Unit_Feet2', 'Alley_Length_Unit_Inches',
+# 'Row_Spacing_Unit_Inches', 'Rows_Per_Plot', 'Seeds_Per_Plot',
+# # Genetic info
+# 'Source', 'Pedigree', 'Family', 'Tester', 
+# 'Filler',
+# # Plot info
+# 'Discarded',
+# 'Comments',  
+# # Response variables
+# 'Planted_Unit_Datetime',
+# 'Harvested_Unit_Datetime', 
+# 'Anthesis_Unit_Datetime', 'Silking_Unit_Datetime',
+# 'Anthesis_Unit_Days', 'Silking_Unit_Days', 'Plant_Height_Unit_cm',
+# 'Ear_Height_Unit_cm', 'Stand_Count_Unit_Number',
+# 'Root_Lodging_Unit_Number', 'Stalk_Lodging_Unit_Number',
+# 'Grain_Moisture_Unit_Percent', 'Test_Weight_Unit_lbs',
+# 'Plot_Weight_Unit_lbs', 'Grain_Yield_Unit_bu_Per_A', 
+# 'Snap_Unit_Number'
+
+# # Find minimum cols needed to index all rows
+# df = phno
+# id_cols = ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot',]
+# candidate_cols = ['State', 'City',
+#                  'Experiment', 'Source', 'Pedigree', 'Family', 'Tester', 'Replicate',
+#                   'Block',  'Plot_ID']
+# target = df.shape[0]
+
+# output = pd.DataFrame(zip(
+#     candidate_cols,
+#     [df.loc[:, id_cols+[e]].drop_duplicates().shape[0] for e in candidate_cols]
+#    ), columns=['Additional_ID', 'Uniq_Vals'])
+
+# output.assign(At_Target=lambda x:x.Uniq_Vals == target)
+
+
+
+# separate static and dynamic values
+sval = phno.merge(soil, how = 'outer')
+sval = sval.merge(meta, how = 'outer') # This introduces 3 sites that have no data
+# sval.shape # used to confirm nrow = #20574 + 3
+
+# these tables are different enought we'll keep them separate
+# mgmt
+# unfortunately we need multiples because at least one field treats different passes differently
+mgmt = phno.loc[:, ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot', 'phno']
+               ].drop_duplicates().merge(mgmt, how = 'outer')
+# confirm there are no rows in mgmt that are not in phno
+temp = mgmt.loc[(~mgmt.phno & mgmt.mgmt), :]
+if 0 != temp.shape[0]:
+    print(temp)
+else:
+    mgmt = mgmt.loc[mgmt.mgmt.notna(), :].drop(columns = 'phno')
+
+
+# wthr
+# There's only ever one weather station so we have to worry about imputation but not duplicates
+
+# Set each id col to a string
+for i in ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot']:
+    sval[i] = sval[i].astype('string')
+    mgmt[i]  =  mgmt[i].astype('string')
+    
+    if i not in ['Range', 'Pass', 'Plot']:
+        wthr[i]  =  wthr[i].astype('string')
+    
+    
+    
+
+# TODO make versions of `find_unconvertable_datetimes` for other datatype
+# make a function to find the unexpected entries so it's easy to write the santization code
+
+
+
+# in a column, report all the values causing errors OR an index of these values
+def find_unconvertable_datetimes(df_col, pattern = '%m/%d/%y', index = False):
+    datetime_errors = pd.to_datetime(pd.Series(df_col), format = pattern, errors='coerce').isna()
+    if index == True:
+        return(datetime_errors)
+    else:
+        # This is a interesting trick. Python's nan is not equal to itself.
+        # missing values can't become datetimes so nan is returned if there's a missing value
+        # This list comprehension removes nan (which is otherwise stubborn to remove) because nan != nan
+        return([e for e in list(set(df_col[datetime_errors])) if e == e]) 
+
+    
+def find_unconvertable_numerics(df_col, index = False):
+    numeric_errors = pd.to_numeric(pd.Series(df_col), errors='coerce').isna()
+    if index == True:
+        return(numeric_errors)
+    else:
+        # This is a interesting trick. Python's nan is not equal to itself.
+        # missing values can't become datetimes so nan is returned if there's a missing value
+        # This list comprehension removes nan (which is otherwise stubborn to remove) because nan != nan
+        return([e for e in list(set(df_col[numeric_errors])) if e == e]) 
+
+    
+# generalized version of `sanitize_Experiment_Codes`
+def sanitize_col(df, col, simple_renames= {}, split_renames= {}):
+    # simple renames
+    for e in simple_renames.keys():
+        mask = (df[col] == e)
+        df.loc[mask, col] = simple_renames[e]
+
+    # splits
+    # pull out the relevant multiname rows, copy, rename, append
+    for e in split_renames.keys():
+        mask = (df[col] == e)
+        temp = df.loc[mask, :] 
+
+        df = df.loc[~mask, :]
+        for e2 in split_renames[e]:
+            temp2 = temp.copy()
+            temp2[col] = e2
+            df = df.merge(temp2, how = 'outer')
+
+    return(df)
+
+
+# If the Imputation_Notes column doesnt exist, create it. So long as it wouldn't overwrite any imputation notes move each specified value and replace it with nan.
+def relocate_to_Imputation_Notes(df, col, val_list):
+    if not 'Imputation_Notes' in df.columns:
+        df.loc[:, 'Imputation_Notes'] = np.nan
+
+    for relocate in val_list:
+        mask = (df.loc[:, col] == relocate)
+        mask_Impute_Full = ((df.loc[:, 'Imputation_Notes'] == '') | (df.loc[:, 'Imputation_Notes'].isna()))
+        # check if this contains anyting
+        overwrite_danger = df.loc[(mask & ~mask_Impute_Full), 'Imputation_Notes']
+        if overwrite_danger.shape[0] > 0:
+            print("Warning! The following values will be overwritten. Skipping relocation.")
+            print(overwrite_danger)
+        else:
+            df.loc[(mask), 'Imputation_Notes'] = df.loc[(mask), col]
+            df.loc[(mask), col] = np.nan
+    return(df)
+
+
+
+# helper function so we can ask for a new column don't have to worry about overwritting a if it already exists 
+def safe_create_col(df, col_name):
+    if not col_name in df.columns:
+        df.loc[:, col_name] = np.nan
+    return(df)
+
+# little helper function to make this easier. Make all the columns in a list into dtype string.
+# require the column to exist to make this safe.
+# to make things even easier, use a list comprehension to pull out the keys in the *_col_dtype dict 
+# that have value of 'string'!
+def cols_astype_string(df, col_list):
+    for e in [ee for ee in col_list if ee in df.columns]:
+        df[e] = df[e].astype('string')
+    return(df)
+
+
+
+# TODO ignore columns that don't exist in the dataframe even if they're specified in the dict
+# For testing that sanitization was successful
+# a function to check the type of each column 
+# shouldn't _change_ anything, just report what I need to fix
+def check_df_dtype_expectations(df, dtype_dct):
+    found = pd.DataFrame(zip(
+        df.columns,
+        [str(df[e].dtype) for e in df.columns]
+    ), columns=['Column', 'dtype'])
+
+
+    expected = pd.DataFrame(zip(dtype_dct.keys(), dtype_dct.values()),
+                 columns=['Column', 'Expected_dtype']
+                )
+    mask = [True if e in df.columns else False for e in expected.Column]
+    expected = expected.loc[mask, ]
+    
+    out = found.merge(expected, how = 'outer')
+    out = out.assign(Pass = out.dtype == out.Expected_dtype)
+
+    print(str(sum(out.Pass))+'/'+str(len(out.Pass))+' Columns pass.')
+    return(out)
+
+# each df should get individual treatment with these steps. Probably most readable
+
+sval_col_dtypes = {
+    'Year': 'string', 
+    'Experiment_Code': 'string', 
+    'State': 'string', 
+    'City': 'string', 
+    'Plot_Length_Unit_Feet': 'float64', 
+    'Plot_Area_Unit_Feet2': 'float64', 
+    'Alley_Length_Unit_Inches': 'float64', 
+    'Row_Spacing_Unit_Inches': 'float64', 
+    'Rows_Per_Plot': 'float64', 
+    'Seeds_Per_Plot': 'float64', 
+    'Experiment': 'string', 
+    'Source': 'string', 
+    'Pedigree': 'string', 
+    'Family': 'string', 
+    'Tester': 'string', 
+    'Replicate': 'string', 
+    'Block': 'string', 
+    'Plot': 'string', 
+    'Plot_ID': 'string', 
+    'Range': 'string', 
+    'Pass': 'string', 
+    'Planted_Unit_Datetime': 'datetime64[ns]', 
+    'Harvested_Unit_Datetime': 'datetime64[ns]', 
+    'Anthesis_Unit_Datetime': 'datetime64[ns]', 
+    'Silking_Unit_Datetime': 'datetime64[ns]', 
+    'Anthesis_Unit_Days': 'float64', 
+    'Silking_Unit_Days': 'float64', 
+    'Plant_Height_Unit_cm': 'float64', 
+    'Ear_Height_Unit_cm': 'float64', 
+    'Stand_Count_Unit_Number': 'float64', 
+    'Root_Lodging_Unit_Number': 'float64', 
+    'Stalk_Lodging_Unit_Number': 'float64', 
+    'Grain_Moisture_Unit_Percent': 'float64', 
+    'Test_Weight_Unit_lbs': 'float64', 
+    'Plot_Weight_Unit_lbs': 'float64', 
+    'Grain_Yield_Unit_bu_Per_A': 'float64', 
+    'Discarded': 'bool', 
+    'Phenotype_Comments': 'string', 
+    'Filler': 'string', 
+    'Snap_Unit_Number': 'float64', 
+'phno': 'bool', 
+    'Grower': 'string', 
+    'Recieved_Date_Unit_Datetime': 'datetime64[ns]', 
+    'Processed_Date_Unit_Datetime': 'datetime64[ns]', 
+    'Depth_Unit_UNK': 'float64', 
+    'Soil_1_to_1_Unit_pH': 'float64', 
+    'WDRF_Buffer_Unit_pH': 'float64', 
+    'Soluable_Salts_Unit_mmho_Per_cm': 'float64', 
+    'Texture_Number': 'float64', 
+    'Organic_Matter_Unit_Percent': 'float64', 
+    'Nitrates_Unit_ppm': 'float64', 
+    'N_per_Acre_Unit_lbs': 'float64', 
+    'K_Unit_ppm': 'float64', 
+    'Sulfate_Unit_ppm': 'float64', 
+    'Ca_Unit_ppm': 'float64', 
+    'Mg_Unit_ppm': 'float64', 
+    'Na_Unit_ppm': 'float64', 
+    'Cation_Exchange_Capacity': 'float64', 
+    'H_Sat_Unit_Percent': 'float64', 
+    'K_Sat_Unit_Percent': 'float64', 
+    'Ca_Sat_Unit_Percent': 'float64', 
+    'Mg_Sat_Unit_Percent': 'float64', 
+    'Na_Sat_Unit_Percent': 'float64', 
+    'Mehlich_PIII_P_Unit_ppm': 'float64', 
+    'Sand_Unit_Percent': 'float64', 
+    'Silt_Unit_Percent': 'float64', 
+    'Clay_Unit_Percent': 'float64', 
+    'Texture': 'string', 
+    'Soil_Comments': 'string', 
+'soil': 'bool', 
+    'Treatment': 'string', 
+    'Farm': 'string', 
+    'Field': 'string', 
+    'Trial_ID': 'string', 
+    'Soil_Taxonomic_ID': 'string', 
+    'Weather_Station_Serial_Number': 'string', 
+    'Weather_Station_Latitude_Unit_Decimal': 'float64', 
+    'Weather_Station_Longitude_Unit_Decimal': 'float64', 
+    'Weather_Station_Placed_Unit_Datetime': 'datetime64[ns]', 
+    'Weather_Station_Removed_Unit_Datetime': 'datetime64[ns]', 
+    'Weather_Station_In_Field_Serial_Number': 'string', 
+    'Weather_Station_In_Field_Latitude_Unit_Decimal': 'float64', 
+    'Weather_Station_In_Field_Longitude_Unit_Decimal': 'float64', 
+    'Previous_Crop': 'string', 
+    'Pre_Plant_Tillage': 'string', 
+    'Post_Plant_Tillage': 'string', 
+    'Planter_Type': 'string', 
+    'Kernels_Per_Plot': 'float64', 
+    'System_Determining_Moisture': 'string', 
+    'Pounds_Needed_Soil_Moisture': 'float64', 
+    'Field_Latitude_BL': 'float64', 
+    'Field_Longitude_BL': 'float64', 
+    'Field_Latitude_BR': 'float64', 
+    'Field_Longitude_BR': 'float64', 
+    'Field_Latitude_TR': 'float64', 
+    'Field_Longitude_TR': 'float64', 
+    'Field_Latitude_TL': 'float64', 
+    'Field_Longitude_TL': 'float64', 
+    'Cardinal_Heading': 'float64', 
+    'Local_Check_Pedigree_1': 'string', 
+    'Local_Check_Source_1': 'string', 
+    'Local_Check_Pedigree_2': 'string', 
+    'Local_Check_Source_2': 'string', 
+    'Local_Check_Pedigree_3': 'string', 
+    'Local_Check_Source_3': 'string', 
+    'Local_Check_Pedigree_4': 'string', 
+    'Local_Check_Source_4': 'string', 
+    'Local_Check_Pedigree_5': 'string', 
+    'Local_Check_Source_5': 'string', 
+    'Comment_1': 'string', 
+    'Comment_2': 'string', 
+    'Comment_3': 'string', 
+    'Comment_4': 'string', 
+    'Comment_5': 'string', 
+    'Comment_6': 'string', 
+    'Comment_7': 'string', 
+    'Comment_8': 'string', 
+    'Comment_9': 'string', 
+    'Comment_70': 'string', 
+'meta': 'bool',
+    'Imputation_Notes': 'string'
+}
+
+wthr_col_dtypes = {
+    'Experiment_Code': 'string', 
+    'Weather_Station_ID': 'string', 
+    'NWS_Network': 'string', 
+    'NWS_Station': 'string', 
+    'Datetime': 'datetime64[ns]', 
+    'Month': 'string', 
+    'Day': 'string', 
+    'Year': 'string', 
+    'Time': 'string', 
+    'Temperature_Unit_C': 'float64', 
+    'Dew_Point_Unit_C': 'float64', 
+    'Relative_Humidity_Unit_Percent': 'float64', 
+    'Solar_Radiation_Unit_W_per_m2': 'float64', 
+    'Rainfall_Unit_mm': 'float64', 
+    'Wind_Speed_Unit_m_per_s': 'float64', 
+    'Wind_Direction_Unit_Degrees': 'float64', 
+    'Wind_Gust_Unit_m_per_s': 'float64', 
+    'Soil_Temperature_Unit_C': 'float64', 
+    'Soil_Moisture_Unit_Percent_VWC': 'float64', 
+    'Soil_EC_Unit_mS_per_cm': 'float64', 
+    'UV_Light_Unit_uM_per_m2s': 'float64', 
+    'PAR_Unit_uM_per_m2s': 'float64', 
+'wthr': 'bool',
+    'Imputation_Notes': 'string'
+}
+
+
+
+mgmt_col_dtypes = {
+    'Year': 'string',   
+    'Experiment_Code': 'string', 
+    'Range': 'string',
+    'Pass': 'string',
+    'Plot': 'string',
+    'Application': 'string', 
+    'Product': 'string', 
+    'Date_Datetime': 'datetime64[ns]', 
+    'Amount_Per_Acre': 'float64', 
+    'Unit': 'string', 
+'mgmt': 'bool',
+    'Imputation_Notes': 'string',
+    'Ingredient': 'string'
+}
+
+
+# convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.
+
+for e in ['Planted_Unit_Datetime', 
+    'Harvested_Unit_Datetime', 
+    'Anthesis_Unit_Datetime', 
+    'Silking_Unit_Datetime', 
+    'Recieved_Date_Unit_Datetime', 
+    'Processed_Date_Unit_Datetime', 
+    'Weather_Station_Placed_Unit_Datetime', 
+    'Weather_Station_Removed_Unit_Datetime'
+    ]:
+# find_unconvertable_datetimes(df_col=sval[e], pattern='%Y-%m-%d %H:%M', index=False)
+
+    sval['Datetime_Temp'] = pd.to_datetime(np.nan)
+
+    for code in list(sval.Experiment_Code.drop_duplicates()):
+    # code = list(sval.Experiment_Code.drop_duplicates())[0]
+        sval.loc[sval.Experiment_Code == code, 'Datetime_Temp'
+                 ] = pd.to_datetime(sval.loc[sval.Experiment_Code == code, e])
+
+    sval.loc[:, e] = sval.loc[:, 'Datetime_Temp'] 
+
+sval = sval.drop(columns = 'Datetime_Temp')
+
+# -> floats
+
+# [find_unconvertable_numerics(df_col = sval[e], index = False) for e in [
+#     'Alley_Length_Unit_Inches',
+# 'Row_Spacing_Unit_Inches',
+# 'Pounds_Needed_Soil_Moisture'
+# ]]
+
+sval = sanitize_col(
+    df = sval, 
+    col = 'Pounds_Needed_Soil_Moisture', 
+    simple_renames= {'3 to 4':'3.5'}, 
+    split_renames= {})
+
+# convert types
+for e in ['Alley_Length_Unit_Inches', 'Row_Spacing_Unit_Inches', 'Pounds_Needed_Soil_Moisture',
+         'Anthesis_Unit_Days', 'Silking_Unit_Days', 'Kernels_Per_Plot']:
+    err_list = find_unconvertable_numerics(df_col = sval[e], index = False)
+    if err_list != []:
+        print(e)
+        print(err_list)
+    else:
+        sval[e] = sval[e].astype('float')
+
+# to bool
+sval = sanitize_col(
+    df = sval, 
+    col = 'Discarded', 
+    simple_renames= {
+        'Yes':'True',
+        'yes':'True'}, 
+    split_renames= {})
+
+# set missing to false
+sval.loc[sval.Discarded.isna(), 'Discarded'] = 'False'
+sval.Discarded = sval.Discarded.map({'True': True, 'False': False})
+
+# to bool
+sval['phno'] = sval['phno'].astype('bool')
+sval['soil'] = sval['soil'].astype('bool')
+sval['meta'] = sval['meta'].astype('bool')
+
+# to string
+sval = cols_astype_string(
+    df = sval, 
+    col_list = [key for key in sval_col_dtypes.keys() if sval_col_dtypes[key] == 'string'])
+
+sval.Year = year_string
+sval.Year = sval.Year.astype('string')
+
+checkpoint = check_df_dtype_expectations(df = sval, dtype_dct = sval_col_dtypes)
+
+if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
+    pass
+else:
+    print(checkpoint)
+    print()
+
+# checkpoint.loc[~checkpoint.Pass, ]
+
+# instead of writing regexes to figure out the mose likely format for each datetime, we assume each experiment will be consistent withing that experiment
+# and let pd figure it out.
+# wthr['Datetime_Temp'] = pd.to_datetime(np.nan)
+
+# for code in list(wthr.loc[:, 'Experiment_Code'].drop_duplicates()):
+#     wthr.loc[wthr.Experiment_Code == code, 'Datetime_Temp'] = pd.to_datetime(wthr.loc[wthr.Experiment_Code == code, 'Datetime'], errors='coerce')
+
+
+# ... or we use the fields in the df to make a consistent format
+wthr = cols_astype_string(
+    df = wthr, 
+    col_list = ['Year', 'Month', 'Day', 'Time'])
+
+wthr = sanitize_col(
+    df = wthr,
+    col = 'Time', 
+    simple_renames= {'24:00:00': '00:00:00'}, # this could be day + 24 h instead of a miscoded day + 0 h
+    split_renames= {})
+
+wthr['Datetime_Temp'] = wthr['Year']+'-'+wthr['Month']+'-'+wthr['Day']+' '+wthr['Time']
+
+# convert types
+err_list = find_unconvertable_datetimes(df_col=wthr['Datetime_Temp'], pattern='%Y-%m-%d %H:%M', index=False)
+if err_list != []:
+    print(err_list)
+else:
+    wthr.Datetime_Temp = pd.to_datetime(pd.Series(wthr.Datetime_Temp), errors='coerce')
+    wthr.Datetime = wthr.Datetime_Temp
+    wthr = wthr.drop(columns= 'Datetime_Temp')
+
+# to string
+wthr = cols_astype_string(
+    df = wthr, 
+    col_list = [key for key in wthr_col_dtypes.keys() if wthr_col_dtypes[key] == 'string'])
+
+wthr.Year = year_string
+wthr.Year = wthr.Year.astype('string')
+
+checkpoint = check_df_dtype_expectations(df = wthr, dtype_dct = wthr_col_dtypes)
+
+if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
+    pass
+else:
+    print(checkpoint.loc[~checkpoint.Pass, ])
+
+mgmt = relocate_to_Imputation_Notes(df = mgmt, col = 'Date_Datetime', val_list= ['Before Planting'])
+
+mgmt = sanitize_col(
+    df = mgmt, 
+    col = 'Date_Datetime', 
+    simple_renames= {}, 
+    split_renames= {'6/24/21 for all but plots in pass 2; 7/5/21 for pass 2' : [
+                        '6/24/21 for all but plots in pass 2', '7/5/21 for pass 2']})
+
+# make corrections too one-off to fix with a funciton. 
+mask = ((mgmt.Date_Datetime == '6/24/21 for all but plots in pass 2') & (mgmt.Pass != 2.))
+mgmt.loc[mask, 'Date_Datetime'] = '6/24/21'
+# since we split without specifiying pass we need to remove any rows that still have the search string.
+# and overwrite the df
+mask = (mgmt.Date_Datetime == '6/24/21 for all but plots in pass 2')
+mgmt = mgmt.loc[~mask, :].copy()
+
+mask = ((mgmt.Date_Datetime == '7/5/21 for pass 2') & (mgmt.Pass == 2.))
+mgmt.loc[mask, 'Date_Datetime'] = '7/5/21'
+mask = (mgmt.Date_Datetime == '7/5/21 for pass 2')
+mgmt = mgmt.loc[~mask, :].copy()
+
+# convert types
+err_list = find_unconvertable_datetimes(df_col=mgmt.Date_Datetime, pattern='%m/%d/%y', index=False)
+if err_list != []:
+    print(err_list)
+else:
+    mgmt.Date_Datetime = pd.to_datetime(pd.Series(mgmt.Date_Datetime), format = '%m/%d/%y', errors='coerce')
+
+# mgmt.loc[find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = True), ]
+
+mgmt = sanitize_col(
+    df = mgmt, 
+    col = 'Amount_Per_Acre', 
+    simple_renames= {'170 lb (actual N)': '170 (N)'}, 
+    split_renames= {'51.75, 40.7, 111.7 (N,P,K)': ['51.75 (N)', '40.7 (P)', '111.7 (K)'],
+                    '31-150-138': ['31 (N)', '150 (P)', '138 (K)'],
+                    '16 (N), 41 (P)': ['16 (N)', '41 (P)']})
+
+mgmt = safe_create_col(mgmt, "Ingredient")
+mask = mgmt.Ingredient.isna()
+mgmt.loc[mask, 'Ingredient'] = mgmt.loc[mask, 'Product']
+
+# assume each string is formated as 'val (key)'. `sanitize_col` should be used to enforce this.
+for e in ['150 (P)', '36.6 (N)', '138 (K)', '111.7 (K)', '41 (P)', '16 (N)', '170 (N)', '35.7 (N)', '51.75 (N)', '31 (N)', '40.7 (P)']:
+    val = re.findall('^\d+[.]*\d*', e)[0]
+    key = re.findall('\(.+\)',      e)[0].replace('(', '').replace(')', '')
+    
+    mask = (mgmt['Amount_Per_Acre'] == e)
+    mgmt.loc[mask, 'Ingredient'] = key
+    mgmt.loc[mask, 'Amount_Per_Acre'] = val
+
+# convert types
+err_list = find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = False)
+if err_list != []:
+    print(err_list)
+else:
+    mgmt.Amount_Per_Acre = pd.to_numeric(mgmt.Amount_Per_Acre, errors='coerce')
+
+# list(mgmt.loc[:, 'Ingredient'].drop_duplicates())
+
+# to bool
+mgmt['mgmt'] = mgmt['mgmt'].astype('bool')
+
+# to string
+for e in [ee for ee in ['Application', 'Product', 'Ingredient', 'Unit', 'Imputation_Notes'] if ee in mgmt.columns]:
+    mgmt[e] = mgmt[e].astype('string')
+    
+
+mgmt.Year = year_string
+mgmt.Year = mgmt.Year.astype('string')
+
+check_df_dtype_expectations(df = mgmt, dtype_dct = mgmt_col_dtypes)
+
+def write_out_pkl(obj, path = './temp.pickle'):
+    with open(path, 'wb') as handle:
+        pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)   
+
+write_out_pkl(obj = sval, path = './data/interim/'+year_string+'sval.pickle')
+write_out_pkl(obj = wthr, path = './data/interim/'+year_string+'wthr.pickle')
+write_out_pkl(obj = mgmt, path = './data/interim/'+year_string+'mgmt.pickle')

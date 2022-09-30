@@ -1,0 +1,2537 @@
+# Imports ----
+import re
+import numpy as np # for np.nan
+import pandas as pd
+pd.set_option('display.max_columns', None)
+# import os   # for write_log, delete_logs
+import glob # for delete_all_logs
+from datetime import date, timedelta
+
+import json # for saving a dict to txt with json.dumps
+
+import pickle
+# import matplotlib as mpl
+# import matplotlib.pyplot as plt
+
+# Settings ----
+
+# remakeDaymet = False
+# remakeDaymet = True
+# findBestWeatherModels = False#True 
+# findBestWeatherModels = True
+
+log_path = './data/logs/' # '../data/external/'
+
+# def add_SiteYear(df):
+#     df['SiteYear'] = df['ExperimentCode'].astype(str) + '_' + df['Year'].astype(str)
+#     return(df)
+
+# metadata, 'Metadata', colGroupings
+def check_col_types(data, grouping, colGroupings
+):
+#     data = metadata
+#     grouping = 'Metadata'
+#     colGroupings = pd.read_csv('../data/external/UpdateColGroupings.csv')
+
+    considerCols = colGroupings.loc[colGroupings[grouping].notna(), (grouping, grouping+'Type')]
+    considerCols= considerCols.reset_index().drop(columns = 'index')
+    changeMessages = []
+    issueMessages  = []
+
+    for i in range(considerCols.shape[0]):
+        considerCol = considerCols.loc[i, grouping]
+        considerColType = considerCols.loc[i, grouping+'Type']
+        # print(i, considerCol, considerColType)
+        
+        if considerCol in list(data):
+            # handle nans, datetime
+            if not pd.isna(considerColType):
+                try:
+                    if considerColType == 'datetime':
+                        data[considerCol]= pd.to_datetime(data[considerCol])
+                    else:
+                        data[considerCol]= data[considerCol].astype(considerColType)
+                    changeMessage = (considerCol+' -> type '+considerColType+'')
+                    changeMessages = changeMessages + [changeMessage]
+
+                except (ValueError, TypeError):
+                    data[considerCol]= data[considerCol].astype('string')
+                    issueMessage = ('Returned as string. '+considerCol+' could not be converted to '+considerColType)
+                    issueMessages = issueMessages + [issueMessage]
+
+            else: # i.e. if type == na
+                data[considerCol]= data[considerCol].astype('string')
+                issueMessage = (considerCol+' has no type specified (na). Returned as string.')
+                issueMessages = issueMessages + [issueMessage]
+
+    return(data, changeMessages, issueMessages)
+
+
+# 'metadata2018', colGroupings
+def check_col_types_all_groupings(
+    dfNameStr, 
+    colGroupings
+):
+    reTypedColumns = {
+        'Metadata': [], 
+        'Soil': [],
+        'Phenotype': [],
+        'Genotype': [],
+        'Management': [],
+        'Weather': []
+    }
+
+    for grouping in reTypedColumns.keys(): #['Metadata', 'Soil', 'Phenotype', 'Genotype', 'Management', 'Weather']:
+    #     print(grouping)
+
+        outputList = check_col_types(data = eval(dfNameStr), grouping = grouping, colGroupings = colGroupings)
+    #     updatedDf = outputList[0]
+
+        reTypedColumns[grouping] = outputList[0]
+
+        if outputList[1] != []:
+            write_log(pathString= '../data/external/'+'log_'+dfNameStr+'_changes.txt', 
+                      message = (grouping+' ========').encode())
+            for change in outputList[1]:
+                write_log(pathString= '../data/external/'+'log_'+dfNameStr+'_changes.txt', 
+                          message = change.encode())
+
+        if outputList[2] != []:
+            write_log(pathString= '../data/external/'+'log_'+dfNameStr+'_issues.txt', 
+                      message = (grouping+' ========').encode())
+            for issue in outputList[2]:
+                write_log(pathString= '../data/external/'+'log_'+dfNameStr+'_issues.txt', 
+                          message = issue.encode())
+
+    return(reTypedColumns)
+
+
+def check_col_types_all_groupings_across_tables(
+    metadataDfNameStr, # = 'metadata2018',
+    soilDfNameStr, # = 'soil2018',
+    weatherDfNameStr, # = 'weather2018',
+    managementDfNameStr, # = 'agro2018',
+    phenotypeDfNameStr, # = 'pheno2018',
+    genotypeDfNameStr, # = '',
+    colGroupings # = colGroupings
+):
+    metadataDict = []
+    soilDict = []
+    phenoDict = []
+    genoDict = []
+    agroDict = []
+    weatherDict = []
+
+    if metadataDfNameStr != '':
+        metadataDict = check_col_types_all_groupings(dfNameStr = metadataDfNameStr, 
+                                                     colGroupings = colGroupings)
+    if soilDfNameStr != '':
+        soilDict = check_col_types_all_groupings(dfNameStr = soilDfNameStr, 
+                                                 colGroupings = colGroupings)
+    if phenotypeDfNameStr != '':
+        phenoDict = check_col_types_all_groupings(dfNameStr = phenotypeDfNameStr, 
+                                                  colGroupings = colGroupings)
+    if genotypeDfNameStr != '':
+        genoDict = check_col_types_all_groupings(dfNameStr = genotypeDfNameStr, 
+                                                 colGroupings = colGroupings)
+    if managementDfNameStr != '':
+        agroDict = check_col_types_all_groupings(dfNameStr = managementDfNameStr , 
+                                                 colGroupings = colGroupings)
+    if weatherDfNameStr != '':
+        weatherDict = check_col_types_all_groupings(dfNameStr = weatherDfNameStr, 
+                                                    colGroupings = colGroupings)
+
+    outputList = [entry for entry in [metadataDict,
+                                      soilDict,
+                                      phenoDict,
+                                      genoDict, 
+                                      agroDict, 
+                                      weatherDict] if entry != {}]
+
+    return(outputList)
+
+def combine_dfDicts(
+    key, # = 'Metadata', 
+    dfDictList, # = [], #[metadataDict, soilDict, phenoDict, agroDict, weatherDict]
+    logfileName, # = 'combineMetadata',
+    colGroupings #= colGroupings
+):
+
+    desiredCols = list(colGroupings[key].dropna())
+    accumulator = pd.DataFrame()
+    
+    for dfDict in dfDictList:
+        if dfDict != []:
+            if accumulator.shape == (0,0):
+                accumulator = dfDict[key].loc[:, [col for col in list(dfDict[key]) if col in desiredCols]].drop_duplicates()
+            else:
+                temp = dfDict[key].loc[:, [col for col in list(dfDict[key]) if col in desiredCols]].drop_duplicates()
+                
+                # Only proceed if if there are more columns shared than just identifiers.
+                if [entry for entry in list(temp) if entry not in list(colGroupings['Keys'].dropna())] != []:
+
+                    # find mismatched columns
+                    downgradeToStr = [col for col in list(temp) if col in list(accumulator)]    
+#                     downgradeToStr = [col for col in downgradeToStr if type(temp[col][0]) != type(accumulator[col][0])]
+                    # This is not done as 
+                    # downgradeToStr = [col for col in downgradeToStr if temp[col].dtype != accumulator[col].dtype]
+                    # because doing so causes TypeError: Cannot interpret 'StringDtype' as a data type
+                    # see also https://stackoverflow.com/questions/65079545/compare-dataframe-columns-typeerror-cannot-interpret-stringdtype-as-a-data-t
+
+                    for col in downgradeToStr:
+                        accumulator[col] = accumulator[col].astype(str)
+                        temp[col] = temp[col].astype(str)
+
+                        logMessage = "Set to string:"+col
+                        write_log(pathString= '../data/external/'+'log_'+logfileName+'_changes.txt', 
+                                  message = logMessage.encode())
+
+                    # merge the now compatable dfs.
+                    accumulator= accumulator.merge(temp, how = 'outer').drop_duplicates()
+    return(accumulator)
+
+
+
+# combine_dfDicts(key, dfDictList, logfileName, colGroupings) -> accumulator
+#                   ^        ^
+#      e.g. 'metadata'       |_______________________________
+#                                                           \  
+# check_col_types_all_groupings_across_tables(              |
+# metadataDfNameStr, ... weatherDfNameStr, colGroupings) -> [metadataDict ... weatherDict] if entry != {}]
+#                                 |                          ^           
+#                                 v                          |    
+# check_col_types_all_groupings(dfNameStr, colGroupings) -> {'Metadata': [], 'Soil': [], 'Phenotype': [], 'Genotype': [], 'Management': [], 'Weather': []}
+#                                 |                                      ^
+#                                 v                                      |
+#               check_col_types(data, grouping, colGroupings) -> return(data, changeMessages, issueMessages)
+
+
+
+def delete_logs(pathString = '../data/external/'):
+    logs = glob.glob(pathString+'log*.txt') 
+    for log in logs:
+        os.remove(log)
+
+def write_log(pathString= '../data/external/logfile.txt', message = 'hello'):
+    # fileName = pathString.split(sep = '/')[-1]
+    # mk log file if it doesn't exist
+#     print(os.path.isfile(pathString))
+    if os.path.isfile(pathString) == False:
+        with open(pathString, 'wb') as textFile: 
+            # wb allows for unicode 
+            # only needed because there's a non-standard character in one of the column names
+            # https://www.kite.com/python/answers/how-to-write-unicode-text-to-a-text-file-in-python
+            textFile.write(''.encode("utf8"))
+    else:    
+        with open(pathString, "ab") as textFile:
+            textFile.write(message)
+            textFile.write('\n'.encode("utf8"))
+
+delete_logs(pathString = log_path)
+
+# rm database files
+# for filePath in glob.glob('../data/interim/*.db'):
+#     os.remove(filePath)
+
+## Pull in info/data objects for converting names
+
+# def get_json_dict(path):
+#     with open(path) as f:
+#         dat = json.load(f)
+#     return(dat)
+
+# # gets the first item of the dict, returns the assoicated list
+# def get_json_list(path):
+#     dat = get_json_dict(path)
+#     # get only the 0th value
+#     dat = dat[list(dat.keys())[0]]
+#     return(dat)
+
+def load_pickle(path):
+    with open(path, 'rb') as f:
+        data = pickle.load(f)
+    return(data)
+
+# this is an unideal workaround that comes from some data having characters within the string (",","�","Ê","\xa0") that prevent using csv or json easily
+# Putting the conversions into a python script isn't as nice as a table but it's still plaintext so it can be version controlled easily.
+expectedExperimentCodes = load_pickle(path = "./data/manual/expectedExperimentCodes.pickle")
+replaceExperimentCodes  = load_pickle(path = "./data/manual/replaceExperimentCodes.pickle")
+expectedManagementCols  = load_pickle(path = "./data/manual/expectedManagementCols.pickle")
+newApplicationNames     = load_pickle(path = "./data/manual/newApplicationNames.pickle")
+expectedApplicationUnits= load_pickle(path = "./data/manual/expectedApplicationUnits.pickle")
+replaceApplicationUnits = load_pickle(path = "./data/manual/replaceApplicationUnits.pickle")
+newProductNames         = load_pickle(path = "./data/manual/newProductNames.pickle")
+
+## Generic data object template ====
+class data_obj:
+    def __init__(self, path = None, data = None):
+        self.path = path
+        self.data = data 
+        
+    def load_csv(self):
+        self.data = pd.read_csv(self.path, encoding = "ISO-8859-1", low_memory=False)
+        
+
+## Data type specific classes ====
+# metadata
+class meta_obj(data_obj):
+    pass
+
+# phenotype
+class phno_obj(data_obj):
+    pass
+
+# genotype
+class geno_obj(data_obj):
+    pass
+
+# weather
+class wthr_obj(data_obj):
+    pass
+
+# soil
+class soil_obj(data_obj):
+    pass
+
+# managment
+class mgmt_obj(data_obj):
+    pass
+
+## Combined yearly data release ====
+class g2f_year:
+    def __init__(self, 
+                 meta_path = None, 
+                 phno_path = None,  
+                 geno_path = None,  
+                 wthr_path = None, 
+                 soil_path = None,
+                 mgmt_path = None,
+                 year = None
+                ):        
+        self.meta = meta_obj(meta_path)
+        self.phno = phno_obj(phno_path)
+        self.geno = geno_obj(geno_path)
+        self.wthr = wthr_obj(wthr_path)
+        self.soil = soil_obj(soil_path)
+        self.mgmt = mgmt_obj(mgmt_path)
+        self.year = year
+
+    # load all the csvs that are provided. Ignore genotypic data for now.
+    def ready_csvs(self):
+        for entry in ['meta', 'phno', #'geno', 
+                                     'wthr', 'soil', 'mgmt']:
+            if getattr(self,  entry).path != None:
+                getattr(self, entry).load_csv()
+                
+    # Helper function mimicing `ready_csv`'s check for initialized 
+    def _get_active_attr(self):
+        active_attr = [entry for entry in ['meta', 'phno', #'geno', 
+                                          'wthr', 'soil', 'mgmt'
+                                         ] if type(getattr(self,  entry).data) != type(None)]
+        return(active_attr)
+                
+    
+    
+    
+    # want to standardize column names all at once _then_ we'll worry about bigger disagreements between years 
+    # e.g. make `Location` and `LOCATION` equivalent then worry about equivalence with `ExperimentLocation`
+    # This will give us a capitalized snake case while allowing special names (e.g. elements) to stay capitalized
+    def _transform_name(self, input):
+        def _transform_string(input):
+            if type(input) != str:
+                print("input must be a string")
+                return None
+            else:
+                transformed_string = input
+                # if there are multiple spaces in a replace them with 1
+                transformed_string = re.sub(' {2,}', ' ', transformed_string)
+                # remove space after % as in '% Silt'
+                transformed_string = re.sub('% ', '%', transformed_string)
+                transformed_string = re.sub(' %', '%', transformed_string)
+
+                # Split to Words
+                transformed_string = transformed_string.replace(' ', '_')
+                transformed_string = transformed_string.split('_')
+                # decapitalize words that are capitalized but a few words (e.g. elements)
+                # should be capitalized will be uncapitalized. Correct for this.
+                def _decapitalize(string): return (string[0].lower()+string[1:])
+                """
+                This list holds all of the okayed strings that we want to stay uppercase
+                """
+                ok_cap = ["ID","NWS", "LOI%", "N", "N/A", "K", "S", "H", "K", "Ca", "Mg", "Na", "P-III", "P"]
+                transformed_string = [e if e in ok_cap else _decapitalize(e)  for e in transformed_string]
+                transformed_string = '_'.join(transformed_string)
+                # Now recapitalize the first letter
+                transformed_string = transformed_string[0].capitalize()+transformed_string[1:]
+
+                return transformed_string
+
+        if type(input) == list:
+            return [_transform_string(e) for e in input]
+        else:
+            return _transform_string(input)
+    
+    # walk over all active dataframes and apply simple renaming transformations
+    def transform_all_names(self):
+        for entry in self._get_active_attr():
+                cols_list = getattr(self, entry).data.columns
+                cols_list = list(cols_list) 
+                getattr(self, entry).data = getattr(self, entry).data.rename(
+                    columns=dict(zip(cols_list,
+                                     self._transform_name(input = cols_list))))
+    
+    # This function acts to check if there are names in the csv that are not what we expect
+    # Year specific variations will be coerced to one of these when possible before standardizing them
+    def transform_all_names_check(self):
+        expected_cols_dict = {
+        'meta': [
+            'Experiment_code', 
+            'Treatment', 
+            'City', 
+            'Farm', 
+            'Field', 
+            'Trial_ID_(Assigned_by_collaborator_for_internal_reference)', 
+            'Soil_taxonomic_ID_and_horizon_description,_if_known', 
+            'Weather_station_serial_number_(Last_four_digits,_e.g._m2700s#####)', 
+            'Weather_station_latitude_(in_decimal_numbers_nOT_dMS)', 
+            'Weather_station_longitude_(in_decimal_numbers_nOT_dMS)', 
+            'Date_weather_station_placed', 
+            'Date_weather_station_removed', 
+            'In-field_weather_station_serial_number', 
+            'In-field_weather_station_latitude_(in_decimal)', 
+            'In-field_weather_station_longitude_(in_decimal)', 
+            'Previous_crop', 
+            'Pre-plant_tillage_method(s)', 
+            'In-season_tillage_method(s)', 
+            'Plot_length_(center-alley_to_center-alley_in_feet)', 
+            'Alley_length_(in_inches)', 
+            'Row_spacing_(in_inches)', 
+            'Type_of_planter_(fluted_cone;_belt_cone;_air_planter)', 
+            'Number_kernels_planted_per_plot_(>200_seed/pack_for_cone_planters)', 
+            'System_determining_moisture', 
+            'Pounds_needed_soil_moisture', 
+            'Latitude_of_field_corner_#1_(lower_left)', 
+            'Longitude_of_field_corner_#1_(lower_left)', 
+            'Latitude_of_field_corner_#2_(lower_right)', 
+            'Longitude_of_field_corner_#2_(lower_right)', 
+            'Latitude_of_field_corner_#3_(upper_right)', 
+            'Longitude_of_field_corner_#3_(upper_right)', 
+            'Latitude_of_field_corner_#4_(upper_left)', 
+            'Longitude_of_field_corner_#4_(upper_left)', 
+            'Cardinal_heading_pass_1', 
+            'Local_check_#1_pedigree', 
+            'Local_check_#1_source', 
+            'Local_check_#2_pedigree', 
+            'Local_check_#2_source', 
+            'Local_check_#3_pedigree', 
+            'Local_check_#3_source', 
+            'Local_check_#4_pedigree', 
+            'Local_check_#4_source', 
+            'Local_check_#5_pedigree', 
+            'Local_check_#5_source', 
+            'Issue/comment_#1', 
+            'Issue/comment_#2', 
+            'Issue/comment_#3', 
+            'Issue/comment_#4', 
+            'Issue/comment_#5', 
+            'Issue/comment_#6', 
+            'Issue/comment_#7', 
+            'Issue/comment_#8', 
+            'Issue/comment_#9', 
+            'Issue/comment_#10',
+            #2018
+            'Station_ID',
+            #2015
+            'LBS_for_test', 
+            'Date_Collected', 
+            'Preplant_herb', 
+            'Postplant_herb', 
+            'Total_N', 
+            'Total_P', 
+            'Total_K', 
+            'Fert_dates_1', 
+            'Fert_dates_2', 
+            'Fert_dates_3', 
+            'Fert_dates_4', 
+            'Fert_dates_5', 
+            'Fert_dates_6', 
+            'Fert_dates_7', 
+            'Fert_dates_8', 
+            'Type_of_fert',
+            # 2014
+            'Location_short', 
+            'Type', 
+            'Location', 
+            'Insecticide', 
+            'Pre-plant_herbicides', 
+            'Post-plant_herbicides', 
+            'Tillage_method', 
+            'Soil_test_type', 
+            'Soil_texture', 
+            'Soil_pH', 
+            'Total_nitrogen', 
+            'Total_phosphorus', 
+            'Total_potassium', 
+            'Nutrient_application_schedule', 
+            'Irrigated?', 
+            'Weather_station_includes_irrigation', 
+            'Fertigation_schedule', 
+            'Irrigation_schedule', 
+            'Local_check', 
+            'Date_plot_harvested_[MM/DD/YY]', 
+            'Date_plot_planted_[MM/DD/YY]', 
+            'Inbred_reps', 
+            'Inbred_plots', 
+            'Collaborators', 
+            'State'
+        ], 
+        'phno': [
+            'Year', 
+            'Field-Location', 
+            'State', 
+            'City', 
+            'Plot_length_(center-center_in_feet)', 
+            'Plot_area_(ft2)', 
+            'Alley_length_(in_inches)', 
+            'Row_spacing_(in_inches)', 
+            'Rows_per_plot', 
+            '#_seed_per_plot', 
+            'Experiment', 
+            'Source', 
+            'Pedigree', 
+            'Family', 
+            'Tester', 
+            'Replicate', 
+            'Block', 
+            'Plot', 
+            'Plot_ID', 
+            'Range', 
+            'Pass', 
+            'Date_plot_planted_[MM/DD/YY]', 
+            'Date_plot_harvested_[MM/DD/YY]', 
+            'Anthesis_[MM/DD/YY]', 
+            'Silking_[MM/DD/YY]', 
+            'Anthesis_[days]', 
+            'Silking_[days]', 
+            'Plant_height_[cm]', 
+            'Ear_height_[cm]', 
+            'Stand_count_[#_of_plants]', 
+            'Root_lodging_[#_of_plants]', 
+            'Stalk_lodging_[#_of_plants]', 
+            'Grain_moisture_[%]', 
+            'Test_weight_[lbs]', 
+            'Plot_weight_[lbs]', 
+            'Grain_yield_(bu/A)', 
+            "Plot_discarded_[enter_'yes'_or_blank]", 
+            'Comments', 
+            'Filler', 
+            'Snap_[#_of_plants]', 
+            'Kernels/Packet', 
+            "Filler_[enter_'filler'_or_blank]", 
+            'Possible_subs', 
+            'Confirmed_subs', 
+            'Single_plant_biomass_in_july(g)', 
+            'Single_plant_biomass_in_august(g)', 
+            'RootPullingForce(kgf)_july', 
+            'RootPullingForce(kgf)_august',
+            #2018
+            'RecId', 
+            'Local_check_(Yes,_no)', 
+            'Plot_length_field', 
+            'Plot_area', 
+            'Rows/Plot', 
+            'Packet/Plot', 
+            '#_seed', 
+            'Stand_[%]', 
+            'Root_lodging_[plants]', 
+            'Stalk_lodging_[plants]', 
+            'Plot_discarded_[enter_"Yes"_or_"blank"]', 
+            'Filler_[enter_"filler"_or_"blank"]', 
+            '[add_additional_measurements_here]',
+            #2016
+            'RecId', 
+            'Plot_area', 
+            'Rows/Plot', 
+            'Packet/Plot', 
+            'Kernels/Packet', 
+            '#_seed', 
+            'Plot_length_(center-alley_to_center-alley_in_feet)', 
+            'Additional_measurements',
+            #2015
+            'Alley_length_(in_feet)'
+        ], 
+        'geno': [], 
+        'wthr': [
+            'Field_location', 
+            'Station_ID', 
+            'NWS_network', 
+            'NWS_station', 
+            'Date_key', 
+            'Month', 
+            'Day', 
+            'Year', 
+            'Time', 
+            'Temperature_[C]', 
+            'Dew_point_[C]', 
+            'Relative_humidity_[%]', 
+            'Solar_radiation_[W/m2]', 
+            'Rainfall_[mm]', 
+            'Wind_speed_[m/s]', 
+            'Wind_direction_[degrees]', 
+            'Wind_gust_[m/s]', 
+            'Soil_temperature_[C]', 
+            'Soil_moisture_[%VWC]', 
+            'Soil_eC_[mS/cm]', 
+            'UV_light_[uM/m2s]', 
+            'PAR_[uM/m2s]',
+            # 2020
+            'CO2_[ppm]', 
+            # 2018
+            'Photoperiod_[hours]',
+            'Column_altered', 
+            'Altered_column_names', 
+            'Cleaning_method', 
+            'Comment',
+            # 2015
+            'Record_number', 'Location(s)', 'DOY', 'Datetime_[UTC]',
+            # 2014
+            'DOY'
+        ], 
+        'soil': [
+            'Grower', 
+            'Location', 
+            'Date_received', 
+            'Date_reported', 
+            'E_depth', 
+            '1:1_soil_pH', 
+            'WDRF_buffer_pH', 
+            '1:1_S_salts_mmho/cm', 
+            'Texture_no', 
+            'Organic_matter_LOI%', 
+            'Nitrate-N_ppm_N', 
+            'Lbs_N/A', 
+            'Potassium_ppm_K', 
+            'Sulfate-S_ppm_S', 
+            'Calcium_ppm_Ca', 
+            'Magnesium_ppm_Mg', 
+            'Sodium_ppm_Na', 
+            'CEC/Sum_of_cations_me/100g', 
+            '%H_sat', 
+            '%K_sat', 
+            '%Ca_sat', 
+            '%Mg_sat', 
+            '%Na_sat', 
+            'Mehlich_P-III_ppm_P', 
+            '%Sand', 
+            '%Silt', 
+            '%Clay', 
+            'Texture', 
+            'Comments',
+            #2016
+            'Zinc_ppm_Zn', 'Iron_ppm_Fe', 'Manganese_ppm_Mn', 'Copper_ppm_Cu', 'Boron_ppm_B',
+            # 2015
+            'Lab_id', 
+            'Lab_sample_id', 
+            'Date_Collected', 
+            'Cooperator', 
+            'Plow_depth', 
+            'PH', 
+            'BpH', 
+            'OM', 
+            'P', 
+            'K'
+        ], 
+        'mgmt': [
+            'Location', 
+            'Application_or_treatment', 
+            'Product_or_nutrient_applied', 
+            'Date_of_application', 
+            'Quantity_per_acre', 
+            'Application_unit',
+            # 2015
+            'Irrigation/Fertigation_(yes/no)', 
+            'Weather_station_documents_irrigation?_(yes/no)', 
+            'Nutrients_applied', 
+            'Notes'
+        ]
+    }
+
+
+
+
+
+
+        expected_cols_lol = [expected_cols_dict[e] for e in list(expected_cols_dict.keys())]
+        def _flatten_lol(lol): return [item for listWithin in lol for item in listWithin]
+        expected_cols_all = _flatten_lol(expected_cols_lol)
+        
+        for entry in ['meta', 'phno', 'geno', 'wthr', 'soil', 'mgmt']:
+            if type(getattr(self,  entry).data) == type(None):
+                print(entry+" is not initialized and None type.")
+            else:
+                expected_cols = expected_cols_dict[entry]
+                found_cols = list(getattr(self,  entry).data.columns)
+                
+                unexpected_cols = [e for e in found_cols if e not in expected_cols]
+                unexpected_cols_all = [e for e in unexpected_cols if e not in expected_cols_all]
+                
+                if unexpected_cols != []:
+                    print("Unexpected in "+entry)
+                    print(unexpected_cols)
+                if unexpected_cols_all != []:
+                    print("Unexpected in any table")
+                    print(unexpected_cols_all)
+                    
+    
+    # This is a function I expect to be overwritten with year specific subclasses.
+    # Year specific naming conventions will likely require case by case handling   
+    def standardize_all_transformed_names(self, entry):
+        pass
+    
+#     def standardize_all_cols(self):
+#         for entry in ['meta', 'phno', 'geno', 'wthr', 'soil', 'mgmt']:
+#             if type(getattr(self,  entry).data) == type(None):
+#                 print(entry+" is not initialized and None type.")
+#             else:
+#                 self.rename_id_cols(entry = entry)
+#                 print(entry+" ids renamed.")  
+    
+    
+    
+    def add_year_col_to_all(self):
+        for entry in ['meta', 'phno', 'geno', 'wthr', 'soil', 'mgmt']:
+            if type(getattr(self,  entry).data) == type(None):
+                print(entry+" is not initialized and None type.")
+            else:
+                getattr(self,  entry).data.loc[:, "Year"] = self.year
+        
+        
+    # This is a function I expect to be overwritten with year specific subclasses.
+    # Year specific naming conventions will likely require case by case handling
+    def rename_id_cols(self, entry):
+        if type(getattr(self,  entry).data) == type(None):
+            print(entry+" is not initialized and None type.")
+        else:
+            rename_id_dict = {}
+            
+            if entry == "meta":
+                rename_id_dict.update({
+                    'Experiment_code': 'Location'
+                })
+            if entry == "phno":
+                rename_id_dict.update({
+                    'Field-Location':'Location',
+                    'Replicate':'Replication'
+                })
+            if entry == "wthr":
+                rename_id_dict.update({
+                    'Field_location':'Location' ,
+                    'Date_key':'Date_Time'
+                })
+            if entry == "soil":
+                pass
+#                 rename_id_dict = rename_id_dict.update({
+                     
+#                 })
+            if entry == "mgmt":
+                rename_id_dict.update({
+                    #'Location': '', 
+                    'Application_or_treatment': 'Application', 
+                    'Product_or_nutrient_applied': 'Product',  
+                    'Date_of_application': 'Date', 
+                    'Quantity_per_acre': 'Quantity/acre', 
+                    'Application_unit': 'Unit'
+                })
+            
+            getattr(self,  entry).data = getattr(self,  entry).data.rename(columns = rename_id_dict)
+            
+    def rename_all_id_cols(self):
+        for entry in ['meta', 'phno', 'geno', 'wthr', 'soil', 'mgmt']:
+            if type(getattr(self,  entry).data) == type(None):
+                print(entry+" is not initialized and None type.")
+            else:
+                self.rename_id_cols(entry = entry)
+                print(entry+" ids renamed.")        
+    
+    def check_for_id_cols(self):
+        expected_ids_dict = {
+            'meta': ['Year', 'Location'                           ], 
+            'phno': ['Year', 'Location', 'Pedigree', 'Replication'],
+            'geno': [], 
+            'wthr': ['Year', 'Location', 'Date_Time'   ],
+            'soil': ['Year', 'Location'                           ],
+            'mgmt': ['Year', 'Location', 'Date',           'Product']
+        }
+        expected_cols_lol = [expected_ids_dict[e] for e in list(expected_ids_dict.keys())]
+        def _flatten_lol(lol): return [item for listWithin in lol for item in listWithin]
+        expected_cols_all = _flatten_lol(expected_cols_lol)
+        
+        for entry in ['meta', 'phno', 'geno', 'wthr', 'soil', 'mgmt']:
+            if type(getattr(self,  entry).data) == type(None):
+                print(entry+" is not initialized and None type.")
+            else:
+                expected_but_not_found = [e for e in expected_ids_dict[entry] if e not in getattr(self,  entry).data.columns]
+                if expected_but_not_found == []:
+                    pass
+                    #print('No missing id columns')
+                else:
+                    print(entry)
+                    print('Missing id columns: "'+'", "'.join(expected_but_not_found)+'"')  
+        
+                
+                
+    def _hide_comments(self): 
+        #     ## Update Column Names =====
+        #     # used in rename_columns()
+        #     def _update_col_names(self, df, nameDict):
+        #         changes = []
+
+        #         keysNotInDf = [key for key in nameDict.keys() if key not in list(df)]
+        #         for key in keysNotInDf:
+        #             for colName in [colName for colName in list(df) if colName in nameDict[key]]:
+        #                 df= df.rename(columns={colName: key})
+        #                 changes = changes + [(colName+' -> '+ key)]
+
+        #         issues = [colName for colName in list(df) if colName not in nameDict.keys()]
+
+        #         return([df, changes, issues])
+
+        #     # used in rename_all_columns()
+        #     def _rename_columns(
+        #         self,
+        #         dataIn,
+        #         colNamePath='./data/external/UpdateColNames.csv',
+        #         logfileName=''):
+
+        #         # Make col name update dict ===================================================
+        #         temp = pd.read_csv(colNamePath, low_memory=False) # <--- set because Rainfall is coded with numerics and string based na
+        #         temp = temp.loc[:, (['Standardized']+[entry for entry in list(temp) if entry.startswith('Alias')])]
+
+        #         # Turn slice of df into one to many dict
+        #         renamingDict = {}
+        #         for i in temp.index:
+        #             tempSlice = list(temp.loc[i, :].dropna())
+        #             renamingDict[tempSlice[0]] = tempSlice[1:]
+
+        #         # Update Column Names =========================================================
+        #         outputList = self._update_col_names(
+        #             df=dataIn,
+        #             nameDict= renamingDict)
+
+        #         updatedDf = outputList[0]
+        #         dfChanges = outputList[1]
+        #         dfIssues = outputList[2]
+
+        #         # Write logs ==================================================================
+        #         # TODO bring write_log into class
+        #         for change in dfChanges:
+        #             write_log(pathString='./data/logs/log_'+logfileName+'_changes.txt',
+        #                       message=str(change).encode("utf8"))
+
+        #         for issue in dfIssues:
+        #             write_log(pathString='./data/logs/log_'+logfileName+'_issues.txt',
+        #                       message=('Not defined: "'+str(issue)+'"').encode("utf8"))
+        #         return(updatedDf)
+
+        #     def rename_all_columns(self,
+        #                            colNamePath='./data/external/UpdateColNames.csv',
+        #                            logfileName=''
+        #                           ):
+        #         for entry in self._get_active_attr():
+        #             getattr(self, entry).data = self._rename_columns(dataIn=getattr(self, entry).data,
+        #                                                              colNamePath=colNamePath,
+        #                                                              logfileName=logfileName)
+        #     ## Regroup Columns ====
+        #     def sort_cols_in_dfs(self,
+        #                      colGroupingsPath = './data/external/UpdateColGroupings.csv' 
+        #                     ):
+        #         colGroupings = pd.read_csv(colGroupingsPath)
+        #         inputData = [getattr(self, entry).data for entry in self._get_active_attr()]
+
+        #         keyCols= list((colGroupings.Keys).dropna())
+        #         groupings= [col for col in list(colGroupings) if ((col.endswith('Type') == False) & (col != 'Keys'))]
+
+        #         groupingAccumulators = {} #groupings.copy()
+
+        #         # i = 0
+        #         # j = 0
+
+        #         for j in range(len(groupings)):
+        #             #keepTheseCols = keyCols+list(colGroupings[groupings[j]].dropna())
+        #             keepTheseCols = list(colGroupings[groupings[j]].dropna())
+        #             accumulator = pd.DataFrame()
+        #             for i in range(len(inputData)):
+        #                 data = inputData[i]
+        #                 data = data.loc[:, [entry for entry in list(data) if entry in keepTheseCols]].drop_duplicates()
+
+        #                 # this will hopefully prevent dropping data that is text in datetime or numeric cols.
+        #                 # And then we don't have to worry about merging by like types here!
+        #                 data = data.astype(str)
+
+        #                 if ((accumulator.shape[0] == 0) | (accumulator.shape[1] == 0) ):
+        #                     accumulator = data
+        #                 elif ((data.shape[0] > 0) & (data.shape[1] > 0)) :
+        #     #                 print(list(accumulator))
+        #     #                 print(list(data))
+        #     #                 print('\n')
+        #                     accumulator = accumulator.merge(data, how = 'outer')
+
+        #                 currentGrouping = groupings[j] # string about to be replace
+        #                 #     groupingAccumulators[j] = {currentGrouping : accumulator}
+        #                 #     groupingAccumulators = groupingAccumulators + {currentGrouping : accumulator}
+
+        #                 groupingAccumulators.update({currentGrouping : accumulator})
+
+        #         return(groupingAccumulators) 
+        pass
+
+def prlst(lst): 
+    "This is just a helper function to ease formating lists of strings with each entryon a different line."
+    print('[')
+    for e in lst:
+        if e != lst[-1]:
+            print("'"+e+"', ")
+        else:
+            print("'"+e+"'")
+    print(']')
+    
+def prlst2dct(lst): 
+    "This is just a helper function to ease formating lists of strings with each entryon a different line."
+    print('{')
+    for e in lst:
+        if e != lst[-1]:
+            print("'"+e+"': 'XXXXXXX', ")
+        else:
+            print("'"+e+"': 'XXXXXXX'")
+    print('}')
+    
+    
+prlst([])
+# prlst2dct([])
+
+
+
+
+
+# Year specific subclasses ----
+class g2f_2021(g2f_year):
+    # no year specific renames because we're bringing everything up to 2021 as a standard
+    pass
+
+class g2f_2020(g2f_year):
+    pass
+
+class g2f_2019(g2f_year):
+    def standardize_all_transformed_names(self):
+        for entry in ['meta', 'phno', #'geno', 
+                      'wthr', 'soil', 'mgmt']:
+            if type(getattr(self,  entry).data) == type(None):
+                print(entry+" is not initialized and None type.")
+            else:
+                rename_cols_dict = {}
+                drop_cols_list = []
+
+                if entry == "meta":
+                    rename_cols_dict.update({
+                    })
+                if entry == "phno":
+                    rename_cols_dict.update({
+                        'Number_kernels_planted_per_plot_(>200_seed/pack_for_cone_planters)': 'Kernels/Packet', #2021.meta
+                        "Filler_[enter_'filler'_or_blank]": 'Filler'
+                    })
+                if entry == "wthr":
+                    rename_cols_dict.update({
+                    })
+                if entry == "soil":
+                    rename_cols_dict.update({
+                    })
+                if entry == "mgmt":
+                    rename_cols_dict.update({
+                    })
+
+                getattr(self,  entry).data = getattr(self,  entry).data.rename(columns = rename_cols_dict)
+
+                if drop_cols_list != []:
+                    getattr(self,  entry).data = getattr(self,  entry).data.drop(drop_cols_list, axis=1)
+                
+class g2f_2018(g2f_year):
+    def standardize_all_transformed_names(self):
+        for entry in ['meta', 'phno', #'geno', 
+                      'wthr', 'soil', 'mgmt']:
+            if type(getattr(self,  entry).data) == type(None):
+                print(entry+" is not initialized and None type.")
+            else:
+                rename_cols_dict = {}
+                drop_cols_list = []
+
+                if entry == "meta":
+                    rename_cols_dict.update({
+                        'Weather_station_serial_number_(Last_four_digits,_e.g.\xa0m2700s#####)': 'Station_ID'
+                    })
+                if entry == "phno":
+                    rename_cols_dict.update({
+                        # 'RecId': '', 
+                        'Tester/Group': 'Tester', 
+                        # 'Local_check_(Yes,_no)': '', 
+                        # 'Plot_length_field': '', 
+                        'Alley_length': 'Alley_length_(in_inches)', 
+                        'Row_spacing': 'Row_spacing_(in_inches)', 
+                        # 'Plot_area': '', 
+                        # 'Rows/Plot': '', 
+                        # 'Packet/Plot': '', 
+                        # 'Kernels/Packet': '', 
+                        # '#_seed': '', 
+                        'Date_planted': 'Date_plot_planted_[MM/DD/YY]', 
+                        'Date_harvested': 'Date_plot_harvested_[MM/DD/YY]', 
+                        'Anthesis_[date]': 'Anthesis_[MM/DD/YY]', 
+                        'Silking_[date]': 'Silking_[MM/DD/YY]', 
+                        'Pollen_dAP_[days]': 'Anthesis_[days]', 
+                        'Silk_dAP_[days]': 'Silking_[days]', 
+                        'Stand_count_[plants]': 'Stand_count_[#_of_plants]', 
+                        # 'Stand_[%]': '', 
+                        # 'Root_lodging_[plants]': '', 
+                        # 'Stalk_lodging_[plants]': '', 
+                        'Test_weight_[lbs/bu]': 'Plot_weight_[lbs]', 
+                        'Grain_yield_[bu/A]': 'Grain_yield_(bu/A)'#, 
+                        # 'Plot_discarded_[enter_"Yes"_or_"blank"]': '', 
+                        # 'Filler_[enter_"filler"_or_"blank"]': '', 
+                        # '[add_additional_measurements_here]': '',
+                    })
+                if entry == "wthr":
+                    rename_cols_dict.update({
+                        'UVL_(uM/m^2s)': 'UV_light_[uM/m2s]', 
+                        'Photoperiod_[_hours]': 'Photoperiod_[hours]'
+                    })
+
+                    drop_cols_list = ['Ï»¿Record_number']
+                if entry == "soil":
+                    rename_cols_dict.update({
+                        'Field_ID': 'Location',
+                        'Date_recieved': 'Date_received'
+                    })
+                if entry == "mgmt":
+                    rename_cols_dict.update({
+                    })
+
+                getattr(self,  entry).data = getattr(self,  entry).data.rename(columns = rename_cols_dict)
+
+                if drop_cols_list != []:
+                    getattr(self,  entry).data = getattr(self,  entry).data.drop(drop_cols_list, axis=1)
+            
+class g2f_2017(g2f_year):
+    def standardize_all_transformed_names(self):
+        for entry in ['meta', 'phno', #'geno', 
+                      'wthr', 'soil', 'mgmt']:
+            if type(getattr(self,  entry).data) == type(None):
+                print(entry+" is not initialized and None type.")
+            else:
+                rename_cols_dict = {}
+                drop_cols_list = []
+
+                if entry == "meta":
+                    rename_cols_dict.update({
+                        'Weather_station_serial_number_(Last_four_digits,_e.g.\xa0m2700s#####)': 'Weather_station_serial_number_(Last_four_digits,_e.g._m2700s#####)'
+                    })
+                if entry == "phno":
+                    rename_cols_dict.update({
+                        'LOCAL_cHECK_(Yes,_no[Blank])': 'Local_check_(Yes,_no)', 
+                        'Alley_length': 'Alley_length_(in_inches)', 
+                        'Row_spacing': 'Row_spacing_(in_inches)', 
+                        'Date_planted': 'Date_plot_planted_[MM/DD/YY]', 
+                        'Date_harvested': 'Date_plot_harvested_[MM/DD/YY]', 
+                        'Anthesis_[date]': 'Anthesis_[MM/DD/YY]', 
+                        'Silking_[date]': 'Silking_[MM/DD/YY]', 
+                        'Pollen_dAP_[days]': 'Anthesis_[days]', 
+                        'Silk_dAP_[days]': 'Silking_[days]', 
+                        'Stand_count_[plants]': 'Stand_count_[#_of_plants]', 
+                        'Test_weight_[lbs/bu]': 'Test_weight_[lbs]', 
+                        'Grain_yield_[bu/A]': 'Grain_yield_(bu/A)', 
+                        'Plot_discarded_[enter_"yes"_or_"blank"]': "Plot_discarded_[enter_'yes'_or_blank]"
+                    })
+                    drop_cols_list = ['Ï»¿Year']
+                if entry == "wthr":
+                    rename_cols_dict.update({
+                    })
+                if entry == "soil":
+                    rename_cols_dict.update({
+                    })
+                if entry == "mgmt":
+                    rename_cols_dict.update({
+                    })
+
+                getattr(self,  entry).data = getattr(self,  entry).data.rename(columns = rename_cols_dict)
+
+                if drop_cols_list != []:
+                    getattr(self,  entry).data = getattr(self,  entry).data.drop(drop_cols_list, axis=1)
+                    
+class g2f_2016(g2f_year):
+    def standardize_all_transformed_names(self):
+        for entry in ['meta', 'phno', #'geno', 
+                      'wthr', 'soil', 'mgmt']:
+            if type(getattr(self,  entry).data) == type(None):
+                print(entry+" is not initialized and None type.")
+            else:
+                rename_cols_dict = {}
+                drop_cols_list = []
+
+                if entry == "meta":
+                    rename_cols_dict.update({
+                        'Weather_station_serial_number_(Last_four_digits,_e.g.\xa0m2700s#####)': 'Weather_station_serial_number_(Last_four_digits,_e.g._m2700s#####)'
+                    })
+                if entry == "phno":
+                    rename_cols_dict.update({
+                        'LOCAL_cHECK_(Yes,_no[Blank])': 'Local_check_(Yes,_no)', 
+                        'Plot_length_field': 'Plot_length_(center-alley_to_center-alley_in_feet)', 
+                        'Alley_length': 'Alley_length_(in_inches)', 
+                        'Row_spacing': 'Row_spacing_(in_inches)', 
+                        'Date_planted': 'Date_plot_planted_[MM/DD/YY]', 
+                        'Date_harvested': 'Date_plot_harvested_[MM/DD/YY]', 
+                        'Anthesis_[date]': 'Anthesis_[MM/DD/YY]', 
+                        'Silking_[date]': 'Silking_[MM/DD/YY]', 
+                        'Pollen_dAP_[days]': 'Anthesis_[days]', 
+                        'Silk_dAP_[days]': 'Silking_[days]', 
+                        'Stand_count_[plants]': 'Stand_count_[#_of_plants]', 
+                        'Root_lodging_[plants]': 'Root_lodging_[#_of_plants]', 
+                        'Stalk_lodging_[plants]': 'Stalk_lodging_[#_of_plants]', 
+                        'Test_weight_[lbs/bu]': 'Test_weight_[lbs]', 
+                        'Grain_yield_[bu/A]': 'Grain_yield_(bu/A)', 
+                        'Plot_discarded_[enter_"yes"_or_"blank"]': "Plot_discarded_[enter_'yes'_or_blank]", 
+                        'Filler_[enter_"filler"_or_"blank"]': 'Filler', 
+                        '[add_additional_measurements_here]': 'Additional_measurements'
+                    })
+                    drop_cols_list = ['Ï»¿Year']
+                if entry == "wthr":
+                    rename_cols_dict.update({
+                        'Time[Local]': 'Time', 
+                        'Rainfall[mm]': 'Rainfall_[mm]', 
+                        'Photoperiod[hours]': 'Photoperiod_[hours]'
+                    })
+                if entry == "soil":
+                    rename_cols_dict.update({
+                        'Zinc_ppm_zn': 'Zinc_ppm_Zn', 
+                        'Iron_ppm_fe': 'Iron_ppm_Fe', 
+                        'Manganese_ppm_mn': 'Manganese_ppm_Mn', 
+                        'Copper_ppm_cu': 'Copper_ppm_Cu', 
+                        'Boron_ppm_b': 'Boron_ppm_B'
+                    })
+                    drop_cols_list = ['Sample_type']
+                if entry == "mgmt":
+                    rename_cols_dict.update({
+                        'Experiment_code': 'Location', 
+                        'Product/Nutrient_applied': 'Quantity_per_acre', 
+                        'Application_unit\n(lbs,_in,_oz_per_acre)': 'Application_unit'
+                    })
+                    drop_cols_list = ['Record_order', 'Record_ID']
+
+                getattr(self,  entry).data = getattr(self,  entry).data.rename(columns = rename_cols_dict)
+
+                if drop_cols_list != []:
+                    getattr(self,  entry).data = getattr(self,  entry).data.drop(drop_cols_list, axis=1)
+class g2f_2015(g2f_year):
+    def standardize_all_transformed_names(self):
+        for entry in ['meta', 'phno', #'geno', 
+                      'wthr', 'soil', 'mgmt']:
+            if type(getattr(self,  entry).data) == type(None):
+                print(entry+" is not initialized and None type.")
+            else:
+                rename_cols_dict = {}
+                drop_cols_list = []
+
+                if entry == "meta":
+                    rename_cols_dict.update({
+                        'Experiment': 'Location',  
+                        'WS_sN': 'Weather_station_serial_number_(Last_four_digits,_e.g._m2700s#####)', 
+                        'WS_lat': 'Weather_station_latitude_(in_decimal_numbers_nOT_dMS)',
+                        'WS_lon': 'Weather_station_longitude_(in_decimal_numbers_nOT_dMS)', 
+                        'DateIn': 'Date_weather_station_placed', 
+                        'DateOut': 'Date_weather_station_removed', 
+                        'Tillage': 'Pre-plant_tillage_method(s)', 
+                        'PlotLen': 'Plot_length_(center-alley_to_center-alley_in_feet)', 
+                        'AlleyLen': 'Alley_length_(in_inches)', 
+                        'RowSp': 'Row_spacing_(in_inches)', 
+                        'PlanterType': 'Type_of_planter_(fluted_cone;_belt_cone;_air_planter)', 
+                        'KernelsPerPlot': 'Number_kernels_planted_per_plot_(>200_seed/pack_for_cone_planters)', 
+                        'Moisture_meter': 'System_determining_moisture', 
+                        'Corner1_lat': 'Latitude_of_field_corner_#1_(lower_left)', 
+                        'Corner1_lon': 'Longitude_of_field_corner_#1_(lower_left)', 
+                        'Corner_2lat': 'Latitude_of_field_corner_#2_(lower_right)', 
+                        'Corner2_lon': 'Longitude_of_field_corner_#2_(lower_right)',
+                        'Corner3_lat': 'Latitude_of_field_corner_#3_(upper_right)', 
+                        'Corner3_lon': 'Longitude_of_field_corner_#3_(upper_right)', 
+                        'Corner4_lat': 'Latitude_of_field_corner_#4_(upper_left)', 
+                        'Corner4_lon': 'Longitude_of_field_corner_#4_(upper_left)', 
+                        'Cardinal': 'Cardinal_heading_pass_1', 
+                        'Date_of_soil_sampling': 'Date_Collected', 
+                    })
+                    
+                    drop_cols_list = []
+                if entry == "phno":
+                    rename_cols_dict.update({ 
+                        'LOCAL_cHECK_(Yes,_no[Blank])': 'Local_check_(Yes,_no)', 
+                        'Plot_length_field_(center_to_center_in_feet)': 'Plot_length_(center-alley_to_center-alley_in_feet)', 
+                        'Alley_length_(feet)': 'Alley_length_(in_feet)', 
+                        'Row_spacing_(inches)': 'Row_spacing_(in_inches)', 
+                        'Date_planted': 'Date_plot_planted_[MM/DD/YY]', 
+                        'Date_harvested': 'Date_plot_harvested_[MM/DD/YY]', 
+                        'Anthesis_[date]': 'Anthesis_[MM/DD/YY]', 
+                        'Silking_[date]': 'Silking_[MM/DD/YY]', 
+                        'Pollen_dAP_[days]': 'Anthesis_[days]', 
+                        'Silk_dAP_[days]': 'Silking_[days]', 
+                        'Stand_count_[plants]': 'Stand_count_[#_of_plants]', 
+                        'Root_lodging_[plants]': 'Root_lodging_[#_of_plants]', 
+                        'Stalk_lodging_[plants]': 'Stalk_lodging_[#_of_plants]', 
+                        'Test_weight_[lbs/bu]': 'Test_weight_[lbs]', 
+                        'Grain_yield_[bu/A]': 'Grain_yield_(bu/A)', 
+                        'Plot_discarded_[enter_"yes"_or_"blank"]': "Plot_discarded_[enter_'yes'_or_blank]", 
+                        'Filler_[enter_"filler"_or_"blank"]': 'Filler', 
+                        '[add_additional_measurements_here]': 'Additional_measurements'
+                    })
+                    drop_cols_list = []
+                if entry == "wthr":
+                    rename_cols_dict.update({
+                        'Record_number': 'Record_number', 
+                        'Experiment(s)': 'Location(s)', 
+                        'Day_of_year': 'DOY', 
+                        'Time_[Local]': 'Time', 
+                        'Datetime_[UTC]': 'Datetime_[UTC]', 
+                        'Soil_moisture_[%]': 'Soil_moisture_[%VWC]', 
+                        'Photoperiod_[hours]': 'Photoperiod_[hours]'
+                    })
+                    drop_cols_list = []
+                if entry == "soil":
+                    rename_cols_dict.update({
+                        'LabID': 'Lab_id', 
+                        'LabSmplID': 'Lab_sample_id', 
+                        'SmplDate': 'Date_Collected', 
+                        'CoopName': 'Cooperator', 
+                        'Experiment': 'Location', 
+                        'PlowDepth': 'Plow_depth', 
+                    })
+                    drop_cols_list = []
+                if entry == "mgmt":
+                    rename_cols_dict.update({
+                    })
+                    drop_cols_list = []
+
+                getattr(self,  entry).data = getattr(self,  entry).data.rename(columns = rename_cols_dict)
+
+                if drop_cols_list != []:
+                    getattr(self,  entry).data = getattr(self,  entry).data.drop(drop_cols_list, axis=1)
+                    
+class g2f_2014(g2f_year):
+    def standardize_all_transformed_names(self):
+        for entry in ['meta', 'phno', #'geno', 
+                      'wthr', 'soil', 'mgmt']:
+            if type(getattr(self,  entry).data) == type(None):
+                print(entry+" is not initialized and None type.")
+            else:
+                rename_cols_dict = {}
+                drop_cols_list = []
+
+                if entry == "meta":
+                    rename_cols_dict.update({
+                        'Location_name': 'Location_short', 
+                        'Experiment': 'Location', 
+                        'Long': 'Weather_station_longitude_(in_decimal_numbers_nOT_dMS)', 
+                        'Lat': 'Weather_station_latitude_(in_decimal_numbers_nOT_dMS)', 
+                        'Plot_length_(center_to_center_in_feet)': 'Plot_length_(center-alley_to_center-alley_in_feet)', 
+                        'Alley_length_(inches)': 'Alley_length_(in_inches)', 
+                        'Row_spacing_(inches)': 'Row_spacing_(in_inches)', 
+                        'Number_kernels_planted': 'Number_kernels_planted_per_plot_(>200_seed/pack_for_cone_planters)', 
+                        'Planter_type': 'Type_of_planter_(fluted_cone;_belt_cone;_air_planter)', 
+                        'Harvest_date': 'Date_plot_harvested_[MM/DD/YY]', 
+                        'Planting_date': 'Date_plot_planted_[MM/DD/YY]',
+                        'Folder': 'State', 
+                        'Weather_station_serial_number': 'Weather_station_serial_number_(Last_four_digits,_e.g._m2700s#####)'
+                    })
+                    drop_cols_list = ['Traits', 'Data_file_name', 'Metadata_file_name', 
+                        'Additional_metadata', 
+                        'Weather-folder']
+
+                if entry == "phno":
+                    rename_cols_dict.update({
+                        'LOCAL_cHECK_(Yes,_no[Blank])': 'Local_check_(Yes,_no)', 
+                        'Alley_length': 'Alley_length_(in_inches)', 
+                        'Row_spacing': 'Row_spacing_(in_inches)', 
+                        'Date_planted': 'Date_plot_planted_[MM/DD/YY]', 
+                        'Date_harvested': 'Date_plot_harvested_[MM/DD/YY]', 
+                        'Anthesis_[date]': 'Anthesis_[MM/DD/YY]', 
+                        'Silking_[date]': 'Silking_[MM/DD/YY]', 
+                        'Pollen_dAP_[days]': 'Anthesis_[days]', 
+                        'Silk_dAP_[days]': 'Silking_[days]', 
+                        'Stand_count_[plants]': 'Stand_count_[#_of_plants]', 
+                        'Test_weight_[lbs/bu]': 'Test_weight_[lbs]', 
+                        'Grain_yield_[bu/A]': 'Grain_yield_(bu/A)', 
+                        'Plot_discarded_[enter_"yes"_or_"blank"]': "Plot_discarded_[enter_'yes'_or_blank]"
+                    })
+                    drop_cols_list = ['Ï»¿Year']
+                if entry == "wthr":
+                    rename_cols_dict.update({
+                        'Day_[Local]': 'Day', 
+                        'Month_[Local]': 'Month', 
+                        'Year_[Local]': 'Year', 
+                        'Day_of_year_[Local]': 'DOY', 
+                        'Time_[Local]': 'Time'
+                    })
+                    drop_cols_list = ['Record_number', 'Datetime_[UTC]']
+                if entry == "soil":
+                    rename_cols_dict.update({
+                    })
+                if entry == "mgmt":
+                    rename_cols_dict.update({
+                    })
+
+                getattr(self,  entry).data = getattr(self,  entry).data.rename(columns = rename_cols_dict)
+
+                if drop_cols_list != []:
+                    getattr(self,  entry).data = getattr(self,  entry).data.drop(drop_cols_list, axis=1)
+
+# dat_2021.meta.data.columns.sort_values()
+
+# dat_2015.meta.data.head()
+
+prlst2dct([])
+
+# dat_2021.meta.data.columns.sort_values()
+
+# dat_2016.phno.data.head()
+
+
+
+# Initialize all released datasets ----
+dat_2021 = g2f_2021(
+    meta_path = './data/raw/GenomesToFields_G2F_data_2021/z._2021_supplemental_info/g2f_2021_field_metadata.csv', 
+    phno_path = './data/raw/GenomesToFields_G2F_data_2021/a._2021_phenotypic_data/g2f_2021_phenotypic_clean_data.csv', # also contains 'g2f_2021_phenotypic_raw_data.csv' 
+    geno_path = None,  
+    wthr_path = './data/raw/GenomesToFields_G2F_data_2021/b._2021_weather_data/g2f_2021_weather_cleaned.csv',
+    soil_path = './data/raw/GenomesToFields_G2F_data_2021/c._2021_soil_data/g2f_2021_soil_data.csv',
+    mgmt_path = './data/raw/GenomesToFields_G2F_data_2021/z._2021_supplemental_info/g2f_2021_agronomic_information.csv',
+    year = 2021
+)
+
+dat_2020 = g2f_2020(
+    meta_path = './data/raw/GenomesToFields_G2F_data_2020/z._2020_supplemental_info/g2f_2020_field_metadata.csv', 
+    phno_path = './data/raw/GenomesToFields_G2F_data_2020/a._2020_phenotypic_data/g2f_2020_phenotypic_clean_data.csv', # also contains 'g2f_2020_phenotypic_raw_data.csv' 
+    geno_path = None,  
+    wthr_path = './data/raw/GenomesToFields_G2F_data_2020/b._2020_weather_data/2020_weather_cleaned.csv',
+    soil_path = './data/raw/GenomesToFields_G2F_data_2020/c._2020_soil_data/g2f_2020_soil_data.csv',
+    mgmt_path = './data/raw/GenomesToFields_G2F_data_2020/z._2020_supplemental_info/g2f_2020_agronomic_information.csv',
+    year = 2020
+)
+
+dat_2019 = g2f_2019(
+    meta_path = './data/raw/GenomesToFields_data_2019/z._2019_supplemental_info/g2f_2019_field_metadata.csv', 
+    phno_path = './data/raw/GenomesToFields_data_2019/a._2019_phenotypic_data/g2f_2019_phenotypic_clean_data.csv', 
+    geno_path = None,  
+    wthr_path = './data/raw/GenomesToFields_data_2019/b._2019_weather_data/2019_weather_cleaned.csv',
+    soil_path = './data/raw/GenomesToFields_data_2019/c._2019_soil_data/g2f_2019_soil_data.csv',
+    mgmt_path = './data/raw/GenomesToFields_data_2019/z._2019_supplemental_info/g2f_2019_agronomic_information.csv',
+    year = 2019
+)
+
+dat_2018 = g2f_2018(
+    meta_path = './data/raw/GenomesToFields_G2F_Data_2018/e._2018_supplemental_info/g2f_2018_field_metadata.csv', 
+    phno_path = './data/raw/GenomesToFields_G2F_Data_2018/a._2018_hybrid_phenotypic_data/g2f_2018_hybrid_data_clean.csv', 
+    geno_path = None,  
+    wthr_path = './data/raw/GenomesToFields_G2F_Data_2018/b._2018_weather_data/g2f_2018_weather_clean.csv',
+    soil_path = './data/raw/GenomesToFields_G2F_Data_2018/c._2018_soil_data/g2f_2018_soil_data.csv',
+    mgmt_path = './data/raw/GenomesToFields_G2F_Data_2018/e._2018_supplemental_info/g2f_2018_agronomic information.csv',
+    year = 2018
+)
+
+dat_2017 = g2f_2017(
+    meta_path = './data/raw/G2F_Planting_Season_2017_v1/z._2017_supplemental_info/g2f_2017_field_metadata.csv', 
+    phno_path = './data/raw/G2F_Planting_Season_2017_v1/a._2017_hybrid_phenotypic_data/g2f_2017_hybrid_data_clean.csv', 
+    geno_path = None,  
+    wthr_path = './data/raw/G2F_Planting_Season_2017_v1/b._2017_weather_data/g2f_2017_weather_data.csv',
+    soil_path = './data/raw/G2F_Planting_Season_2017_v1/c._2017_soil_data/g2f_2017_soil_data_clean.csv',
+    mgmt_path = './data/raw/G2F_Planting_Season_2017_v1/z._2017_supplemental_info/g2f_2017_agronomic information.csv',
+    year = 2017
+)
+
+dat_2016 = g2f_2016(
+    meta_path = './data/raw/G2F_Planting_Season_2016_v2/z._2016_supplemental_info/g2f_2016_field_metadata.csv', 
+    phno_path = './data/raw/G2F_Planting_Season_2016_v2/a._2016_hybrid_phenotypic_data/g2f_2016_hybrid_data_clean.csv', 
+    geno_path = None,  
+    wthr_path = './data/raw/G2F_Planting_Season_2016_v2/b._2016_weather_data/g2f_2016_weather_data.csv',
+    soil_path = './data/raw/G2F_Planting_Season_2016_v2/c._2016_soil_data/g2f_2016_soil_data_clean.csv',
+    mgmt_path = './data/raw/G2F_Planting_Season_2016_v2/z._2016_supplemental_info/g2f_2016_agronomic_information.csv',
+    year = 2016
+)
+
+dat_2015 = g2f_2015(
+              # print('Note! Many management factors are recorded in 2015!')
+    meta_path = './data/raw/G2F_Planting_Season_2015_v2/z._2015_supplemental_info/g2f_2015_field_metadata.csv', 
+    phno_path = './data/raw/G2F_Planting_Season_2015_v2/a._2015_hybrid_phenotypic_data/g2f_2015_hybrid_data_clean.csv', 
+    geno_path = None,  
+    wthr_path = './data/raw/G2F_Planting_Season_2015_v2/b._2015_weather_data/g2f_2015_weather.csv',
+    soil_path = './data/raw/G2F_Planting_Season_2015_v2/d._2015_soil_data/g2f_2015_soil_data.csv',
+              # There is data to be had but it's not formatted in a machine friendly way.
+              # I've reformatted it to be easy to read in.
+    mgmt_path = './data/Manual_old/g2f_2015_agronomic information.csv',
+    year = 2015
+)
+
+dat_2014 = g2f_2014(
+    meta_path = './data/raw/G2F_Planting_Season_2014_v4/z._2014_supplemental_info/g2f_2014_field_characteristics.csv', 
+    phno_path = './data/raw/G2F_Planting_Season_2014_v4/a._2014_hybrid_phenotypic_data/g2f_2014_hybrid_data_clean.csv', 
+    geno_path = None,  
+    wthr_path = './data/raw/G2F_Planting_Season_2014_v4/b._2014_weather_data/g2f_2014_weather.csv',
+              # no soil 2014, some info in metadata
+    soil_path = None, 
+              # no agro 2014, some info in metadata
+    mgmt_path = None,
+    year = 2014
+)
+
+# # Placeholder for GENETICS data ----
+# import re
+# newDecoderNames={
+#          'Sample Names': 'Sample',
+# 'Inbred Genotype Names': 'InbredGenotype',
+#                'Family': 'Family'
+# }
+
+# geno2018= pd.read_table(
+#     data_adapter_path+'../data/raw/GenomesToFields_G2F_Data_2018/d._2018_genotypic_data/G2F_PHG_minreads1_Mo44_PHW65_MoG_assemblies_14112019_filtered_plusParents_sampleDecoder.txt',
+#     delimiter= ' ', 
+#     header=None, 
+#     names= ['Sample Names', 'Inbred Genotype Names'])#.sort_values('Inbred Genotype Names')
+
+# # Add to enable join to phenotype data
+# def clip_2018_family(i):
+#     # for i in range(geno2018.shape[0]):
+#     if(re.search('_', geno2018['Inbred Genotype Names'][i]) == None):
+#         newName = str(geno2018['Inbred Genotype Names'].str.split("_")[i][0])
+#     else:
+#         newName = str(geno2018['Inbred Genotype Names'].str.split("_")[i][0:1][0]
+#                      )+'_'+str(geno2018['Inbred Genotype Names'].str.split("_")[i][1:2][0])
+#     return(newName)
+    
+# geno2018['Family'] = [clip_2018_family(i) for i in range(len(geno2018[['Inbred Genotype Names']]))]
+
+# # Data is in AGP format saved as a h5
+# geno2017= pd.read_excel(data_adapter_path+'../data/raw/G2F_Planting_Season_2017_v1/d._2017_genotypic_data/g2f_2017_gbs_hybrid_codes.xlsx')
+# geno2017['Year']= '2017'
+
+
+# TODO
+# dat_sets = [dat_2014, dat_2015, dat_2016, dat_2017, dat_2018, dat_2019, dat_2021]
+# for e in dat_sets:
+#     e.ready_csvs()
+
+
+
+
+
+# 2021
+dat_2021.ready_csvs()
+dat_2021.transform_all_names()
+dat_2021.transform_all_names_check()
+dat_2021.add_year_col_to_all()
+dat_2021.rename_all_id_cols()
+dat_2021.check_for_id_cols()
+
+# 2020
+dat_2020.ready_csvs()
+dat_2020.transform_all_names()
+dat_2020.transform_all_names_check()
+dat_2020.add_year_col_to_all()
+dat_2020.rename_all_id_cols()
+dat_2020.check_for_id_cols()
+
+# 2019
+dat_2019.ready_csvs()
+dat_2019.transform_all_names()
+dat_2019.standardize_all_transformed_names()
+dat_2019.transform_all_names_check()
+dat_2019.add_year_col_to_all()
+dat_2019.rename_all_id_cols()
+dat_2019.check_for_id_cols()
+
+dat_2018.ready_csvs()
+dat_2018.transform_all_names()
+dat_2018.standardize_all_transformed_names()
+dat_2018.transform_all_names_check()
+dat_2018.add_year_col_to_all()
+dat_2018.rename_all_id_cols()
+dat_2018.check_for_id_cols()
+
+dat_2017.ready_csvs()
+dat_2017.transform_all_names()
+dat_2017.standardize_all_transformed_names()
+dat_2017.transform_all_names_check()
+dat_2017.add_year_col_to_all()
+dat_2017.rename_all_id_cols()
+dat_2017.check_for_id_cols()
+
+
+
+
+
+dat_2016.ready_csvs()
+dat_2016.transform_all_names()
+dat_2016.standardize_all_transformed_names()
+dat_2016.transform_all_names_check()
+dat_2016.add_year_col_to_all()
+dat_2016.rename_all_id_cols()
+dat_2016.check_for_id_cols()
+
+dat_2015.ready_csvs()
+dat_2015.transform_all_names()
+dat_2015.standardize_all_transformed_names()
+dat_2015.transform_all_names_check()
+dat_2015.add_year_col_to_all()
+dat_2015.rename_all_id_cols()
+dat_2015.check_for_id_cols()
+
+
+
+dat_2014.ready_csvs()
+dat_2014.transform_all_names()
+dat_2014.standardize_all_transformed_names()
+dat_2014.transform_all_names_check()
+dat_2014.add_year_col_to_all()
+dat_2014.rename_all_id_cols()
+dat_2014.check_for_id_cols()
+
+# updating workflow
+# run to find unexpect columns (e.g. 'CO2_[ppm]') and if they are names with the correct convention
+# add them into the columns in transform_all_names_check()
+# if they are instead _NOT_ in the standardized pattern add 
+# Rerun to confirm it's okay
+
+
+
+asdf
+
+
+
+
+
+# The goal here is to define column names and contents that 
+
+
+def check_contract(dataframe, contract, enforce = False):
+    """
+    This function will check a dataframe for agreement with a contract.
+    To pass it must contain all the columns specified and they must be of the right data type
+    If `enforce = True` then a dataframe containing only the columns in the contract will be returned (if it passed)
+    """
+    contract_passed = True
+    
+    # Get information on contract
+    contract_df =  pd.DataFrame(
+        zip(contract.keys(), 
+            [True if e in dataframe.columns else False for e in contract.keys()],
+            contract.values()           
+           ), 
+        columns= ["Contract", 
+                  "DataFrame",
+                  "dtype"])
+    # Check contract compliance
+    contract_df.loc[:, "ColType"] = ""
+    contract_df.loc[:, "dtypeMatch"] = False
+    
+    # This is an inefficient way to do this but it should be okay for this purpose
+    check_cols = contract_df.loc[contract_df.DataFrame, 'Contract']
+    for check in check_cols:
+        val = dataframe.loc[:, check].dtype
+        contract_df.loc[contract_df.Contract == check, 'ColType'] = val
+        
+    contract_df.loc[contract_df.dtype == contract_df.ColType, "dtypeMatch"] = True
+    
+    # Calculate contract compliance stats
+    passing_percent = float(sum(contract_df.dtypeMatch)/(contract_df.shape[0]))
+    passing_status = (passing_percent == 1.0)
+    
+    if passing_status:
+        contract_passed = True
+        print("Passed contract comparison")
+        if not contract_passed:
+            return(contract_df)
+        else:
+            if not enforce:
+                print("Return dataframe with contract enforced by passing `enforce = True`")
+            else:
+                return(dataframe.loc[:, list(contract.keys())])
+    else:
+        print(str(sum(contract_df.DataFrame))+"/"+str(contract_df.shape[0])+" Columns match.")
+        print(str(sum(contract_df.dtypeMatch))+"/"+str(contract_df.shape[0])+" Types match.") 
+        return(contract_df)
+    #TODO allow for enforcing contract
+
+# The first contract to check is easy.
+# 1. Do the data types and columns in each of 2021's data objects match themselves?
+
+
+
+meta = dat_2021.meta.data
+phno = dat_2021.phno.data
+wthr = dat_2021.wthr.data
+soil = dat_2021.soil.data
+mgmt = dat_2021.mgmt.data
+
+# check_contract(dataframe = mgmt, contract = mgmt_contract, enforce = False)
+
+# 1. are there the right columns?
+# [list(mgmt.columns)]
+
+
+
+# meta.Location = meta.Location.astype("string")
+# # meta.Date = meta.Date.astype("datetime64[ns]")
+
+# print(list(phno.columns))
+# meta.info()
+
+# methead.head()
+# # meta.Date.astype('datetime64[ns]')
+
+
+# # nans = pd.to_numeric(s, errors="coerce").isna()
+# fail_dates = pd.to_datetime(mgmt.Date, errors='coerce').isna()
+
+# # set(meta.loc[fail_dates, "Date"])
+
+
+# mgmt.loc[:, 'ImputationNotes'] = ''
+
+# '6/24/21 for all but plots in pass 2; 7/5/21 for pass 2',
+#  'Before Planting',
+
+# 'Local_check_#1_pedigree', 'Local_check_#1_source', 'Local_check_#2_pedigree', 'Local_check_#2_source', 'Local_check_#3_pedigree', 'Local_check_#3_source', 'Local_check_#4_pedigree', 'Local_check_#4_source', 'Local_check_#5_pedigree', 'Local_check_#5_source', 
+# 'Issue/comment_#1', 'Issue/comment_#2', 'Issue/comment_#3', 'Issue/comment_#4', 'Issue/comment_#5', 'Issue/comment_#6', 'Issue/comment_#7', 'Issue/comment_#8', 'Issue/comment_#9', 'Issue/comment_#10', 
+
+
+
+meta_contract = {
+                                                  'Year': 'int',
+                                              'Location': 'string',  
+                                                  'City': 'string',
+                                                  'Farm': 'string',
+                                                 'Field': 'string',
+                                             'Treatment': 'string',
+                                                        #
+                                         'Previous_crop': 'string',
+                           'Pre-plant_tillage_method(s)': 'string',
+                           'In-season_tillage_method(s)': 'string',
+    'Plot_length_(center-alley_to_center-alley_in_feet)': 'string',
+                              'Alley_length_(in_inches)': 'string',
+                               'Row_spacing_(in_inches)': 'string',
+ 'Type_of_planter_(fluted_cone;_belt_cone;_air_planter)': 'string',
+'Number_kernels_planted_per_plot_(>200_seed/pack_for_cone_planters)': 'string',
+                           'System_determining_moisture': 'string',
+                           'Pounds_needed_soil_moisture': 'string',
+                                                        #
+              'Latitude_of_field_corner_#1_(lower_left)': 'string',
+             'Longitude_of_field_corner_#1_(lower_left)': 'string',
+             'Latitude_of_field_corner_#2_(lower_right)': 'string',
+            'Longitude_of_field_corner_#2_(lower_right)': 'string',
+             'Latitude_of_field_corner_#3_(upper_right)': 'string',
+            'Longitude_of_field_corner_#3_(upper_right)': 'string',
+              'Latitude_of_field_corner_#4_(upper_left)': 'string',
+             'Longitude_of_field_corner_#4_(upper_left)': 'string',
+                                                        #
+                               'Cardinal_heading_pass_1': 'string',
+                                                        #
+                                         'Local_check_#': 'int',
+                                  'Local_check_pedigree': 'string',
+                                    'Local_check_source': 'string',    
+                                       'Issue/comment_#': 'int',
+                                         'Issue/comment': 'string',
+                                                        #    
+'Trial_ID_(Assigned_by_collaborator_for_internal_reference)': 'string',
+       'Soil_taxonomic_ID_and_horizon_description,_if_known': 'string',
+'Weather_station_serial_number_(Last_four_digits,_e.g._m2700s#####)': 'string',
+     'Weather_station_latitude_(in_decimal_numbers_nOT_dMS)': 'string',
+    'Weather_station_longitude_(in_decimal_numbers_nOT_dMS)': 'string',
+                                                        #   
+                           'Date_weather_station_placed': 'datetime64[ns]',
+                          'Date_weather_station_removed': 'datetime64[ns]',
+                'In-field_weather_station_serial_number': 'string',
+        'In-field_weather_station_latitude_(in_decimal)': 'string',
+       'In-field_weather_station_longitude_(in_decimal)': 'string',
+                                                        #   
+                                      'Imputation_notes': 'string'
+}
+
+
+# meta remove local checks and issues
+cols_checks_and_issues_list = [
+    'Local_check_#1_pedigree', 'Local_check_#1_source',
+    'Local_check_#2_pedigree', 'Local_check_#2_source',
+    'Local_check_#3_pedigree', 'Local_check_#3_source',
+    'Local_check_#4_pedigree', 'Local_check_#4_source',
+    'Local_check_#5_pedigree', 'Local_check_#5_source', 
+    'Issue/comment_#1', 'Issue/comment_#2', 'Issue/comment_#3', 'Issue/comment_#4', 'Issue/comment_#5',
+    'Issue/comment_#6', 'Issue/comment_#7', 'Issue/comment_#8', 'Issue/comment_#9', 'Issue/comment_#10']
+
+temp = meta.loc[:, ['Location'] + cols_checks_and_issues_list ]
+# check_contract(dataframe = meta, contract = meta_contract)
+
+temp1 = pd.melt(
+    temp, 
+    id_vars=['Location'], 
+    value_vars=[
+        'Local_check_#1_source',
+        'Local_check_#2_source',
+        'Local_check_#3_source',
+        'Local_check_#4_source',
+        'Local_check_#5_source'], 
+    ignore_index=False
+).rename(columns={
+    'variable': 'Local_check_#',
+    'value': 'Local_check_source'})
+
+temp2 = pd.melt(
+    temp, 
+    id_vars=['Location'], 
+    value_vars=[
+        'Local_check_#1_pedigree', 
+        'Local_check_#2_pedigree', 
+        'Local_check_#3_pedigree', 
+        'Local_check_#4_pedigree', 
+        'Local_check_#5_pedigree'], 
+    ignore_index=False
+).rename(columns={
+    'variable': 'Local_check_#',
+    'value': 'Local_check_pedigree'})
+
+temp3 = pd.melt(
+    temp, 
+    id_vars=['Location'], 
+    value_vars=[
+        'Issue/comment_#1', 
+        'Issue/comment_#2', 
+        'Issue/comment_#3', 
+        'Issue/comment_#4', 
+        'Issue/comment_#5', 
+        'Issue/comment_#6', 
+        'Issue/comment_#7', 
+        'Issue/comment_#8', 
+        'Issue/comment_#9', 
+        'Issue/comment_#10'], 
+    ignore_index=False
+).rename(columns={
+    'variable': 'Issue/comment_#',
+    'value': 'Issue/comment'})
+
+temp1.loc[:, 'Local_check_#'] = [re.findall('#[0-9]+', e)[0].replace('#', '') for e in list(temp1.loc[:, 'Local_check_#'])]
+temp2.loc[:, 'Local_check_#'] = [re.findall('#[0-9]+', e)[0].replace('#', '') for e in list(temp2.loc[:, 'Local_check_#'])]
+temp3.loc[:, 'Issue/comment_#'] = [re.findall('#[0-9]+', e)[0].replace('#', '') for e in list(temp3.loc[:, 'Issue/comment_#'])]
+
+temp_check = temp1.merge(temp2, how = 'outer')
+mask = (temp_check.Local_check_source.isna() & temp_check.Local_check_pedigree.isna())
+temp_check = temp_check.loc[~mask, :]
+
+temp_issue = temp3.loc[temp3['Issue/comment'].notna(), :]
+
+
+# drop cols in cols_checks_and_issues_list and merge in long 
+meta = meta.drop(columns=cols_checks_and_issues_list).merge(temp_check, how = 'outer').merge(temp_issue, how = 'outer')
+
+pd.to_timedelta()
+
+
+
+for key in meta_contract.keys():
+    print(key, meta_contract[key])
+#     'datetime64[ns]'
+#     pd.to_numeric(meta.loc[:, key], errors="coerce").isna()
+    meta.loc[:, key]  #astype(meta_contract[key], coerce = True)
+#     meta.loc[:, key] = meta.loc[:, key].astype(meta_contract[key])
+
+check_contract(dataframe = meta, contract = meta_contract, enforce = False)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+phno_contract = {
+                              'Year': 'int',
+                          'Location': 'string',
+                                    #
+                             'State': 'string',
+                              'City': 'string',
+                                    #
+                        'Experiment': 'string',    
+                                    #
+'Plot_length_(center-center_in_feet)': 'string',
+                   'Plot_area_(ft2)': 'string',
+          'Alley_length_(in_inches)': 'string',
+           'Row_spacing_(in_inches)': 'string',
+                     'Rows_per_plot': 'string',
+                   '#_seed_per_plot': 'string',
+                                    #
+                            'Source': 'string',
+                          'Pedigree': 'string',
+                            'Family': 'string',
+                            'Tester': 'string',
+                                    #
+                       'Replication': 'string',
+                             'Block': 'string',
+                              'Plot': 'string',
+                           'Plot_ID': 'string',
+                             'Range': 'string',
+                              'Pass': 'string',
+                                    #
+      'Date_plot_planted_[MM/DD/YY]': 'datetime64[ns]',
+    'Date_plot_harvested_[MM/DD/YY]': 'datetime64[ns]',
+               'Anthesis_[MM/DD/YY]': 'datetime64[ns]',
+                'Silking_[MM/DD/YY]': 'datetime64[ns]',
+                   'Anthesis_[days]': 'string',
+                    'Silking_[days]': 'string',
+                                    #
+                 'Plant_height_[cm]': 'string',
+                   'Ear_height_[cm]': 'string',
+         'Stand_count_[#_of_plants]': 'string',
+        'Root_lodging_[#_of_plants]': 'string',
+       'Stalk_lodging_[#_of_plants]': 'string',
+                                    #
+                'Grain_moisture_[%]': 'string',
+                 'Test_weight_[lbs]': 'string',
+                 'Plot_weight_[lbs]': 'string',
+                'Grain_yield_(bu/A)': 'string',
+                                    #
+    "Plot_discarded_[enter_'yes'_or_blank]": 'string',
+                          'Comments': 'string',
+                            'Filler': 'string',
+                'Snap_[#_of_plants]': 'string',
+                                    #
+                  'Imputation_notes': 'string'
+    }
+
+wthr_contract = {
+                        'Year': 'int',
+                    'Location': 'string',
+                              #
+                  'Station_ID': 'string',
+                 'NWS_network': 'string',
+                 'NWS_station': 'string',
+                   'Date_Time': 'datetime64[ns]',
+                       'Month': 'string',
+                         'Day': 'string',
+                        'Time': 'string',
+             'Temperature_[C]': 'string',
+               'Dew_point_[C]': 'string',
+       'Relative_humidity_[%]': 'string',
+      'Solar_radiation_[W/m2]': 'string',
+               'Rainfall_[mm]': 'string',
+            'Wind_speed_[m/s]': 'string',
+    'Wind_direction_[degrees]': 'string',
+                              #
+             'Wind_gust_[m/s]': 'string',
+        'Soil_temperature_[C]': 'string',
+        'Soil_moisture_[%VWC]': 'string',
+             'Soil_eC_[mS/cm]': 'string',
+           'UV_light_[uM/m2s]': 'string',
+                'PAR_[uM/m2s]': 'string',
+                              #
+            'Imputation_notes': 'string'
+    }
+
+soil_contract = {
+                          'Year': 'int',
+                      'Location': 'string',
+                                #
+                 'Date_received': 'string',
+                 'Date_reported': 'string',
+                                #
+                        'Grower': 'string',
+                                #
+                       'E_depth': 'string',
+                   '1:1_soil_pH': 'string',
+                'WDRF_buffer_pH': 'string',
+           '1:1_S_salts_mmho/cm': 'string',
+                    'Texture_no': 'string',
+           'Organic_matter_LOI%': 'string',
+               'Nitrate-N_ppm_N': 'string',
+                       'Lbs_N/A': 'string',
+               'Potassium_ppm_K': 'string',
+               'Sulfate-S_ppm_S': 'string',
+                'Calcium_ppm_Ca': 'string',
+              'Magnesium_ppm_Mg': 'string',
+                 'Sodium_ppm_Na': 'string',
+    'CEC/Sum_of_cations_me/100g': 'string',
+                        '%H_sat': 'string',
+                        '%K_sat': 'string',
+                       '%Ca_sat': 'string',
+                       '%Mg_sat': 'string',
+                       '%Na_sat': 'string',
+           'Mehlich_P-III_ppm_P': 'string',
+                         '%Sand': 'string',
+                         '%Silt': 'string',
+                         '%Clay': 'string',
+                       'Texture': 'string',
+                      'Comments': 'string',
+                                #
+              'Imputation_notes': 'string'
+    }
+
+
+mgmt_contract = {
+                'Year': 'int',
+            'Location': 'string', 
+                      #
+         'Application': 'string', 
+             'Product': 'string', 
+                'Date': 'datetime64[ns]', 
+       'Quantity/acre': 'float', 
+                'Unit': 'string', 
+                      #
+    'Imputation_notes':'string'
+    }
+
+
+
+import great_expectations as ge
+context = ge.get_context()
+my_df = ge.from_pandas(dat_2021.mgmt.data)
+
+my_df.head()
+# my_df.Location.value_counts()
+
+# my_df.expect_column_to_exist("Location")
+my_df.Date.expect
+
+# check_contract()
+
+# check_contract(dataframe = df, contract = df_contract, enforce = False)  
+
+# # contract for compataility with dataframes that _precede_ Y, G, W, S ---
+# # NOT the most efficient way to get what we want.
+# # These are the column names and datatypes we want to enforce to ensure compatability with previous model
+
+# # metadata
+# # <class 'pandas.core.frame.DataFrame'>
+# # RangeIndex: 296 entries, 0 to 295
+# # Data columns (total 10 columns):
+# #  #   Column           Non-Null Count  Dtype  
+# # ---  ------           --------------  -----  
+# #  0   ExperimentCode   296 non-null    object 
+# #  1   Year             296 non-null    object 
+# #  2   PreviousCrop     215 non-null    object 
+# #  3   PreplantTillage  119 non-null    object 
+# #  4   InseasonTillage  119 non-null    object 
+# #  5   MoistureSystem   173 non-null    object 
+# #  6   MoistureNeeded   173 non-null    object 
+# #  7   ExpLon           296 non-null    float64
+# #  8   ExpLat           296 non-null    float64
+# #  9   Location         42 non-null     object 
+# # dtypes: float64(2), object(8)
+# # memory usage: 23.2+ KB
+
+# meta_contract = {
+#     'ExperimentCode': 'O', 
+#     'Year': 'O', 
+#     'PreviousCrop': 'O', 
+#     'PreplantTillage': 'O', 
+#     'InseasonTillage': 'O', 
+#     'MoistureSystem': 'O', 
+#     'MoistureNeeded': 'O', 
+#     'ExpLon': 'float64', 
+#     'ExpLat': 'float64', 
+#     'Location': 'O'
+# }
+
+
+
+    
+# # phenotype
+# # <class 'pandas.core.frame.DataFrame'>
+# # RangeIndex: 98996 entries, 0 to 98995
+# # Data columns (total 19 columns):
+# #  #   Column                Non-Null Count  Dtype         
+# # ---  ------                --------------  -----         
+# #  0   Pedigree              98996 non-null  object        
+# #  1   F                     98996 non-null  object        
+# #  2   M                     98996 non-null  object        
+# #  3   ExperimentCode        98996 non-null  object        
+# #  4   Year                  98996 non-null  object        
+# #  5   DatePlanted           98996 non-null  datetime64[ns]
+# #  6   DateHarvested         98497 non-null  datetime64[ns]
+# #  7   DaysToPollen          98996 non-null  object        
+# #  8   DaysToSilk            98996 non-null  object        
+# #  9   Height                98996 non-null  object        
+# #  10  EarHeight             98996 non-null  object        
+# #  11  StandCount            98996 non-null  object        
+# #  12  RootLodging           98996 non-null  object        
+# #  13  StalkLodging          98996 non-null  object        
+# #  14  PercentGrainMoisture  98996 non-null  object        
+# #  15  TestWeight            98996 non-null  object        
+# #  16  PlotWeight            98996 non-null  object        
+# #  17  GrainYield            98996 non-null  object        
+# #  18  PercentStand          24002 non-null  object        
+# # dtypes: datetime64[ns](2), object(17)
+# # memory usage: 14.4+ MB
+# phno_contract = {'Pedigree': 'O', 
+#                  'F': 'O', 'M': 
+#                  'O', 
+#                  'ExperimentCode': 'O', 
+#                  'Year': 'O', 
+#                  'DatePlanted': 'datetime64[ns]', 
+#                  'DateHarvested': 'datetime64[ns]', 
+#                  'DaysToPollen': 'O', 
+#                  'DaysToSilk': 'O', 
+#                  'Height': 'O', 
+#                  'EarHeight': 'O', 
+#                  'StandCount': 'O', 
+#                  'RootLodging': 'O', 
+#                  'StalkLodging': 'O', 
+#                  'PercentGrainMoisture': 'O', 
+#                  'TestWeight': 'O', 
+#                  'PlotWeight': 'O', 
+#                  'GrainYield': 'O', 
+#                  'PercentStand': 'O'}
+
+
+
+
+# # weather (+ managment)
+# # <class 'pandas.core.frame.DataFrame'>
+# # RangeIndex: 300191 entries, 0 to 300190
+# # Data columns (total 22 columns):
+# #  #   Column                Non-Null Count   Dtype         
+# # ---  ------                --------------   -----         
+# #  0   ExperimentCode        300064 non-null  object        
+# #  1   Year                  300191 non-null  object        
+# #  2   Date                  300191 non-null  datetime64[ns]
+# #  3   N                     300191 non-null  float64       
+# #  4   P                     300191 non-null  float64       
+# #  5   K                     300191 non-null  float64       
+# #  6   TempMin               300191 non-null  float64       
+# #  7   TempMean              300191 non-null  float64       
+# #  8   TempMax               300191 non-null  float64       
+# #  9   DewPointMean          300191 non-null  float64       
+# #  10  RelativeHumidityMean  300191 non-null  float64       
+# #  11  SolarRadiationMean    300191 non-null  float64       
+# #  12  WindSpeedMax          300191 non-null  float64       
+# #  13  WindDirectionMean     300191 non-null  float64       
+# #  14  WindGustMax           300191 non-null  float64       
+# #  15  SoilTempMean          300191 non-null  float64       
+# #  16  SoilMoistureMean      300191 non-null  float64       
+# #  17  UVLMean               300191 non-null  float64       
+# #  18  PARMean               300191 non-null  float64       
+# #  19  PhotoperiodMean       300191 non-null  float64       
+# #  20  VaporPresEst          300191 non-null  float64       
+# #  21  WaterTotalInmm        300191 non-null  float64       
+# # dtypes: datetime64[ns](1), float64(19), object(2)
+# # memory usage: 50.4+ MB
+# wthr_contract = {'ExperimentCode': 'O', 
+#                  'Year': 'O', 
+#                  'Date': 'datetime64[ns]', 
+#                  'N': 'float64', 
+#                  'P': 'float64', 
+#                  'K': 'float64', 
+#                  'TempMin': 'float64', 
+#                  'TempMean': 'float64', 
+#                  'TempMax': 'float64', 
+#                  'DewPointMean': 'float64', 
+#                  'RelativeHumidityMean': 'float64', 
+#                  'SolarRadiationMean': 'float64', 
+#                  'WindSpeedMax': 'float64', 
+#                  'WindDirectionMean': 'float64', 
+#                  'WindGustMax': 'float64', 
+#                  'SoilTempMean': 'float64', 
+#                  'SoilMoistureMean': 'float64', 
+#                  'UVLMean': 'float64', 
+#                  'PARMean': 'float64', 
+#                  'PhotoperiodMean': 'float64', 
+#                  'VaporPresEst': 'float64', 
+#                  'WaterTotalInmm': 'float64'}
+
+
+
+# # soil
+# # <class 'pandas.core.frame.DataFrame'>
+# # RangeIndex: 274 entries, 0 to 273
+# # Data columns (total 23 columns):
+# #  #   Column                  Non-Null Count  Dtype  
+# # ---  ------                  --------------  -----  
+# #  0   ExperimentCode          274 non-null    object 
+# #  1   Year                    274 non-null    object 
+# #  2   SoilpH                  274 non-null    float64
+# #  3   WDRFpH                  274 non-null    float64
+# #  4   SSalts                  274 non-null    float64
+# #  5   PercentOrganic          274 non-null    float64
+# #  6   ppmNitrateN             274 non-null    float64
+# #  7   NitrogenPerAcre         274 non-null    float64
+# #  8   ppmK                    274 non-null    float64
+# #  9   ppmSulfateS             274 non-null    float64
+# #  10  ppmCa                   274 non-null    float64
+# #  11  ppmMg                   274 non-null    float64
+# #  12  ppmNa                   274 non-null    float64
+# #  13  CationExchangeCapacity  274 non-null    float64
+# #  14  PercentH                274 non-null    float64
+# #  15  PercentK                274 non-null    float64
+# #  16  PercentCa               274 non-null    float64
+# #  17  PercentMg               274 non-null    float64
+# #  18  PercentNa               274 non-null    float64
+# #  19  ppmP                    274 non-null    float64
+# #  20  PercentSand             274 non-null    float64
+# #  21  PercentSilt             274 non-null    float64
+# #  22  PercentClay             274 non-null    float64
+# # dtypes: float64(21), object(2)
+# # memory usage: 49.4+ KB
+# soil_contract = {'ExperimentCode': 'O', 
+#                  'Year': 'O', 
+#                  'SoilpH': 'float64', 
+#                  'WDRFpH': 'float64', 
+#                  'SSalts': 'float64', 
+#                  'PercentOrganic': 'float64', 
+#                  'ppmNitrateN': 'float64', 
+#                  'NitrogenPerAcre': 'float64', 
+#                  'ppmK': 'float64', 
+#                  'ppmSulfateS': 'float64', 
+#                  'ppmCa': 'float64', 
+#                  'ppmMg': 'float64', 
+#                  'ppmNa': 'float64', 
+#                  'CationExchangeCapacity': 'float64', 
+#                  'PercentH': 'float64', 
+#                  'PercentK': 'float64', 
+#                  'PercentCa': 'float64', 
+#                  'PercentMg': 'float64', 
+#                  'PercentNa': 'float64', 
+#                  'ppmP': 'float64', 
+#                  'PercentSand': 'float64', 
+#                  'PercentSilt': 'float64', 
+#                  'PercentClay': 'float64'}
+
+
+
+# # phenotypeGBS
+
+# def check_contract(dataframe, contract, enforce = False):
+#     """
+#     This function will check a dataframe for agreement with a contract.
+#     To pass it must contain all the columns specified and they must be of the right data type
+#     If `enforce = True` then a dataframe containing only the columns in the contract will be returned (if it passed)
+#     """
+#     contract_passed = True
+    
+#     # Get information on contract
+#     contract_df =  pd.DataFrame(
+#         zip(contract.keys(), 
+#             [True if e in dataframe.columns else False for e in contract.keys()],
+#             contract.values()           
+#            ), 
+#         columns= ["Contract", 
+#                   "DataFrame",
+#                   "dtype"])
+#     # Check contract compliance
+#     contract_df.loc[:, "ColType"] = ""
+#     contract_df.loc[:, "dtypeMatch"] = False
+    
+#     # This is an inefficient way to do this but it should be okay for this purpose
+#     check_cols = contract_df.loc[contract_df.DataFrame, 'Contract']
+#     for check in check_cols:
+#         val = dataframe.loc[:, check].dtype
+#         contract_df.loc[contract_df.Contract == check, 'ColType'] = val
+        
+#     contract_df.loc[contract_df.dtype == contract_df.ColType, "dtypeMatch"] = True
+    
+#     # Calculate contract compliance stats
+#     passing_percent = float(sum(contract_df.dtypeMatch)/(contract_df.shape[0]))
+#     passing_status = (passing_percent == 1.0)
+    
+#     if passing_status:
+#         contract_passed = True
+#         print("Passed contract comparison")
+#         if not contract_passed:
+#             return(contract_df)
+#         else:
+#             if not enforce:
+#                 print("Return dataframe with contract enforced by passing `enforce = True`")
+#             else:
+#                 return(dataframe.loc[:, list(contract.keys())])
+#     else:
+#         print(str(sum(contract_df.DataFrame))+"/"+str(contract_df.shape[0])+" Columns match.")
+#         print(str(sum(contract_df.dtypeMatch))+"/"+str(contract_df.shape[0])+" Types match.") 
+#         return(contract_df)
+#     #TODO allow for enforcing contract
+
+# meta = dat_2021.meta.data
+# phno = dat_2021.phno.data
+# wthr = dat_2021.wthr.data
+# soil = dat_2021.soil.data
+# mgmt = dat_2021.mgmt.data
+
+# dat_2021.rename_id_cols("meta")
+# dat_2021.rename_id_cols("phno")
+# dat_2021.rename_id_cols("wthr")
+# dat_2021.rename_id_cols("soil")
+# dat_2021.rename_id_cols("mgmt")
+
+# dat_2020.ready_csvs()
+# dat_2020.transform_all_names()
+# dat_2020.transform_all_names_check()
+
+#weather
+# 'CO2_[ppm]'
+
+# dat_2019.ready_csvs()
+# dat_2019.transform_all_names()
+# dat_2019.transform_all_names_check()
+#phno 
+# ['Kernels/Packet', "Filler_[enter_'filler'_or_blank]", 'Possible_subs', 'Confirmed_subs', 'Single_plant_biomass_in_july(g)', 'Single_plant_biomass_in_august(g)', 'RootPullingForce(kgf)_july', 'RootPullingForce(kgf)_august']
+
+# TODO check other years
+# dat_2018.ready_csvs()
+# dat_2018.transform_all_names()
+# dat_2018.transform_all_names_check()
+
+# dat_2017.ready_csvs()
+# dat_2017.transform_all_names()
+# dat_2017.transform_all_names_check()
+
+# dat_2016.ready_csvs()
+# dat_2016.transform_all_names()
+# dat_2016.transform_all_names_check()
+
+# dat_2015.ready_csvs()
+# dat_2015.transform_all_names()
+# dat_2015.transform_all_names_check()
+
+# dat_2014.ready_csvs()
+# dat_2014.transform_all_names()
+# dat_2014.transform_all_names_check()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# mgmt.rename({
+#     #'Location': '', 
+#     'Application_or_treatment': 'Application', 
+#     'Product_or_nutrient_applied': 'Product',  
+#     'Date_of_application': 'Date', 
+#     'Quantity_per_acre': 'Quantity/acre', 
+#     'Application_unit': 'Unit'
+# })
+
+
+
+
+
+
+
+# dat_2021.soil.data.head(1)
+
+
+
+# # focus on one year and get that organized
+
+# # todo add as method in the class
+
+# dat_2021.meta.data.rename(columns=dict(zip(
+#     list(dat_2021.meta.data.columns),
+#     transform_name(input = list(dat_2021.meta.data.columns)))))
+
+# dat_2021.soil.data.rename(columns=dict(zip(
+#     list(dat_2021.soil.data.columns),
+#     transform_name(input = list(dat_2021.soil.data.columns)))))
+
+# dat_2021.soil.data.rename(columns=dict(zip(
+#     list(dat_2021.soil.data.columns),
+#     transform_name(input = list(dat_2021.soil.data.columns)))))
+
+# dat_2021.soil.data.rename(columns=dict(zip(
+#     list(dat_2021.soil.data.columns),
+#     transform_name(input = list(dat_2021.soil.data.columns)))))
+
+# dat_2021.soil.data.rename(columns=dict(zip(
+#     list(dat_2021.soil.data.columns),
+#     transform_name(input = list(dat_2021.soil.data.columns)))))
+
+
+
+
+
+
+
+
+
+
+
+# # Keep it simple: 
+# # Start by getting the minimum data that we want from 2021 in the past format.
+# # After we can use these minimum columns, think about expanding to other columns
+# meta = dat_2021.meta.data
+# phno = dat_2021.phno.data
+# wthr = dat_2021.wthr.data
+# soil = dat_2021.soil.data
+# mgmt = dat_2021.mgmt.data
+
+# # meta
+# df = meta
+# df_contract = meta_contract
+# cols_from_to_dict = {
+#     # From                                                        To
+#     'Location':                                                   'ExperimentCode',
+#     'Previous_crop':                                              'PreviousCrop',
+#     'Pre-plant_tillage_method(s)':                                'PreplantTillage',
+#     'In-season_tillage_method(s)':                                'InseasonTillage',
+#     'System_determining_moisture':                                'MoistureSystem',
+#     'Pounds_needed_soil_moisture':                                'MoistureNeeded',
+#     'Longitude_of_field_corner_#1_(lower_left)':                  'ExpLon', #FIXME
+#     'Latitude_of_field_corner_#1_(lower_left)':                   'ExpLat', #FIXME
+#     'Trial_ID_(Assigned_by_collaborator_for_internal_reference)': 'Location' #Confirm
+#                            }
+
+
+# # phno
+# df = phno
+# df_contract = phno_contract
+# cols_from_to_dict = {
+#     # From                                                        To
+# #     'XXXXXXXXX': 'Pedigree', 
+#     'XXXXXXXXX': 'F', 
+#     'XXXXXXXXX': 'M', 
+#     'XXXXXXXXX': 'ExperimentCode', 
+# #     'XXXXXXXXX': 'Year', 
+#     'Date_plot_planted_[MM/DD/YY]': 'DatePlanted', 
+#     'Date_plot_harvested_[MM/DD/YY]': 'DateHarvested', 
+#     'Anthesis_[days]': 'DaysToPollen', 
+#     'Silking_[days]': 'DaysToSilk', 
+#     'Plant_height_[cm]': 'Height', 
+#     'Ear_height_[cm]': 'EarHeight', 
+#     'Stand_count_[#_of_plants]': 'StandCount', 
+#     'Root_lodging_[#_of_plants]': 'RootLodging', 
+#     'Stalk_lodging_[#_of_plants]': 'StalkLodging', 
+#     'Grain_moisture_[%]': 'PercentGrainMoisture', 
+#     'Test_weight_[lbs]': 'TestWeight', 
+#     'Plot_weight_[lbs]': 'PlotWeight', 
+#     'Grain_yield_(bu/A)': 'GrainYield', 
+#     'XXXXXXXXX': 'PercentStand'
+#                            }
+
+# ['Year',
+#  'Location',
+#  'State',
+#  'City',
+#  'Plot_length_(center-center_in_feet)',
+#  'Plot_area_(ft2)',
+#  'Alley_length_(in_inches)',
+#  'Row_spacing_(in_inches)',
+#  'Rows_per_plot',
+#  '#_seed_per_plot',
+#  'Experiment',
+#  'Source',
+#  'Pedigree',
+#  'Family',
+#  'Tester',
+#  'Replication',
+#  'Block',
+#  'Plot',
+#  'Plot_ID',
+#  'Range',
+#  'Pass',
+#  '',
+#  '',
+#  'Anthesis_[MM/DD/YY]',
+#  'Silking_[MM/DD/YY]',
+#  '',
+#  '',
+#  '',
+#  '',
+#  '',
+#  '',
+#  '',
+#  '',
+#  '',
+#  '',
+#  '',
+#  "Plot_discarded_[enter_'yes'_or_blank]",
+#  'Comments',
+#  'Filler',
+#  'Snap_[#_of_plants]']
+
+
+
+# # soil
+# # df = phno
+# # df_contract = soil_contract
+# # cols_from_to_dict = {
+# #                            }
+# # wthr # mgmt
+# # df = phno
+# # df_contract = wthr_contract
+# # cols_from_to_dict = {
+# #                            }
+
+
+# # pull columns that are needed from different datasets
+
+
+# # set the names
+# df = df.rename(columns=cols_from_to_dict)
+
+# # use the contract to update the dtypes
+# for key in df_contract.keys():
+#     if key in list(df.columns):
+#         df.loc[:, key] = df.loc[:, key].astype(df_contract[key])
+
+# list(df.columns)
+
+# check_contract(dataframe = df, contract = df_contract, enforce = False)  
+
+
+
+
+# check_contract(dataframe = meta, contract = meta_contract, enforce = True)  
+
+# def quick_df(lst, nom): return pd.DataFrame(zip([nom for i in range(len(lst))], lst), columns = ['Source', 'Column'])
+# meta_2021
+# phno_2021
+# wthr_2021
+# soil_2021
+# mgmt_2021
+
+# quick_df(lst = meta_2021, nom = 'meta')
+# # quick_df(lst = phno_2021, nom = 'phno')
+# # quick_df(lst = wthr_2021, nom = 'wthr')
+# # quick_df(lst = soil_2021, nom = 'soil')
+# # quick_df(lst = mgmt_2021, nom = 'mgmt')
+
+# cols_meta = [list(e.meta.data.columns) for e in dat_sets]
+# cols_phno = [list(e.phno.data.columns) for e in dat_sets]
+# cols_wthr = [list(e.wthr.data.columns) for e in dat_sets]
+# cols_soil = [list(e.soil.data.columns) if type(e.soil.data) != type(None) else list() for e in dat_sets]
+# cols_mgmt = [list(e.mgmt.data.columns) if type(e.mgmt.data) != type(None) else list() for e in dat_sets]
+
+# # get list of list with years for one of the above column name lists
+# def get_year_lol(l = cols_mgmt):
+#     lol = [[[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021][j] for i in range(len(l[j]))] for j in range(len(l))]
+#     return(lol)
+
+# def flatten_lol(lol): return [item for listWithin in lol for item in listWithin]
+
+# def cols_list_to_df(in_cols_lol = cols_soil,
+#                     data_type = 'soil'):
+#     year_list = flatten_lol(get_year_lol(in_cols_lol))
+#     cols_list = flatten_lol(in_cols_lol)
+#     name_list = [data_type for e in cols_list]
+#     dat = pd.DataFrame(
+#         zip(name_list,
+#             year_list,
+#             cols_list
+#            ),
+#         columns=["Type", "Year", "Col"]
+#     )
+#     return dat
+
+
+# # pd.DataFrame({year : list(dat_obj.soil.data.columns)})
+# dat_obj = dat_2021
+# year = "2021"
+
+# list(dat_obj.soil.data.columns)
+
+# active_attr = dat_obj._get_active_attr()
+
+# #findme was working on collecting all the columns so they can be easily compared
+
+# dat = cols_list_to_df(in_cols_lol = cols_soil, data_type = 'soil')
+# # out of the box correspondance
+# # dat.pivot(index='Col', columns='Year')
+
+
+
+# making Y
+
+
+
+# # making W
+
+# # filter down input datasets
+# wthr.loc[:, [
+#     'Location', 'Date_Time', 
+#     #NPK,
+#     # Temp MIN/mean/max
+#     'Temperature_[C]', 
+#     'Dew_point_[C]',
+#     'Relative_humidity_[%]', 
+#     'Solar_radiation_[W/m2]', 
+
+#     'Rainfall_[mm]',
+#     'Wind_speed_[m/s]', 'Wind_direction_[degrees]', 'Wind_gust_[m/s]',
+#     #temp mean
+#     'Soil_temperature_[C]', 'Soil_moisture_[%VWC]', 
+#     #'Soil_eC_[mS/cm]',
+#     'UV_light_[uM/m2s]', 
+#     'PAR_[uM/m2s]'
+#     # other
+#             ]]
+
+# #TODO DAYMET
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # update names ----
+# dat_2018.rename_all_columns(
+#     colNamePath='./data/manual/UpdateColNames.csv',
+#     logfileName='2018_meta')
+
+# # regroup columns ----
+# # for 2016 and on
+# out = dat_2018.sort_cols_in_dfs(colGroupingsPath = './data/manual/UpdateColGroupings.csv')
+
+# # TODO
+# # for 2014, 2015 this df should be used
+# # pd.read_csv(data_adapter_path+'../data/external/UpdateColGroupings.csv').drop(columns = ['Genotype', 'GenotypeType'])
+
+# # Try to fix experiment codes --
+# for dfKey in list(out.keys()):
+#     df = out[dfKey]
+#     if 'ExperimentCode' in list(df):
+#         for key in list(replaceExperimentCodes.keys()):
+#             df.loc[df.ExperimentCode == key, 'ExperimentCode'] = replaceExperimentCodes[key]
+#     out[dfKey] = df
+
+
+
+
+
+#TODO I was working on converting prep_data() below to be method
+#I had just gotten to "# separate to make these easier to work with ----"
+#After checking the previous cell sould be merged into the class too.
