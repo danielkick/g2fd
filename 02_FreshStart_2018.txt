@@ -92,123 +92,6 @@ print(
 '\nall ', find_unrecognized_experiments([], return_all_exps=True)
 )  
 
-
-
-# # Todo -- sometime swap this for an operation on grouped df for speed.
-
-# # Values in MNH1 have a duplicate row for each observation with one row missing data for
-# # Anthesis_Unit_Datetime
-# # Silking_Unit_Datetime
-# # Anthesis_Unit_Days
-# # Silking_Unit_Days
-# # and the other missing data for
-# # Drop_Record 
-
-# # We'll solve this by finding all the rows with duplicates then 
-# temp = phno.groupby(['Experiment_Code', 'Replicate', 'Block', 'Range', 'Pass', 'Plot',
-#                     'Family', 'Pedigree', 'Source']).size().reset_index(name='obs')
-# temp = temp.loc[temp.obs > 1, :].drop_duplicates()
-# temp = temp.reset_index().drop(columns = ['index', 'obs']).reset_index().rename(columns= {'index':'Duplicate_Group'})
-
-# phno = phno.merge(temp, how='outer')
-
-
-# # for i in tqdm.tqdm( list(ptemp.Duplicate_Group.drop_duplicates().dropna() ) ):
-# #     for column in ptemp.columns:
-# #         if (ptemp.loc[ptemp.Duplicate_Group == i, column].dtype == 'float64') | (ptemp.loc[ptemp.Duplicate_Group == i, column].dtype == 'int64'):
-# #             val = ptemp.loc[ptemp.Duplicate_Group == i, column].mean()
-# #             if not np.isnan(val):
-# #                 ptemp.loc[ptemp.Duplicate_Group == i, column] = val
-
-# #         if (ptemp.loc[ptemp.Duplicate_Group == i, column].dtype == 'bool') | (ptemp.loc[ptemp.Duplicate_Group == i, column].dtype == 'object'):
-# #             val = [e for e in list(ptemp.loc[ptemp.Duplicate_Group == i, column]) if e == e]
-# #             if val  != []:
-# #                 ptemp.loc[ptemp.Duplicate_Group == i, column] = val[0]
-
-# # print(ptemp.size, ptemp.drop_duplicates().size)
-# # ptemp = ptemp.drop_duplicates()
-
-# # There is a substantial issue here.
-# # While most entries appear to just contain missing values, some of these 
-# # apparently redundant rows have yield differing up to 97.6 bu/A
-# M = phno.loc[phno.Duplicate_Group.notna(), ]
-
-# M2 = M.groupby('Duplicate_Group').agg(
-#     Grain_Yield_Unit_bu_Per_A = ('Grain_Yield_Unit_bu_Per_A', np.mean),
-#     diff = ('Grain_Yield_Unit_bu_Per_A', lambda x: np.nanmax(x) - np.nanmin(x))
-# ).reset_index()
-
-# import plotly.express as px
-
-# px.scatter(M2, x = 'Grain_Yield_Unit_bu_Per_A', y='diff', color= 'diff')
-
-# # check if rows have data that can be combined. 
-# # cell values must be either missing or equivalent.
-
-# # we can do this by imputing the missing values and looking for disagreements. 
-# # Because we don't know if the missing value will be first or second we will ffill and bfill
-# # .loc[M.Duplicate_Group == 1, :]
-# M_Conflicts =M.groupby('Duplicate_Group').fillna(method = 'ffill').fillna(method = 'bfill')
-
-# # only 8 rows fully mesh!
-# (M_Conflicts.shape[0], '->', M_Conflicts.drop_duplicates().shape[0])
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # The solution to this is to add to the identifiers (these data are ostensibly coming from the same physical locations)
-# M_update_ids = M.sort_values(['Experiment_Code',  'Replicate', 'Block', 'Range', 'Pass', 'Plot'] # same as going off `Duplicate_Group`
-#             ).reset_index(
-#             ).drop(columns='index'
-#             ).reset_index(
-#             ).rename(columns = {'index':'Add_AB'})
-
-# M_update_ids.Add_AB = M_update_ids.Add_AB.mod(2)
-# M_update_ids.loc[M_update_ids.Add_AB == 0, 'Add_AB'] = 'A'
-# M_update_ids.loc[M_update_ids.Add_AB == 1, 'Add_AB'] = 'B'
-
-
-
-# M_update_ids.assign(Add_AB_Mod = ('Add_AB', lambda x: x % 2))
-
-
-# M_update_ids.Replicate = M_update_ids.Replicate.astype('string') + M_update_ids.Add_AB
-
-# M_update_ids = M_update_ids.drop(columns='Add_AB')
-
-
-# M_update_ids.Replicate = M_update_ids.Replicate.astype('string')
-# phno.Replicate = phno.Replicate.astype('string')
-
-# shape_before_replacement = phno.shape
-# # now merge back in
-# mask = phno.Duplicate_Group.notna()
-# # shape should be the same
-# assert phno.loc[~mask, ].merge(M_update_ids, how = 'outer').shape == shape_before_replacement
-# phno = phno.loc[~mask, ].copy()
-# phno = phno.merge(M_update_ids, how = 'outer').copy()
-
-# [e for e in list(M_update_ids.columns) if e not in list(phno.columns)]
-
-
-
-
-
-
-
-
-
-
-
 # Values in MNH1 have a duplicate row for each observation with one row of partially missing data
 
 M = phno.loc[phno.Experiment_Code == "MNH1", ]
@@ -252,32 +135,8 @@ phno = phno.loc[~mask, ].merge(M_update_ids, how = 'outer').copy()
 # phno = phno.loc[~mask, ].copy()
 # phno = phno.merge(M_update_ids, how = 'outer').copy()
 
-
-
 # import seaborn as sns
 # sns.heatmap(phno.isnull(), yticklabels=False, cbar=False, cmap = 'viridis')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# okay so the problem seems to be that that somehow additional rows are getting added in that shouldn't be added.
-# trying processing all MNH1 explicitly.
-# M_update_ids
-# 2432
-
-# phno.loc[(phno.Experiment_Code == 'MNH1' ), :]
-# 3599
 
 # Find minimum cols needed to index all rows
 df = phno#.loc[(phno.Experiment_Code == 'MNH1' ), :]
