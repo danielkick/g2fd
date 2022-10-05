@@ -14503,179 +14503,360 @@ a.anchor-link {
     <span class="s1">&#39;Easily share dictionaries for renaming columns across scripts.&#39;</span>  
 
     <span class="n">meta_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Treatment&#39;</span><span class="p">:</span> <span class="s1">&#39;Treatment&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;City&#39;</span><span class="p">:</span> <span class="s1">&#39;City&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Farm&#39;</span><span class="p">:</span> <span class="s1">&#39;Farm&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Field&#39;</span><span class="p">:</span> <span class="s1">&#39;Field&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Trial_ID (Assigned by collaborator for internal reference)&#39;</span><span class="p">:</span> <span class="s1">&#39;Trial_ID&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Soil_Taxonomic_ID and horizon description, if known&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Taxonomic_ID&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Weather_Station_Serial_Number (Last four digits, e.g. m2700s#####)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Serial_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Weather_Station_Latitude (in decimal numbers NOT DMS)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Latitude_Unit_Decimal&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Weather_Station_Longitude (in decimal numbers NOT DMS)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Longitude_Unit_Decimal&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date_weather_station_placed&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Placed_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date_weather_station_removed&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Removed_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;In-field weather station serial number&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Serial_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;In-field_weather_station_latitude (in decimal)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Latitude_Unit_Decimal&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;In-field_weather_station_longitude (in decimal)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Longitude_Unit_Decimal&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Previous_Crop&#39;</span><span class="p">:</span> <span class="s1">&#39;Previous_Crop&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Pre-plant_tillage_method(s)&#39;</span><span class="p">:</span> <span class="s1">&#39;Pre_Plant_Tillage&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;In-season_tillage_method(s)&#39;</span><span class="p">:</span> <span class="s1">&#39;Post_Plant_Tillage&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Plot_length (center-alley to center-alley in feet)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Alley_length (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Row_spacing (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Type_of_planter (fluted cone; belt cone; air planter)&#39;</span><span class="p">:</span> <span class="s1">&#39;Planter_Type&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Number_kernels_planted_per_plot (&gt;200 seed/pack for cone planters)&#39;</span><span class="p">:</span> <span class="s1">&#39;Kernels_Per_Plot&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;System_Determining_Moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;System_Determining_Moisture&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Latitude_of_Field_Corner_#1 (lower left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_BL&#39;</span><span class="p">,</span> 
+                              <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
+                                    <span class="s1">&#39;Treatment&#39;</span><span class="p">:</span> <span class="s1">&#39;Treatment&#39;</span><span class="p">,</span>       <span class="c1"># Unchanged </span>
+                                         <span class="s1">&#39;City&#39;</span><span class="p">:</span> <span class="s1">&#39;City&#39;</span><span class="p">,</span>            <span class="c1"># Unchanged </span>
+                                         <span class="s1">&#39;Farm&#39;</span><span class="p">:</span> <span class="s1">&#39;Farm&#39;</span><span class="p">,</span>            <span class="c1"># Unchanged </span>
+                                        <span class="s1">&#39;Field&#39;</span><span class="p">:</span> <span class="s1">&#39;Field&#39;</span><span class="p">,</span>           <span class="c1"># Unchanged </span>
+ <span class="s1">&#39;Trial_ID (Assigned by collaborator for internal reference)&#39;</span><span class="p">:</span> <span class="s1">&#39;Trial_ID&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Soil_Taxonomic_ID and horizon description, if known&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Taxonomic_ID&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Weather_Station_Serial_Number (Last four digits, e.g. m2700s#####)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Serial_Number&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Weather_Station_Latitude (in decimal numbers NOT DMS)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Latitude_Unit_Decimal&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Weather_Station_Longitude (in decimal numbers NOT DMS)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Longitude_Unit_Decimal&#39;</span><span class="p">,</span> 
+                  <span class="s1">&#39;Date_weather_station_placed&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Placed_Unit_Datetime&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Date_weather_station_removed&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Removed_Unit_Datetime&#39;</span><span class="p">,</span> 
+       <span class="s1">&#39;In-field weather station serial number&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Serial_Number&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;In-field_weather_station_latitude (in decimal)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Latitude_Unit_Decimal&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;In-field_weather_station_longitude (in decimal)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Longitude_Unit_Decimal&#39;</span><span class="p">,</span> 
+                                <span class="s1">&#39;Previous_Crop&#39;</span><span class="p">:</span> <span class="s1">&#39;Previous_Crop&#39;</span><span class="p">,</span>   <span class="c1"># Unchanged </span>
+                  <span class="s1">&#39;Pre-plant_tillage_method(s)&#39;</span><span class="p">:</span> <span class="s1">&#39;Pre_Plant_Tillage&#39;</span><span class="p">,</span> 
+                  <span class="s1">&#39;In-season_tillage_method(s)&#39;</span><span class="p">:</span> <span class="s1">&#39;Post_Plant_Tillage&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Plot_length (center-alley to center-alley in feet)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">,</span> 
+                     <span class="s1">&#39;Alley_length (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> 
+                      <span class="s1">&#39;Row_spacing (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Type_of_planter (fluted cone; belt cone; air planter)&#39;</span><span class="p">:</span> <span class="s1">&#39;Planter_Type&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Number_kernels_planted_per_plot (&gt;200 seed/pack for cone planters)&#39;</span><span class="p">:</span> <span class="s1">&#39;Kernels_Per_Plot&#39;</span><span class="p">,</span> 
+                  <span class="s1">&#39;System_Determining_Moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;System_Determining_Moisture&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
+                  <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">:</span> <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
+     <span class="s1">&#39;Latitude_of_Field_Corner_#1 (lower left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_BL&#39;</span><span class="p">,</span> 
     <span class="s1">&#39;Longitude_of_Field_Corner_#1 (lower left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_BL&#39;</span><span class="p">,</span> 
     <span class="s1">&#39;Latitude_of_Field_Corner_#2 (lower right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_BR&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Longitude_of_Field_Corner_#2 (lower right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_BR&#39;</span><span class="p">,</span> 
+   <span class="s1">&#39;Longitude_of_Field_Corner_#2 (lower right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_BR&#39;</span><span class="p">,</span> 
     <span class="s1">&#39;Latitude_of_Field_Corner_#3 (upper right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_TR&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Longitude_of_Field_Corner_#3 (upper right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_TR&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Latitude_of_Field_Corner_#4 (upper left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_TL&#39;</span><span class="p">,</span> 
+   <span class="s1">&#39;Longitude_of_Field_Corner_#3 (upper right)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_TR&#39;</span><span class="p">,</span> 
+     <span class="s1">&#39;Latitude_of_Field_Corner_#4 (upper left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_TL&#39;</span><span class="p">,</span> 
     <span class="s1">&#39;Longitude_of_Field_Corner_#4 (upper left)&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_TL&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Cardinal_Heading_Pass_1&#39;</span><span class="p">:</span> <span class="s1">&#39;Cardinal_Heading&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#1_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_1&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#1_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_1&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#2_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#2_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#3_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_3&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#3_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_3&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#4_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_4&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#4_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_4&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#5_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_5&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Local_Check_#5_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_5&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#1&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_1&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#2&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#3&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_3&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#4&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_4&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#5&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_5&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#6&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_6&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#7&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_7&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#8&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_8&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#9&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_9&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Issue/comment_#10&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_70&#39;</span>
+                      <span class="s1">&#39;Cardinal_Heading_Pass_1&#39;</span><span class="p">:</span> <span class="s1">&#39;Cardinal_Heading&#39;</span><span class="p">,</span> 
+                      <span class="s1">&#39;Local_Check_#1_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_1&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;Local_Check_#1_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_1&#39;</span><span class="p">,</span> 
+                      <span class="s1">&#39;Local_Check_#2_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_2&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;Local_Check_#2_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_2&#39;</span><span class="p">,</span> 
+                      <span class="s1">&#39;Local_Check_#3_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_3&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;Local_Check_#3_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_3&#39;</span><span class="p">,</span> 
+                      <span class="s1">&#39;Local_Check_#4_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_4&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;Local_Check_#4_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_4&#39;</span><span class="p">,</span> 
+                      <span class="s1">&#39;Local_Check_#5_Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Pedigree_5&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;Local_Check_#5_Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check_Source_5&#39;</span><span class="p">,</span> 
+                             <span class="s1">&#39;Issue/comment_#1&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_1&#39;</span><span class="p">,</span> 
+                             <span class="s1">&#39;Issue/comment_#2&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_2&#39;</span><span class="p">,</span> 
+                             <span class="s1">&#39;Issue/comment_#3&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_3&#39;</span><span class="p">,</span> 
+                             <span class="s1">&#39;Issue/comment_#4&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_4&#39;</span><span class="p">,</span> 
+                             <span class="s1">&#39;Issue/comment_#5&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_5&#39;</span><span class="p">,</span> 
+                             <span class="s1">&#39;Issue/comment_#6&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_6&#39;</span><span class="p">,</span> 
+                             <span class="s1">&#39;Issue/comment_#7&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_7&#39;</span><span class="p">,</span> 
+                             <span class="s1">&#39;Issue/comment_#8&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_8&#39;</span><span class="p">,</span> 
+                             <span class="s1">&#39;Issue/comment_#9&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_9&#39;</span><span class="p">,</span> 
+                            <span class="s1">&#39;Issue/comment_#10&#39;</span><span class="p">:</span> <span class="s1">&#39;Comment_70&#39;</span><span class="p">,</span>
+                                               <span class="c1"># 2018</span>
+ <span class="s1">&#39;Weather_Station_Serial_Number (Last four digits, e.g.</span><span class="se">\xa0</span><span class="s1">m2700s#####)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Serial_Number&#39;</span><span class="p">,</span>
+                                               <span class="c1"># 2015</span>
+                                   <span class="s1">&#39;Experiment&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
+                                         <span class="s1">&#39;Type&#39;</span><span class="p">:</span> <span class="s1">&#39;Type&#39;</span><span class="p">,</span> 
+                                        <span class="s1">&#39;WS_SN&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Serial_Number&#39;</span><span class="p">,</span> 
+                                       <span class="s1">&#39;WS Lat&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Latitude_Unit_Decimal&#39;</span><span class="p">,</span> 
+                                       <span class="s1">&#39;WS Lon&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Longitude_Unit_Decimal&#39;</span><span class="p">,</span> 
+                                       <span class="s1">&#39;DateIn&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Placed_Unit_Datetime&#39;</span><span class="p">,</span> 
+                                      <span class="s1">&#39;DateOut&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Removed_Unit_Datetime&#39;</span><span class="p">,</span> 
+                                <span class="s1">&#39;Previous Crop&#39;</span><span class="p">:</span> <span class="s1">&#39;Previous_Crop&#39;</span><span class="p">,</span> 
+                                      <span class="s1">&#39;Tillage&#39;</span><span class="p">:</span> <span class="s1">&#39;Tillage&#39;</span><span class="p">,</span> 
+                                      <span class="s1">&#39;PlotLen&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">,</span> 
+                                     <span class="s1">&#39;AlleyLen&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> 
+                                        <span class="s1">&#39;RowSp&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> 
+                                  <span class="s1">&#39;PlanterType&#39;</span><span class="p">:</span> <span class="s1">&#39;Planter_Type&#39;</span><span class="p">,</span> 
+                               <span class="s1">&#39;KernelsPerPlot&#39;</span><span class="p">:</span> <span class="s1">&#39;Kernels_Per_Plot&#39;</span><span class="p">,</span> 
+                               <span class="s1">&#39;Moisture Meter&#39;</span><span class="p">:</span> <span class="s1">&#39;System_Determining_Moisture&#39;</span><span class="p">,</span> 
+                                <span class="s1">&#39;LBS for  test&#39;</span><span class="p">:</span> <span class="s1">&#39;Test_Weight_Unit_lbs&#39;</span><span class="p">,</span> 
+                                  <span class="s1">&#39;corner1 lat&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_BL&#39;</span><span class="p">,</span> 
+                                  <span class="s1">&#39;corner1 lon&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_BL&#39;</span><span class="p">,</span> 
+                                  <span class="s1">&#39;corner 2lat&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_BR&#39;</span><span class="p">,</span> 
+                                  <span class="s1">&#39;corner2 lon&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_BR&#39;</span><span class="p">,</span> 
+                                  <span class="s1">&#39;corner3 lat&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_TR&#39;</span><span class="p">,</span> 
+                                  <span class="s1">&#39;corner3 lon&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_TR&#39;</span><span class="p">,</span> 
+                                  <span class="s1">&#39;corner4 lat&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_TL&#39;</span><span class="p">,</span> 
+                                  <span class="s1">&#39;corner4 lon&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_TL&#39;</span><span class="p">,</span> 
+                                     <span class="s1">&#39;Cardinal&#39;</span><span class="p">:</span> <span class="s1">&#39;Cardinal_Heading&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;date of soil sampling&#39;</span><span class="p">:</span> <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
+                                <span class="s1">&#39;preplant herb&#39;</span><span class="p">:</span> <span class="s1">&#39;Pre_Plant_Herbicide&#39;</span><span class="p">,</span> 
+                               <span class="s1">&#39;postplant herb&#39;</span><span class="p">:</span> <span class="s1">&#39;Post_Plant_Herbicide&#39;</span><span class="p">,</span> 
+                                      <span class="s1">&#39;total N&#39;</span><span class="p">:</span> <span class="s1">&#39;N_Unit_lbs_per_A&#39;</span><span class="p">,</span> 
+                                      <span class="s1">&#39;total P&#39;</span><span class="p">:</span> <span class="s1">&#39;P_Unit_lbs_per_A&#39;</span><span class="p">,</span> 
+                                      <span class="s1">&#39;total K&#39;</span><span class="p">:</span> <span class="s1">&#39;K_Unit_lbs_per_A&#39;</span><span class="p">,</span> 
+                                 <span class="s1">&#39;fert dates 1&#39;</span><span class="p">:</span> <span class="s1">&#39;Fertilizer_Application_Datetime_1&#39;</span><span class="p">,</span> 
+                                 <span class="s1">&#39;fert dates 2&#39;</span><span class="p">:</span> <span class="s1">&#39;Fertilizer_Application_Datetime_2&#39;</span><span class="p">,</span> 
+                                 <span class="s1">&#39;fert dates 3&#39;</span><span class="p">:</span> <span class="s1">&#39;Fertilizer_Application_Datetime_3&#39;</span><span class="p">,</span> 
+                                 <span class="s1">&#39;fert dates 4&#39;</span><span class="p">:</span> <span class="s1">&#39;Fertilizer_Application_Datetime_4&#39;</span><span class="p">,</span> 
+                                 <span class="s1">&#39;fert dates 5&#39;</span><span class="p">:</span> <span class="s1">&#39;Fertilizer_Application_Datetime_5&#39;</span><span class="p">,</span> 
+                                 <span class="s1">&#39;fert dates 6&#39;</span><span class="p">:</span> <span class="s1">&#39;Fertilizer_Application_Datetime_6&#39;</span><span class="p">,</span> 
+                                 <span class="s1">&#39;fert dates 7&#39;</span><span class="p">:</span> <span class="s1">&#39;Fertilizer_Application_Datetime_7&#39;</span><span class="p">,</span> 
+                                 <span class="s1">&#39;fert dates 8&#39;</span><span class="p">:</span> <span class="s1">&#39;Fertilizer_Application_Datetime_8&#39;</span><span class="p">,</span> 
+                                 <span class="s1">&#39;Type of Fert&#39;</span><span class="p">:</span> <span class="s1">&#39;Fertilizer_Product&#39;</span><span class="p">,</span> 
+                                  <span class="s1">&#39;Insecticide&#39;</span><span class="p">:</span> <span class="s1">&#39;Insecticide&#39;</span><span class="p">,</span>
+                                               <span class="c1"># 2014  </span>
+                                <span class="s1">&#39;Location name&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
+                                         <span class="s1">&#39;long&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Longitude_BL&#39;</span><span class="p">,</span> 
+                                          <span class="s1">&#39;lat&#39;</span><span class="p">:</span> <span class="s1">&#39;Field_Latitude_BL&#39;</span><span class="p">,</span> 
+       <span class="s1">&#39;Plot length (center to center in feet)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;Alley length (inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> 
+                         <span class="s1">&#39;Row spacing (inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> 
+                       <span class="s1">&#39;Number kernels planted&#39;</span><span class="p">:</span> <span class="s1">&#39;Kernels_Per_Plot&#39;</span><span class="p">,</span> 
+                                 <span class="s1">&#39;Planter type&#39;</span><span class="p">:</span> <span class="s1">&#39;Planter_Type&#39;</span><span class="p">,</span> 
+                                <span class="s1">&#39;Previous crop&#39;</span><span class="p">:</span> <span class="s1">&#39;Previous_Crop&#39;</span><span class="p">,</span> 
+                         <span class="s1">&#39;Pre-plant herbicides&#39;</span><span class="p">:</span> <span class="s1">&#39;Pre_Plant_Herbicide&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;Post-plant herbicides&#39;</span><span class="p">:</span> <span class="s1">&#39;Post_Plant_Herbicide&#39;</span><span class="p">,</span> 
+                               <span class="s1">&#39;Tillage method&#39;</span><span class="p">:</span> <span class="s1">&#39;Tillage&#39;</span><span class="p">,</span> 
+                               <span class="s1">&#39;Soil test type&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Test&#39;</span><span class="p">,</span> 
+                                 <span class="s1">&#39;Soil texture&#39;</span><span class="p">:</span> <span class="s1">&#39;Texture&#39;</span><span class="p">,</span> 
+                                      <span class="s1">&#39;Soil pH&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_1_to_1_Unit_pH&#39;</span><span class="p">,</span> 
+                               <span class="s1">&#39;Total nitrogen&#39;</span><span class="p">:</span> <span class="s1">&#39;N_Unit_lbs_per_A&#39;</span><span class="p">,</span> 
+                             <span class="s1">&#39;Total phosphorus&#39;</span><span class="p">:</span> <span class="s1">&#39;P_Unit_lbs_per_A&#39;</span><span class="p">,</span> 
+                              <span class="s1">&#39;Total potassium&#39;</span><span class="p">:</span> <span class="s1">&#39;K_Unit_lbs_per_A&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Nutrient application schedule&#39;</span><span class="p">:</span> <span class="s1">&#39;Nutrient_Schedule&#39;</span><span class="p">,</span> 
+                                   <span class="s1">&#39;Irrigated?&#39;</span><span class="p">:</span> <span class="s1">&#39;Irrigation_Applied&#39;</span><span class="p">,</span> 
+          <span class="s1">&#39;Weather station includes irrigation&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Documents_Irrigation&#39;</span><span class="p">,</span> 
+                         <span class="s1">&#39;Fertigation schedule&#39;</span><span class="p">:</span> <span class="s1">&#39;Fertigation_Schedule&#39;</span><span class="p">,</span> 
+                          <span class="s1">&#39;Irrigation schedule&#39;</span><span class="p">:</span> <span class="s1">&#39;Irrigation_Schedule&#39;</span><span class="p">,</span> 
+                                  <span class="s1">&#39;Local check&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check&#39;</span><span class="p">,</span> 
+                                 <span class="s1">&#39;Harvest date&#39;</span><span class="p">:</span> <span class="s1">&#39;Harvested_Unit_Datetime&#39;</span><span class="p">,</span> 
+                                <span class="s1">&#39;Planting date&#39;</span><span class="p">:</span> <span class="s1">&#39;Planted_Unit_Datetime&#39;</span><span class="p">,</span> 
+                                  <span class="s1">&#39;Inbred reps&#39;</span><span class="p">:</span> <span class="s1">&#39;Inbred_Reps&#39;</span><span class="p">,</span> 
+                                 <span class="s1">&#39;Inbred plots&#39;</span><span class="p">:</span> <span class="s1">&#39;Inbred_Plots&#39;</span><span class="p">,</span> 
+                                <span class="s1">&#39;Collaborators&#39;</span><span class="p">:</span> <span class="s1">&#39;Collaborator&#39;</span><span class="p">,</span> 
+                               <span class="s1">&#39;Data file name&#39;</span><span class="p">:</span> <span class="s1">&#39;State&#39;</span><span class="p">,</span> 
+                                       <span class="s1">&#39;traits&#39;</span><span class="p">:</span> <span class="s1">&#39;Traits_Measured&#39;</span><span class="p">,</span> 
+                                       <span class="s1">&#39;folder&#39;</span><span class="p">:</span> <span class="s1">&#39;State&#39;</span><span class="p">,</span> 
+                           <span class="s1">&#39;Metadata file name&#39;</span><span class="p">:</span> <span class="s1">&#39;Metadata_File&#39;</span><span class="p">,</span> 
+                          <span class="s1">&#39;additional metadata&#39;</span><span class="p">:</span> <span class="s1">&#39;Additional_Metadata&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Weather Station serial number&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_In_Field_Serial_Number&#39;</span><span class="p">,</span> 
+                               <span class="s1">&#39;Weather-folder&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Directory&#39;</span>
     <span class="p">}</span>
-
+    
     <span class="n">phno_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;Year&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Field-Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;State&#39;</span><span class="p">:</span> <span class="s1">&#39;State&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;City&#39;</span><span class="p">:</span> <span class="s1">&#39;City&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Plot length (center-center in feet)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Plot area (ft2)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Area_Unit_Feet2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Alley length (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Row spacing (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Rows per plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Rows_Per_Plot&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;# Seed per plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Seeds_Per_Plot&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Experiment&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Source&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Pedigree&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Family&#39;</span><span class="p">:</span> <span class="s1">&#39;Family&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Tester&#39;</span><span class="p">:</span> <span class="s1">&#39;Tester&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Replicate&#39;</span><span class="p">:</span> <span class="s1">&#39;Replicate&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Block&#39;</span><span class="p">:</span> <span class="s1">&#39;Block&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Plot_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_ID&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Range&#39;</span><span class="p">:</span> <span class="s1">&#39;Range&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Pass&#39;</span><span class="p">:</span> <span class="s1">&#39;Pass&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Date Plot Planted [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Planted_Unit_Datetime&#39;</span><span class="p">,</span> 
+                              <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;Year&#39;</span><span class="p">,</span> 
+                    <span class="s1">&#39;Field-Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
+                             <span class="s1">&#39;State&#39;</span><span class="p">:</span> <span class="s1">&#39;State&#39;</span><span class="p">,</span>      <span class="c1"># Unchanged </span>
+                              <span class="s1">&#39;City&#39;</span><span class="p">:</span> <span class="s1">&#39;City&#39;</span><span class="p">,</span>       <span class="c1"># Unchanged </span>
+ <span class="s1">&#39;Plot length (center-center in feet)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;Plot area (ft2)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Area_Unit_Feet2&#39;</span><span class="p">,</span> 
+          <span class="s1">&#39;Alley length (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> 
+           <span class="s1">&#39;Row spacing (in inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> 
+                     <span class="s1">&#39;Rows per plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Rows_Per_Plot&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;# Seed per plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Seeds_Per_Plot&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;Experiment&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
+                            <span class="s1">&#39;Source&#39;</span><span class="p">:</span> <span class="s1">&#39;Source&#39;</span><span class="p">,</span>     <span class="c1"># Unchanged </span>
+                          <span class="s1">&#39;Pedigree&#39;</span><span class="p">:</span> <span class="s1">&#39;Pedigree&#39;</span><span class="p">,</span>   <span class="c1"># Unchanged </span>
+                            <span class="s1">&#39;Family&#39;</span><span class="p">:</span> <span class="s1">&#39;Family&#39;</span><span class="p">,</span>     <span class="c1"># Unchanged </span>
+                            <span class="s1">&#39;Tester&#39;</span><span class="p">:</span> <span class="s1">&#39;Tester&#39;</span><span class="p">,</span>     <span class="c1"># Unchanged </span>
+                         <span class="s1">&#39;Replicate&#39;</span><span class="p">:</span> <span class="s1">&#39;Replicate&#39;</span><span class="p">,</span>  <span class="c1"># Unchanged </span>
+                             <span class="s1">&#39;Block&#39;</span><span class="p">:</span> <span class="s1">&#39;Block&#39;</span><span class="p">,</span>      <span class="c1"># Unchanged </span>
+                              <span class="s1">&#39;Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot&#39;</span><span class="p">,</span>       <span class="c1"># Unchanged </span>
+                           <span class="s1">&#39;Plot_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_ID&#39;</span><span class="p">,</span>    <span class="c1"># Unchanged </span>
+                             <span class="s1">&#39;Range&#39;</span><span class="p">:</span> <span class="s1">&#39;Range&#39;</span><span class="p">,</span>      <span class="c1"># Unchanged </span>
+                              <span class="s1">&#39;Pass&#39;</span><span class="p">:</span> <span class="s1">&#39;Pass&#39;</span><span class="p">,</span>       <span class="c1"># Unchanged </span>
+      <span class="s1">&#39;Date Plot Planted [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Planted_Unit_Datetime&#39;</span><span class="p">,</span> 
     <span class="s1">&#39;Date Plot Harvested [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Harvested_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Anthesis [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Anthesis_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Silking [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Silking_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Anthesis [days]&#39;</span><span class="p">:</span> <span class="s1">&#39;Anthesis_Unit_Days&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Silking [days]&#39;</span><span class="p">:</span> <span class="s1">&#39;Silking_Unit_Days&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Plant Height [cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Plant_Height_Unit_cm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Ear Height [cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Ear_Height_Unit_cm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Stand Count [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Stand_Count_Unit_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Root Lodging [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Root_Lodging_Unit_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Stalk Lodging [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Stalk_Lodging_Unit_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Grain Moisture [%]&#39;</span><span class="p">:</span> <span class="s1">&#39;Grain_Moisture_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Test Weight [lbs]&#39;</span><span class="p">:</span> <span class="s1">&#39;Test_Weight_Unit_lbs&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Plot Weight [lbs]&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Weight_Unit_lbs&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Grain Yield (bu/A)&#39;</span><span class="p">:</span> <span class="s1">&#39;Grain_Yield_Unit_bu_Per_A&#39;</span><span class="p">,</span> 
-    <span class="s2">&quot;Plot Discarded [enter &#39;yes&#39; or blank]&quot;</span><span class="p">:</span> <span class="s1">&#39;Discarded&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Phenotype_Comments&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Filler&#39;</span><span class="p">:</span> <span class="s1">&#39;Filler&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Snap [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Snap_Unit_Number&#39;</span><span class="p">,</span>
-    <span class="c1"># 2019</span>
-    <span class="s1">&#39;Kernels/Packet&#39;</span> <span class="p">:</span> <span class="s1">&#39;Kernels_Per_Packet&#39;</span><span class="p">,</span>
-    <span class="s2">&quot;Filler [enter &#39;filler&#39; or blank]&quot;</span> <span class="p">:</span> <span class="s1">&#39;Filler&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Possible subs&#39;</span> <span class="p">:</span> <span class="s1">&#39;Possible_Subs&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Confirmed subs&#39;</span> <span class="p">:</span> <span class="s1">&#39;Confirmed_Subs&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Single Plant Biomass in July(g)&#39;</span> <span class="p">:</span> <span class="s1">&#39;Biomass_July_Unit_g&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Single Plant Biomass in August(g)&#39;</span> <span class="p">:</span> <span class="s1">&#39;Biomass_Aug_Unit_g&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;RootPullingForce(kgf)_July&#39;</span> <span class="p">:</span> <span class="s1">&#39;Root_Pulling_Force_July_Unit_kgf&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;RootPullingForce(kgf)_August&#39;</span> <span class="p">:</span> <span class="s1">&#39;Root_Pulling_Force_Aug_Unit_kgf&#39;</span>
+               <span class="s1">&#39;Anthesis [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Anthesis_Unit_Datetime&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Silking [MM/DD/YY]&#39;</span><span class="p">:</span> <span class="s1">&#39;Silking_Unit_Datetime&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;Anthesis [days]&#39;</span><span class="p">:</span> <span class="s1">&#39;Anthesis_Unit_Days&#39;</span><span class="p">,</span> 
+                    <span class="s1">&#39;Silking [days]&#39;</span><span class="p">:</span> <span class="s1">&#39;Silking_Unit_Days&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Plant Height [cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Plant_Height_Unit_cm&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;Ear Height [cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Ear_Height_Unit_cm&#39;</span><span class="p">,</span> 
+         <span class="s1">&#39;Stand Count [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Stand_Count_Unit_Number&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;Root Lodging [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Root_Lodging_Unit_Number&#39;</span><span class="p">,</span> 
+       <span class="s1">&#39;Stalk Lodging [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Stalk_Lodging_Unit_Number&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Grain Moisture [%]&#39;</span><span class="p">:</span> <span class="s1">&#39;Grain_Moisture_Unit_Percent&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Test Weight [lbs]&#39;</span><span class="p">:</span> <span class="s1">&#39;Test_Weight_Unit_lbs&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Plot Weight [lbs]&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Weight_Unit_lbs&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Grain Yield (bu/A)&#39;</span><span class="p">:</span> <span class="s1">&#39;Grain_Yield_Unit_bu_Per_A&#39;</span><span class="p">,</span> 
+  <span class="s2">&quot;Plot Discarded [enter &#39;yes&#39; or blank]&quot;</span><span class="p">:</span> <span class="s1">&#39;Discarded&#39;</span><span class="p">,</span> 
+                          <span class="s1">&#39;Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Phenotype_Comments&#39;</span><span class="p">,</span> 
+                            <span class="s1">&#39;Filler&#39;</span><span class="p">:</span> <span class="s1">&#39;Filler&#39;</span><span class="p">,</span>     <span class="c1"># Unchanged </span>
+                <span class="s1">&#39;Snap [# of plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Snap_Unit_Number&#39;</span><span class="p">,</span>
+                                    <span class="c1"># 2019</span>
+                   <span class="s1">&#39;Kernels/Packet&#39;</span> <span class="p">:</span> <span class="s1">&#39;Kernels_Per_Packet&#39;</span><span class="p">,</span>
+ <span class="s2">&quot;Filler [enter &#39;filler&#39; or blank]&quot;</span> <span class="p">:</span> <span class="s1">&#39;Filler&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Possible subs&#39;</span> <span class="p">:</span> <span class="s1">&#39;Possible_Subs&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;Confirmed subs&#39;</span> <span class="p">:</span> <span class="s1">&#39;Confirmed_Subs&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;Single Plant Biomass in July(g)&#39;</span> <span class="p">:</span> <span class="s1">&#39;Biomass_July_Unit_g&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;Single Plant Biomass in August(g)&#39;</span> <span class="p">:</span> <span class="s1">&#39;Biomass_Aug_Unit_g&#39;</span><span class="p">,</span>
+       <span class="s1">&#39;RootPullingForce(kgf)_July&#39;</span> <span class="p">:</span> <span class="s1">&#39;Root_Pulling_Force_July_Unit_kgf&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;RootPullingForce(kgf)_August&#39;</span> <span class="p">:</span> <span class="s1">&#39;Root_Pulling_Force_Aug_Unit_kgf&#39;</span><span class="p">,</span>
+                                    <span class="c1"># 2018</span>
+                             <span class="s1">&#39;RecId&#39;</span><span class="p">:</span> <span class="s1">&#39;Drop_Record_Index&#39;</span><span class="p">,</span> 
+                      <span class="s1">&#39;Tester/Group&#39;</span><span class="p">:</span> <span class="s1">&#39;Tester&#39;</span><span class="p">,</span> 
+             <span class="s1">&#39;Local Check (Yes, No)&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Plot Length Field&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_&#39;</span><span class="p">,</span> 
+                      <span class="s1">&#39;Alley Length&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_&#39;</span><span class="p">,</span> 
+                       <span class="s1">&#39;Row Spacing&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_&#39;</span><span class="p">,</span> 
+                         <span class="s1">&#39;Plot Area&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Area_Unit_&#39;</span><span class="p">,</span> 
+                         <span class="s1">&#39;Rows/Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Rows_Per_Plot&#39;</span><span class="p">,</span> 
+                       <span class="s1">&#39;Packet/Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Packets_Per_Plot&#39;</span><span class="p">,</span> 
+                            <span class="s1">&#39;# Seed&#39;</span><span class="p">:</span> <span class="s1">&#39;Seeds_Per_Plot&#39;</span><span class="p">,</span> 
+                      <span class="s1">&#39;Date Planted&#39;</span><span class="p">:</span> <span class="s1">&#39;Planted_Unit_Datetime&#39;</span><span class="p">,</span> 
+                    <span class="s1">&#39;Date Harvested&#39;</span><span class="p">:</span> <span class="s1">&#39;Harvested_Unit_Datetime&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;Anthesis [date]&#39;</span><span class="p">:</span> <span class="s1">&#39;Anthesis_Unit_Datetime&#39;</span><span class="p">,</span> 
+                    <span class="s1">&#39;Silking [date]&#39;</span><span class="p">:</span> <span class="s1">&#39;Silking_Unit_Datetime&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Pollen DAP [days]&#39;</span><span class="p">:</span> <span class="s1">&#39;Anthesis_Unit_Days&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;Silk DAP [days]&#39;</span><span class="p">:</span> <span class="s1">&#39;Silking_Unit_Days&#39;</span><span class="p">,</span> 
+              <span class="s1">&#39;Stand Count [plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Stand_Count_Unit_Number&#39;</span><span class="p">,</span> 
+                         <span class="s1">&#39;Stand [%]&#39;</span><span class="p">:</span> <span class="s1">&#39;Stand_Count_Unit_Percent&#39;</span><span class="p">,</span> 
+             <span class="s1">&#39;Root Lodging [plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Root_Lodging_Unit_Number&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;Stalk Lodging [plants]&#39;</span><span class="p">:</span> <span class="s1">&#39;Stalk_Lodging_Unit_Number&#39;</span><span class="p">,</span> 
+              <span class="s1">&#39;Test Weight [lbs/bu]&#39;</span><span class="p">:</span> <span class="s1">&#39;Test_Weight_Unit_lbs&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Grain Yield [bu/A]&#39;</span><span class="p">:</span> <span class="s1">&#39;Grain_Yield_Unit_bu_Per_A&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Plot Discarded [enter &quot;Yes&quot; or &quot;blank&quot;]&#39;</span><span class="p">:</span> <span class="s1">&#39;Discarded&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Filler [enter &quot;filler&quot; or &quot;blank&quot;]&#39;</span><span class="p">:</span> <span class="s1">&#39;Filler&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;[add additional measurements here]&#39;</span><span class="p">:</span> <span class="s1">&#39;Additional_Metics&#39;</span><span class="p">,</span>
+                                    <span class="c1"># 2017</span>
+                           <span class="s1">&#39;ï»¿Year&#39;</span><span class="p">:</span> <span class="s1">&#39;Year&#39;</span><span class="p">,</span> 
+      <span class="s1">&#39;LOCAL_CHECK (Yes, No[Blank])&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Plot Discarded [enter &quot;yes&quot; or &quot;blank&quot;]&#39;</span><span class="p">:</span> <span class="s1">&#39;Discarded&#39;</span><span class="p">,</span>
+                                    <span class="c1"># 2015</span>
+ <span class="s1">&#39;Plot Length Field (center to center in feet)&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">,</span> 
+               <span class="s1">&#39;Alley Length (feet)&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_Feet&#39;</span><span class="p">,</span> 
+              <span class="s1">&#39;Row Spacing (inches)&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span>
+                                    <span class="c1"># 2014</span>
     <span class="p">}</span>
 
     <span class="n">soil_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Grower&#39;</span><span class="p">:</span> <span class="s1">&#39;Grower&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date Received&#39;</span><span class="p">:</span> <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date Reported&#39;</span><span class="p">:</span> <span class="s1">&#39;Processed_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;E Depth&#39;</span><span class="p">:</span> <span class="s1">&#39;Depth_Unit_UNK&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;1:1 Soil pH&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_1_to_1_Unit_pH&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;WDRF Buffer pH&#39;</span><span class="p">:</span> <span class="s1">&#39;WDRF_Buffer_Unit_pH&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;1:1 S Salts mmho/cm&#39;</span><span class="p">:</span> <span class="s1">&#39;Soluable_Salts_Unit_mmho_Per_cm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Texture No&#39;</span><span class="p">:</span> <span class="s1">&#39;Texture_Number&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Organic Matter LOI %&#39;</span><span class="p">:</span> <span class="s1">&#39;Organic_Matter_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Nitrate-N ppm N&#39;</span><span class="p">:</span> <span class="s1">&#39;Nitrates_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;lbs N/A&#39;</span><span class="p">:</span> <span class="s1">&#39;N_per_Acre_Unit_lbs&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Potassium ppm K&#39;</span><span class="p">:</span> <span class="s1">&#39;K_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Sulfate-S ppm S&#39;</span><span class="p">:</span> <span class="s1">&#39;Sulfate_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Calcium ppm Ca&#39;</span><span class="p">:</span> <span class="s1">&#39;Ca_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Magnesium ppm Mg&#39;</span><span class="p">:</span> <span class="s1">&#39;Mg_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Sodium ppm Na&#39;</span><span class="p">:</span> <span class="s1">&#39;Na_Unit_ppm&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;Grower&#39;</span><span class="p">:</span> <span class="s1">&#39;Grower&#39;</span><span class="p">,</span>  <span class="c1"># Unchanged </span>
+                      <span class="s1">&#39;Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Date Received&#39;</span><span class="p">:</span> <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Date Reported&#39;</span><span class="p">:</span> <span class="s1">&#39;Processed_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
+                       <span class="s1">&#39;E Depth&#39;</span><span class="p">:</span> <span class="s1">&#39;Depth_Unit_UNK&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;1:1 Soil pH&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_1_to_1_Unit_pH&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;WDRF Buffer pH&#39;</span><span class="p">:</span> <span class="s1">&#39;WDRF_Buffer_Unit_pH&#39;</span><span class="p">,</span> 
+           <span class="s1">&#39;1:1 S Salts mmho/cm&#39;</span><span class="p">:</span> <span class="s1">&#39;Soluable_Salts_Unit_mmho_Per_cm&#39;</span><span class="p">,</span> 
+                    <span class="s1">&#39;Texture No&#39;</span><span class="p">:</span> <span class="s1">&#39;Texture_Number&#39;</span><span class="p">,</span> 
+          <span class="s1">&#39;Organic Matter LOI %&#39;</span><span class="p">:</span> <span class="s1">&#39;Organic_Matter_Unit_Percent&#39;</span><span class="p">,</span> 
+               <span class="s1">&#39;Nitrate-N ppm N&#39;</span><span class="p">:</span> <span class="s1">&#39;Nitrates_Unit_ppm&#39;</span><span class="p">,</span> 
+                       <span class="s1">&#39;lbs N/A&#39;</span><span class="p">:</span> <span class="s1">&#39;N_per_Acre_Unit_lbs&#39;</span><span class="p">,</span> 
+               <span class="s1">&#39;Potassium ppm K&#39;</span><span class="p">:</span> <span class="s1">&#39;K_Unit_ppm&#39;</span><span class="p">,</span> 
+               <span class="s1">&#39;Sulfate-S ppm S&#39;</span><span class="p">:</span> <span class="s1">&#39;Sulfate_Unit_ppm&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Calcium ppm Ca&#39;</span><span class="p">:</span> <span class="s1">&#39;Ca_Unit_ppm&#39;</span><span class="p">,</span> 
+              <span class="s1">&#39;Magnesium ppm Mg&#39;</span><span class="p">:</span> <span class="s1">&#39;Mg_Unit_ppm&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Sodium ppm Na&#39;</span><span class="p">:</span> <span class="s1">&#39;Na_Unit_ppm&#39;</span><span class="p">,</span> 
     <span class="s1">&#39;CEC/Sum of Cations me/100g&#39;</span><span class="p">:</span> <span class="s1">&#39;Cation_Exchange_Capacity&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%H Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;H_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%K Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;K_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%Ca Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Ca_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%Mg Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Mg_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;%Na Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Na_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Mehlich P-III ppm P&#39;</span><span class="p">:</span> <span class="s1">&#39;Mehlich_PIII_P_Unit_ppm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;% Sand&#39;</span><span class="p">:</span> <span class="s1">&#39;Sand_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;% Silt&#39;</span><span class="p">:</span> <span class="s1">&#39;Silt_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;% Clay&#39;</span><span class="p">:</span> <span class="s1">&#39;Clay_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Texture&#39;</span><span class="p">:</span> <span class="s1">&#39;Texture&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Comments&#39;</span>
+                        <span class="s1">&#39;%H Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;H_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;%K Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;K_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
+                       <span class="s1">&#39;%Ca Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Ca_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
+                       <span class="s1">&#39;%Mg Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Mg_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
+                       <span class="s1">&#39;%Na Sat&#39;</span><span class="p">:</span> <span class="s1">&#39;Na_Sat_Unit_Percent&#39;</span><span class="p">,</span> 
+           <span class="s1">&#39;Mehlich P-III ppm P&#39;</span><span class="p">:</span> <span class="s1">&#39;Mehlich_PIII_P_Unit_ppm&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;% Sand&#39;</span><span class="p">:</span> <span class="s1">&#39;Sand_Unit_Percent&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;% Silt&#39;</span><span class="p">:</span> <span class="s1">&#39;Silt_Unit_Percent&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;% Clay&#39;</span><span class="p">:</span> <span class="s1">&#39;Clay_Unit_Percent&#39;</span><span class="p">,</span> 
+                       <span class="s1">&#39;Texture&#39;</span><span class="p">:</span> <span class="s1">&#39;Texture&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
+                      <span class="s1">&#39;Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Comments&#39;</span><span class="p">,</span>
+                                <span class="c1"># 2018</span>
+                      <span class="s1">&#39;Field ID&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Date Recieved&#39;</span><span class="p">:</span> <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">,</span>
+                                <span class="c1"># 2016</span>
+                   <span class="s1">&#39;Sample Type&#39;</span><span class="p">:</span> <span class="s1">&#39;Sample_Type&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;Zinc ppm Zn&#39;</span><span class="p">:</span> <span class="s1">&#39;Zn_Unit_ppm&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;Iron ppm Fe&#39;</span><span class="p">:</span> <span class="s1">&#39;Fe_Unit_ppm&#39;</span><span class="p">,</span> 
+              <span class="s1">&#39;Manganese ppm Mn&#39;</span><span class="p">:</span> <span class="s1">&#39;Mn_Unit_ppm&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Copper ppm Cu&#39;</span><span class="p">:</span> <span class="s1">&#39;Cu_Unit_ppm&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;Boron ppm B&#39;</span><span class="p">:</span> <span class="s1">&#39;B_Unit_ppm&#39;</span><span class="p">,</span>
+                                <span class="c1"># 2015</span>
+                         <span class="s1">&#39;LabID&#39;</span><span class="p">:</span> <span class="s1">&#39;Lab_ID&#39;</span><span class="p">,</span> 
+                     <span class="s1">&#39;LabSmplID&#39;</span><span class="p">:</span> <span class="s1">&#39;Lab_ID_Number&#39;</span><span class="p">,</span> 
+                      <span class="s1">&#39;SmplDate&#39;</span><span class="p">:</span> <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
+                      <span class="s1">&#39;CoopName&#39;</span><span class="p">:</span> <span class="s1">&#39;Cooperator&#39;</span><span class="p">,</span> 
+                    <span class="s1">&#39;Experiment&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
+                     <span class="s1">&#39;PlowDepth&#39;</span><span class="p">:</span> <span class="s1">&#39;Depth_Unit_UNK&#39;</span><span class="p">,</span> 
+                            <span class="s1">&#39;PH&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_1_to_1_Unit_pH&#39;</span><span class="p">,</span> 
+                           <span class="s1">&#39;BpH&#39;</span><span class="p">:</span> <span class="s1">&#39;Sikora_Buffer_Unit_pH&#39;</span><span class="p">,</span> 
+                            <span class="s1">&#39;OM&#39;</span><span class="p">:</span> <span class="s1">&#39;Organic_Matter_Unit_Percent&#39;</span><span class="p">,</span> 
+                             <span class="s1">&#39;P&#39;</span><span class="p">:</span> <span class="s1">&#39;P_Unit_ppm&#39;</span><span class="p">,</span> 
+                             <span class="s1">&#39;K&#39;</span><span class="p">:</span> <span class="s1">&#39;K_Unit_ppm&#39;</span>  
+                                <span class="c1"># 2014</span>
     <span class="p">}</span>
 
     <span class="n">wthr_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Field Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Station ID&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_ID&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;NWS Network&#39;</span><span class="p">:</span> <span class="s1">&#39;NWS_Network&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;NWS Station&#39;</span><span class="p">:</span> <span class="s1">&#39;NWS_Station&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date_key&#39;</span><span class="p">:</span> <span class="s1">&#39;Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Month&#39;</span><span class="p">:</span> <span class="s1">&#39;Month&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Day&#39;</span><span class="p">:</span> <span class="s1">&#39;Day&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Time&#39;</span><span class="p">:</span> <span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
-    <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Temperature_Unit_C&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Dew Point [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Dew_Point_Unit_C&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Relative Humidity [%]&#39;</span><span class="p">:</span> <span class="s1">&#39;Relative_Humidity_Unit_Percent&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Solar Radiation [W/m2]&#39;</span><span class="p">:</span> <span class="s1">&#39;Solar_Radiation_Unit_W_per_m2&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Rainfall [mm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Rainfall_Unit_mm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Wind Speed [m/s]&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind_Speed_Unit_m_per_s&#39;</span><span class="p">,</span> 
+              <span class="s1">&#39;Field Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
+                  <span class="s1">&#39;Station ID&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_ID&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;NWS Network&#39;</span><span class="p">:</span> <span class="s1">&#39;NWS_Network&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;NWS Station&#39;</span><span class="p">:</span> <span class="s1">&#39;NWS_Station&#39;</span><span class="p">,</span> 
+                    <span class="s1">&#39;Date_key&#39;</span><span class="p">:</span> <span class="s1">&#39;Datetime&#39;</span><span class="p">,</span> 
+                       <span class="s1">&#39;Month&#39;</span><span class="p">:</span> <span class="s1">&#39;Month&#39;</span><span class="p">,</span> <span class="c1"># Unchanged </span>
+                         <span class="s1">&#39;Day&#39;</span><span class="p">:</span> <span class="s1">&#39;Day&#39;</span><span class="p">,</span>   <span class="c1"># Unchanged </span>
+                        <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="s1">&#39;Year&#39;</span><span class="p">,</span>  <span class="c1"># Unchanged </span>
+                        <span class="s1">&#39;Time&#39;</span><span class="p">:</span> <span class="s1">&#39;Time&#39;</span><span class="p">,</span>  <span class="c1"># Unchanged </span>
+             <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Temperature_Unit_C&#39;</span><span class="p">,</span> 
+               <span class="s1">&#39;Dew Point [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Dew_Point_Unit_C&#39;</span><span class="p">,</span> 
+       <span class="s1">&#39;Relative Humidity [%]&#39;</span><span class="p">:</span> <span class="s1">&#39;Relative_Humidity_Unit_Percent&#39;</span><span class="p">,</span> 
+      <span class="s1">&#39;Solar Radiation [W/m2]&#39;</span><span class="p">:</span> <span class="s1">&#39;Solar_Radiation_Unit_W_per_m2&#39;</span><span class="p">,</span> 
+               <span class="s1">&#39;Rainfall [mm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Rainfall_Unit_mm&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;Wind Speed [m/s]&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind_Speed_Unit_m_per_s&#39;</span><span class="p">,</span> 
     <span class="s1">&#39;Wind Direction [degrees]&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind_Direction_Unit_Degrees&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Wind Gust [m/s]&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind_Gust_Unit_m_per_s&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Soil Temperature [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Temperature_Unit_C&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Soil Moisture [%VWC]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Moisture_Unit_Percent_VWC&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Soil EC [mS/cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_EC_Unit_mS_per_cm&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;UV Light [uM/m2s]&#39;</span><span class="p">:</span> <span class="s1">&#39;UV_Light_Unit_uM_per_m2s&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;PAR [uM/m2s]&#39;</span><span class="p">:</span> <span class="s1">&#39;PAR_Unit_uM_per_m2s&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;CO2 [ppm]&#39;</span><span class="p">:</span> <span class="s1">&#39;CO2_Unit_ppm&#39;</span> <span class="c1"># 2020</span>
+             <span class="s1">&#39;Wind Gust [m/s]&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind_Gust_Unit_m_per_s&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;Soil Temperature [C]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Temperature_Unit_C&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;Soil Moisture [%VWC]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Moisture_Unit_Percent_VWC&#39;</span><span class="p">,</span> 
+             <span class="s1">&#39;Soil EC [mS/cm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_EC_Unit_mS_per_cm&#39;</span><span class="p">,</span> 
+           <span class="s1">&#39;UV Light [uM/m2s]&#39;</span><span class="p">:</span> <span class="s1">&#39;UV_Light_Unit_uM_per_m2s&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;PAR [uM/m2s]&#39;</span><span class="p">:</span> <span class="s1">&#39;PAR_Unit_uM_per_m2s&#39;</span><span class="p">,</span>
+                              <span class="c1"># 2020</span>
+                   <span class="s1">&#39;CO2 [ppm]&#39;</span><span class="p">:</span> <span class="s1">&#39;CO2_Unit_ppm&#39;</span><span class="p">,</span> 
+                              <span class="c1"># 2018</span>
+            <span class="s1">&#39;ï»¿Record Number&#39;</span><span class="p">:</span> <span class="s1">&#39;Drop_Record_Index&#39;</span><span class="p">,</span> 
+               <span class="s1">&#39;UVL (uM/m^2s)&#39;</span><span class="p">:</span> <span class="s1">&#39;UV_Light_Unit_uM_per_m2s&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;Photoperiod [ hours]&#39;</span><span class="p">:</span> <span class="s1">&#39;Photoperiod_Unit_Hours&#39;</span><span class="p">,</span> 
+              <span class="s1">&#39;Column Altered&#39;</span><span class="p">:</span> <span class="s1">&#39;Data_Cleaned&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;Altered Column Names&#39;</span><span class="p">:</span> <span class="s1">&#39;Fields_Cleaned&#39;</span><span class="p">,</span> 
+             <span class="s1">&#39;Cleaning Method&#39;</span><span class="p">:</span> <span class="s1">&#39;Cleaning_Method&#39;</span><span class="p">,</span> 
+                     <span class="s1">&#39;Comment&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Comments&#39;</span><span class="p">,</span>
+                              <span class="c1"># 2017</span>
+         <span class="s1">&#39;Photoperiod [hours]&#39;</span><span class="p">:</span> <span class="s1">&#39;Photoperiod_Unit_Hours&#39;</span><span class="p">,</span>
+                              <span class="c1"># 2016</span>
+                 <span class="s1">&#39;Time[Local]&#39;</span><span class="p">:</span> <span class="s1">&#39;Time&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Rainfall[mm]&#39;</span><span class="p">:</span> <span class="s1">&#39;Rainfall_Unit_mm&#39;</span><span class="p">,</span> 
+          <span class="s1">&#39;Photoperiod[hours]&#39;</span><span class="p">:</span> <span class="s1">&#39;Photoperiod_Unit_Hours&#39;</span><span class="p">,</span>
+                              <span class="c1"># 2015</span>
+               <span class="s1">&#39;Record Number&#39;</span><span class="p">:</span> <span class="s1">&#39;Drop_Record_Index&#39;</span><span class="p">,</span> 
+               <span class="s1">&#39;Experiment(s)&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Day of Year&#39;</span><span class="p">:</span> <span class="s1">&#39;Day_Of_Year&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Time [Local]&#39;</span><span class="p">:</span> <span class="s1">&#39;Time&#39;</span><span class="p">,</span> 
+              <span class="s1">&#39;Datetime [UTC]&#39;</span><span class="p">:</span> <span class="s1">&#39;Datetime&#39;</span><span class="p">,</span> 
+           <span class="s1">&#39;Soil Moisture [%]&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil_Moisture_Percent&#39;</span><span class="p">,</span>
+                              <span class="c1"># 2014</span>
+                 <span class="s1">&#39;Day [Local]&#39;</span><span class="p">:</span> <span class="s1">&#39;Day&#39;</span><span class="p">,</span> 
+               <span class="s1">&#39;Month [Local]&#39;</span><span class="p">:</span> <span class="s1">&#39;Month&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Year [Local]&#39;</span><span class="p">:</span> <span class="s1">&#39;Year&#39;</span><span class="p">,</span> 
+         <span class="s1">&#39;Day of Year [Local]&#39;</span><span class="p">:</span> <span class="s1">&#39;Day_Of_Year&#39;</span>
     <span class="p">}</span>
 
     <span class="n">mgmt_name_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Application_or_treatment&#39;</span><span class="p">:</span> <span class="s1">&#39;Application&#39;</span><span class="p">,</span> 
+                       <span class="s1">&#39;Location&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
+       <span class="s1">&#39;Application_or_treatment&#39;</span><span class="p">:</span> <span class="s1">&#39;Application&#39;</span><span class="p">,</span> 
     <span class="s1">&#39;Product_or_nutrient_applied&#39;</span><span class="p">:</span> <span class="s1">&#39;Product&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Date_of_application&#39;</span><span class="p">:</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Quantity_per_acre&#39;</span><span class="p">:</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Application_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;Unit&#39;</span>
+            <span class="s1">&#39;Date_of_application&#39;</span><span class="p">:</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">,</span> 
+              <span class="s1">&#39;Quantity_per_acre&#39;</span><span class="p">:</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> 
+               <span class="s1">&#39;Application_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span>
+                                 <span class="c1"># 2016</span>
+                   <span class="s1">&#39;Record Order&#39;</span><span class="p">:</span> <span class="s1">&#39;Drop_Record_Index&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Experiment Code&#39;</span><span class="p">:</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> 
+                      <span class="s1">&#39;Record ID&#39;</span><span class="p">:</span> <span class="s1">&#39;Drop_Record_Index2&#39;</span><span class="p">,</span> 
+       <span class="s1">&#39;Application or Treatment&#39;</span><span class="p">:</span> <span class="s1">&#39;Application&#39;</span><span class="p">,</span> 
+       <span class="s1">&#39;Product/Nutrient Applied&#39;</span><span class="p">:</span> <span class="s1">&#39;Product&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;Date of Application&#39;</span><span class="p">:</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">,</span> 
+              <span class="s1">&#39;Quantity per acre&#39;</span><span class="p">:</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Application unit</span><span class="se">\n</span><span class="s1">(lbs, in, oz per acre)&#39;</span><span class="p">:</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span>
+                                 <span class="c1"># 2015</span>
+ <span class="s1">&#39;Irrigation/Fertigation (yes/no)&#39;</span><span class="p">:</span> <span class="s1">&#39;Irrigation_Applied&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Weather station documents irrigation? (yes/no)&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather_Station_Documents_Irrigation&#39;</span><span class="p">,</span> 
+              <span class="s1">&#39;Nutrients Applied&#39;</span><span class="p">:</span> <span class="s1">&#39;Nutrients_Applied&#39;</span><span class="p">,</span> 
+                          <span class="s1">&#39;Notes&#39;</span><span class="p">:</span> <span class="s1">&#39;Management_Comments&#39;</span>
+                                 <span class="c1"># 2014</span>
     <span class="p">}</span>
     
     
@@ -14886,7 +15067,9 @@ a.anchor-link {
         <span class="s1">&#39;TXH2&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH3&#39;</span><span class="p">,</span> <span class="s1">&#39;WIH1&#39;</span><span class="p">,</span> <span class="s1">&#39;WIH2&#39;</span><span class="p">,</span> <span class="s1">&#39;WIH3&#39;</span><span class="p">,</span>
         <span class="s1">&#39;MOH1&#39;</span><span class="p">,</span> <span class="s1">&#39;OHH1&#39;</span><span class="p">,</span> <span class="c1"># 2020</span>
         <span class="s1">&#39;NYH1&#39;</span><span class="p">,</span> <span class="s1">&#39;ONH2&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH4&#39;</span><span class="p">,</span> <span class="c1"># 2019</span>
-        <span class="s1">&#39;GEH2&#39;</span><span class="p">,</span> <span class="s1">&#39;IAH2 &#39;</span><span class="p">,</span> <span class="s1">&#39;IAH3 &#39;</span><span class="p">,</span> <span class="s1">&#39;IAH4 &#39;</span><span class="p">,</span> <span class="s1">&#39;MOH1 &#39;</span><span class="p">,</span> <span class="s1">&#39;NYH1&#39;</span><span class="p">,</span> <span class="s1">&#39;W1H1&#39;</span><span class="p">,</span> <span class="s1">&#39;W1H2&#39;</span>
+        <span class="s1">&#39;GEH2&#39;</span><span class="p">,</span> <span class="s1">&#39;IAH2 &#39;</span><span class="p">,</span> <span class="s1">&#39;IAH3 &#39;</span><span class="p">,</span> <span class="s1">&#39;IAH4 &#39;</span><span class="p">,</span> <span class="s1">&#39;MOH1 &#39;</span><span class="p">,</span> <span class="s1">&#39;NYH1&#39;</span><span class="p">,</span> <span class="s1">&#39;W1H1&#39;</span><span class="p">,</span> <span class="s1">&#39;W1H2&#39;</span><span class="p">,</span>
+        <span class="c1"># 2018</span>
+        <span class="s1">&#39;ARH1&#39;</span><span class="p">,</span> <span class="s1">&#39;ARH2&#39;</span><span class="p">,</span> <span class="s1">&#39;KSH1&#39;</span><span class="p">,</span> <span class="s1">&#39;KSH2&#39;</span><span class="p">,</span> <span class="s1">&#39;KSH3&#39;</span><span class="p">,</span> <span class="s1">&#39;MOH1-Rep1&#39;</span><span class="p">,</span> <span class="s1">&#39;MOH1-Rep2&#39;</span><span class="p">,</span> <span class="s1">&#39;ONH1&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH1-Dry&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH1-Early&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH1-Late&#39;</span>
                  <span class="p">]</span>
     <span class="k">return</span><span class="p">(</span><span class="n">known_exps</span><span class="p">)</span>
 </pre></div>

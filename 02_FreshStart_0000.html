@@ -14327,6 +14327,40 @@ a.anchor-link {
 <span class="n">mgmt_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2021/z._2021_supplemental_info/g2f_2021_agronomic_information.csv&#39;</span>
 
 
+<span class="c1"># meta_path = &#39;./data/raw/G2F_Planting_Season_2017_v1/z._2017_supplemental_info/g2f_2017_field_metadata.csv&#39; </span>
+<span class="c1"># phno_path = &#39;./data/raw/G2F_Planting_Season_2017_v1/a._2017_hybrid_phenotypic_data/g2f_2017_hybrid_data_clean.csv&#39; # geno_path = None,  </span>
+<span class="c1"># wthr_path = &#39;./data/raw/G2F_Planting_Season_2017_v1/b._2017_weather_data/g2f_2017_weather_data.csv&#39;</span>
+<span class="c1"># soil_path = &#39;./data/raw/G2F_Planting_Season_2017_v1/c._2017_soil_data/g2f_2017_soil_data_clean.csv&#39;</span>
+<span class="c1"># mgmt_path = &#39;./data/raw/G2F_Planting_Season_2017_v1/z._2017_supplemental_info/g2f_2017_agronomic information.csv&#39;</span>
+
+<span class="c1"># meta_path = &#39;./data/raw/G2F_Planting_Season_2016_v2/z._2016_supplemental_info/g2f_2016_field_metadata.csv&#39; </span>
+<span class="c1"># phno_path = &#39;./data/raw/G2F_Planting_Season_2016_v2/a._2016_hybrid_phenotypic_data/g2f_2016_hybrid_data_clean.csv&#39; </span>
+<span class="c1"># # geno_path = None,  </span>
+<span class="c1"># wthr_path = &#39;./data/raw/G2F_Planting_Season_2016_v2/b._2016_weather_data/g2f_2016_weather_data.csv&#39;</span>
+<span class="c1"># soil_path = &#39;./data/raw/G2F_Planting_Season_2016_v2/c._2016_soil_data/g2f_2016_soil_data_clean.csv&#39;</span>
+<span class="c1"># mgmt_path = &#39;./data/raw/G2F_Planting_Season_2016_v2/z._2016_supplemental_info/g2f_2016_agronomic_information.csv&#39;</span>
+
+<span class="c1">#           # print(&#39;Note! Many management factors are recorded in 2015!&#39;)</span>
+<span class="c1"># meta_path = &#39;./data/raw/G2F_Planting_Season_2015_v2/z._2015_supplemental_info/g2f_2015_field_metadata.csv&#39; </span>
+<span class="c1"># phno_path = &#39;./data/raw/G2F_Planting_Season_2015_v2/a._2015_hybrid_phenotypic_data/g2f_2015_hybrid_data_clean.csv&#39; </span>
+<span class="c1"># # geno_path = None,  </span>
+<span class="c1"># wthr_path = &#39;./data/raw/G2F_Planting_Season_2015_v2/b._2015_weather_data/g2f_2015_weather.csv&#39;</span>
+<span class="c1"># soil_path = &#39;./data/raw/G2F_Planting_Season_2015_v2/d._2015_soil_data/g2f_2015_soil_data.csv&#39;</span>
+<span class="c1">#           # There is data to be had but it&#39;s not formatted in a machine friendly way.</span>
+<span class="c1">#           # I&#39;ve reformatted it to be easy to read in.</span>
+<span class="c1"># mgmt_path = &#39;./data/Manual_old/g2f_2015_agronomic information.csv&#39;,</span>
+
+<span class="c1"># meta_path = &#39;./data/raw/G2F_Planting_Season_2014_v4/z._2014_supplemental_info/g2f_2014_field_characteristics.csv&#39; </span>
+<span class="c1"># phno_path = &#39;./data/raw/G2F_Planting_Season_2014_v4/a._2014_hybrid_phenotypic_data/g2f_2014_hybrid_data_clean.csv&#39; </span>
+<span class="c1"># # geno_path = None,  </span>
+<span class="c1"># wthr_path = &#39;./data/raw/G2F_Planting_Season_2014_v4/b._2014_weather_data/g2f_2014_weather.csv&#39;</span>
+<span class="c1">#           # no soil 2014, some info in metadata</span>
+<span class="c1"># # soil_path = None, </span>
+<span class="c1">#           # no agro 2014, some info in metadata</span>
+<span class="c1"># # mgmt_path = None,</span>
+
+
+
 <span class="n">meta</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">meta_path</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;ISO-8859-1&quot;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">phno</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">phno_path</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;ISO-8859-1&quot;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">wthr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">wthr_path</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;ISO-8859-1&quot;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>

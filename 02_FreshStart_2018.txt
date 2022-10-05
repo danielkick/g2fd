@@ -1,0 +1,554 @@
+# Imports ----
+import re
+import numpy as np 
+import pandas as pd
+pd.set_option('display.max_columns', None)
+import pickle
+
+import tqdm
+
+from g2fd.internal import *
+
+#| default_exp internal
+
+# 2018
+year_string = '2018'
+
+meta_path = './data/raw/GenomesToFields_G2F_Data_2018/e._2018_supplemental_info/g2f_2018_field_metadata.csv' 
+phno_path = './data/raw/GenomesToFields_G2F_Data_2018/a._2018_hybrid_phenotypic_data/g2f_2018_hybrid_data_clean.csv' # geno_path = None,  
+wthr_path = './data/raw/GenomesToFields_G2F_Data_2018/b._2018_weather_data/g2f_2018_weather_clean.csv'
+soil_path = './data/raw/GenomesToFields_G2F_Data_2018/c._2018_soil_data/g2f_2018_soil_data.csv'
+mgmt_path = './data/raw/GenomesToFields_G2F_Data_2018/e._2018_supplemental_info/g2f_2018_agronomic information.csv'
+
+
+meta = pd.read_csv(meta_path, encoding = "ISO-8859-1", low_memory=False)
+phno = pd.read_csv(phno_path, encoding = "ISO-8859-1", low_memory=False)
+wthr = pd.read_csv(wthr_path, encoding = "ISO-8859-1", low_memory=False)
+soil = pd.read_csv(soil_path, encoding = "ISO-8859-1", low_memory=False)
+mgmt = pd.read_csv(mgmt_path, encoding = "ISO-8859-1", low_memory=False)
+
+# load dicts for column renaming
+meta_name_dict = mk_name_dict(name = 'meta')
+phno_name_dict = mk_name_dict(name = 'phno')
+soil_name_dict = mk_name_dict(name = 'soil')
+wthr_name_dict = mk_name_dict(name = 'wthr')
+mgmt_name_dict = mk_name_dict(name = 'mgmt')
+
+(find_unrecognized_columns(df = meta, dct = meta_name_dict),
+find_unrecognized_columns(df = phno, dct = phno_name_dict),
+find_unrecognized_columns(df = soil, dct = soil_name_dict),
+find_unrecognized_columns(df = wthr, dct = wthr_name_dict),
+find_unrecognized_columns(df = mgmt, dct = mgmt_name_dict))
+
+
+
+#wthr discard fields
+# Drop_Record_Index
+# Data_Cleaned
+# Fields_Cleaned
+# Cleaning_Method
+# Weather_Comments
+
+meta = meta.rename(columns=meta_name_dict)
+phno = phno.rename(columns=phno_name_dict)
+soil = soil.rename(columns=soil_name_dict)
+wthr = wthr.rename(columns=wthr_name_dict)
+mgmt = mgmt.rename(columns=mgmt_name_dict)
+
+# add indicator columns to help with debugging merge
+meta['meta'] = True
+phno['phno'] = True
+soil['soil'] = True
+wthr['wthr'] = True
+mgmt['mgmt'] = True
+
+[e.shape for e in [meta, phno, soil, wthr, mgmt]]
+
+meta = sanitize_Experiment_Codes(
+    df = meta, 
+    simple_renames = {
+        'MOH1- rep 1': 'MOH1-Rep1',
+        'MOH1- rep 2': 'MOH1-Rep2',
+        'TXH1- Dry': 'TXH1-Dry',
+        'TXH1- Early': 'TXH1-Early',
+        'TXH1- Late': 'TXH1-Late'
+    }, split_renames = {})
+
+mgmt = sanitize_Experiment_Codes(
+    df = mgmt, 
+    simple_renames = {
+        'MOH1- rep 1': 'MOH1-Rep1'
+    }, split_renames = {})
+
+phno.columns
+
+# confirm everything's okay
+print(
+  'meta', find_unrecognized_experiments(meta.Experiment_Code, return_all_exps=False), 
+'\nphno', find_unrecognized_experiments(phno.Experiment_Code, return_all_exps=False),
+'\nsoil', find_unrecognized_experiments(soil.Experiment_Code, return_all_exps=False),
+'\nwthr', find_unrecognized_experiments(wthr.Experiment_Code, return_all_exps=False),
+'\nmgmt', find_unrecognized_experiments(mgmt.Experiment_Code, return_all_exps=False),
+'\nall ', find_unrecognized_experiments([], return_all_exps=True)
+)  
+
+
+
+# # Todo -- sometime swap this for an operation on grouped df for speed.
+
+# # Values in MNH1 have a duplicate row for each observation with one row missing data for
+# # Anthesis_Unit_Datetime
+# # Silking_Unit_Datetime
+# # Anthesis_Unit_Days
+# # Silking_Unit_Days
+# # and the other missing data for
+# # Drop_Record 
+
+# # We'll solve this by finding all the rows with duplicates then 
+# temp = phno.groupby(['Experiment_Code', 'Replicate', 'Block', 'Range', 'Pass', 'Plot',
+#                     'Family', 'Pedigree', 'Source']).size().reset_index(name='obs')
+# temp = temp.loc[temp.obs > 1, :].drop_duplicates()
+# temp = temp.reset_index().drop(columns = ['index', 'obs']).reset_index().rename(columns= {'index':'Duplicate_Group'})
+
+# phno = phno.merge(temp, how='outer')
+
+
+# # for i in tqdm.tqdm( list(ptemp.Duplicate_Group.drop_duplicates().dropna() ) ):
+# #     for column in ptemp.columns:
+# #         if (ptemp.loc[ptemp.Duplicate_Group == i, column].dtype == 'float64') | (ptemp.loc[ptemp.Duplicate_Group == i, column].dtype == 'int64'):
+# #             val = ptemp.loc[ptemp.Duplicate_Group == i, column].mean()
+# #             if not np.isnan(val):
+# #                 ptemp.loc[ptemp.Duplicate_Group == i, column] = val
+
+# #         if (ptemp.loc[ptemp.Duplicate_Group == i, column].dtype == 'bool') | (ptemp.loc[ptemp.Duplicate_Group == i, column].dtype == 'object'):
+# #             val = [e for e in list(ptemp.loc[ptemp.Duplicate_Group == i, column]) if e == e]
+# #             if val  != []:
+# #                 ptemp.loc[ptemp.Duplicate_Group == i, column] = val[0]
+
+# # print(ptemp.size, ptemp.drop_duplicates().size)
+# # ptemp = ptemp.drop_duplicates()
+
+# # There is a substantial issue here.
+# # While most entries appear to just contain missing values, some of these 
+# # apparently redundant rows have yield differing up to 97.6 bu/A
+# M = phno.loc[phno.Duplicate_Group.notna(), ]
+
+# M2 = M.groupby('Duplicate_Group').agg(
+#     Grain_Yield_Unit_bu_Per_A = ('Grain_Yield_Unit_bu_Per_A', np.mean),
+#     diff = ('Grain_Yield_Unit_bu_Per_A', lambda x: np.nanmax(x) - np.nanmin(x))
+# ).reset_index()
+
+# import plotly.express as px
+
+# px.scatter(M2, x = 'Grain_Yield_Unit_bu_Per_A', y='diff', color= 'diff')
+
+# # check if rows have data that can be combined. 
+# # cell values must be either missing or equivalent.
+
+# # we can do this by imputing the missing values and looking for disagreements. 
+# # Because we don't know if the missing value will be first or second we will ffill and bfill
+# # .loc[M.Duplicate_Group == 1, :]
+# M_Conflicts =M.groupby('Duplicate_Group').fillna(method = 'ffill').fillna(method = 'bfill')
+
+# # only 8 rows fully mesh!
+# (M_Conflicts.shape[0], '->', M_Conflicts.drop_duplicates().shape[0])
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # The solution to this is to add to the identifiers (these data are ostensibly coming from the same physical locations)
+# M_update_ids = M.sort_values(['Experiment_Code',  'Replicate', 'Block', 'Range', 'Pass', 'Plot'] # same as going off `Duplicate_Group`
+#             ).reset_index(
+#             ).drop(columns='index'
+#             ).reset_index(
+#             ).rename(columns = {'index':'Add_AB'})
+
+# M_update_ids.Add_AB = M_update_ids.Add_AB.mod(2)
+# M_update_ids.loc[M_update_ids.Add_AB == 0, 'Add_AB'] = 'A'
+# M_update_ids.loc[M_update_ids.Add_AB == 1, 'Add_AB'] = 'B'
+
+
+
+# M_update_ids.assign(Add_AB_Mod = ('Add_AB', lambda x: x % 2))
+
+
+# M_update_ids.Replicate = M_update_ids.Replicate.astype('string') + M_update_ids.Add_AB
+
+# M_update_ids = M_update_ids.drop(columns='Add_AB')
+
+
+# M_update_ids.Replicate = M_update_ids.Replicate.astype('string')
+# phno.Replicate = phno.Replicate.astype('string')
+
+# shape_before_replacement = phno.shape
+# # now merge back in
+# mask = phno.Duplicate_Group.notna()
+# # shape should be the same
+# assert phno.loc[~mask, ].merge(M_update_ids, how = 'outer').shape == shape_before_replacement
+# phno = phno.loc[~mask, ].copy()
+# phno = phno.merge(M_update_ids, how = 'outer').copy()
+
+# [e for e in list(M_update_ids.columns) if e not in list(phno.columns)]
+
+
+
+
+
+
+
+
+
+
+
+# Values in MNH1 have a duplicate row for each observation with one row of partially missing data
+
+M = phno.loc[phno.Experiment_Code == "MNH1", ]
+
+M2 = M.groupby(['Experiment_Code', 'Replicate', 'Block', 'Range', 'Pass', 'Plot',
+                    'Family', 'Pedigree', 'Source']).agg(
+    Grain_Yield_Unit_bu_Per_A = ('Grain_Yield_Unit_bu_Per_A', np.mean),
+    diff = ('Grain_Yield_Unit_bu_Per_A', lambda x: np.nanmax(x) - np.nanmin(x))
+).reset_index()
+
+import plotly.express as px
+
+px.scatter(M2, x = 'Grain_Yield_Unit_bu_Per_A', y='diff', color= 'diff')
+
+M = phno.loc[(phno.Experiment_Code == 'MNH1' ), :]
+# The solution to this is to add to the identifiers (these data are ostensibly coming from the same physical locations)
+M_update_ids = M.sort_values(['Experiment_Code',  'Replicate', 'Block', 'Range', 'Pass', 'Plot'] # same as going off `Duplicate_Group`
+            ).reset_index(
+            ).drop(columns='index'
+            ).reset_index(
+            ).rename(columns = {'index':'Add_AB'})
+
+M_update_ids.Add_AB = M_update_ids.Add_AB.mod(2)
+M_update_ids.loc[M_update_ids.Add_AB == 0, 'Add_AB'] = 'A'
+M_update_ids.loc[M_update_ids.Add_AB == 1, 'Add_AB'] = 'B'
+
+M_update_ids.Replicate = M_update_ids.Replicate.astype('string') + M_update_ids.Add_AB
+M_update_ids = M_update_ids.drop(columns='Add_AB')
+
+M_update_ids.Replicate = M_update_ids.Replicate.astype('string')
+phno.Replicate = phno.Replicate.astype('string')
+
+
+
+shape_before_replacement = phno.shape
+# now merge back in
+mask = (phno.Experiment_Code == 'MNH1')
+# shape should be the same
+assert phno.loc[~mask, ].merge(M_update_ids, how = 'outer').shape == shape_before_replacement
+phno = phno.loc[~mask, ].merge(M_update_ids, how = 'outer').copy()
+# phno = phno.loc[~mask, ].copy()
+# phno = phno.merge(M_update_ids, how = 'outer').copy()
+
+
+
+# import seaborn as sns
+# sns.heatmap(phno.isnull(), yticklabels=False, cbar=False, cmap = 'viridis')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# okay so the problem seems to be that that somehow additional rows are getting added in that shouldn't be added.
+# trying processing all MNH1 explicitly.
+# M_update_ids
+# 2432
+
+# phno.loc[(phno.Experiment_Code == 'MNH1' ), :]
+# 3599
+
+# Find minimum cols needed to index all rows
+df = phno#.loc[(phno.Experiment_Code == 'MNH1' ), :]
+df = df.drop(columns='Drop_Record_Index').drop_duplicates()
+
+id_cols = [#'Year', 
+    'Experiment_Code',  'Replicate', 'Block', 'Range', 'Pass', 'Plot',]
+candidate_cols = [
+    'Experiment_Code', 
+#     'Drop_Record_Index', 
+    'Source', 'Pedigree', 'Family',
+     'Tester', 'Local_Check',
+    'Plot_Length_Unit_', 'Alley_Length_Unit_', 'Row_Spacing_Unit_',
+    'Plot_Area_Unit_', 'Rows_Per_Plot', 'Packets_Per_Plot',
+    'Kernels_Per_Packet', 'Seeds_Per_Plot', 'Planted_Unit_Datetime',
+    'Harvested_Unit_Datetime', 'Anthesis_Unit_Datetime',
+    'Silking_Unit_Datetime', 'Anthesis_Unit_Days', 'Silking_Unit_Days',
+    'Plant_Height_Unit_cm', 'Ear_Height_Unit_cm', 'Stand_Count_Unit_Number',
+    'Stand_Count_Unit_Percent', 'Root_Lodging_Unit_Number',
+    'Stalk_Lodging_Unit_Number', 'Grain_Moisture_Unit_Percent',
+    'Test_Weight_Unit_lbs', 'Plot_Weight_Unit_lbs',
+    'Grain_Yield_Unit_bu_Per_A', 'Discarded', 'Phenotype_Comments',
+    'Filler', 'Additional_Metics', 'phno'
+]
+target = df.shape[0]
+
+output = pd.DataFrame(zip(
+    candidate_cols,
+    [df.loc[:, id_cols+[e]].drop_duplicates().shape[0] for e in candidate_cols]
+   ), columns=['Additional_ID', 'Uniq_Vals'])
+
+output.assign(At_Target=lambda x:x.Uniq_Vals == target)
+
+
+# # separate static and dynamic values
+# sval = phno.merge(soil, how = 'outer')
+# sval = sval.merge(meta, how = 'outer') # This introduces 3 sites that have no data
+# # sval.shape # used to confirm nrow = #20574 + 3
+
+# # these tables are different enought we'll keep them separate
+# # mgmt
+# # unfortunately we need multiples because at least one field treats different passes differently
+# mgmt = phno.loc[:, ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot', 'phno']
+#                ].drop_duplicates().merge(mgmt, how = 'outer')
+# # confirm there are no rows in mgmt that are not in phno
+# temp = mgmt.loc[(~mgmt.phno & mgmt.mgmt), :]
+# if 0 != temp.shape[0]:
+#     print(temp)
+# else:
+#     mgmt = mgmt.loc[mgmt.mgmt.notna(), :].drop(columns = 'phno')
+
+
+# # wthr
+# # There's only ever one weather station so we have to worry about imputation but not duplicates
+
+# # Set each id col to a string
+# for i in ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot']:
+#     sval[i] = sval[i].astype('string')
+#     mgmt[i]  =  mgmt[i].astype('string')
+    
+#     if i not in ['Range', 'Pass', 'Plot']:
+#         wthr[i]  =  wthr[i].astype('string')
+
+# sval_col_dtypes = mk_dtype_dict(name = 'sval')
+# wthr_col_dtypes = mk_dtype_dict(name = 'wthr')
+# mgmt_col_dtypes = mk_dtype_dict(name = 'mgmt')
+
+# # convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.
+
+# for e in ['Planted_Unit_Datetime', 
+#     'Harvested_Unit_Datetime', 
+#     'Anthesis_Unit_Datetime', 
+#     'Silking_Unit_Datetime', 
+#     'Recieved_Date_Unit_Datetime', 
+#     'Processed_Date_Unit_Datetime', 
+#     'Weather_Station_Placed_Unit_Datetime', 
+#     'Weather_Station_Removed_Unit_Datetime'
+#     ]:
+# # find_unconvertable_datetimes(df_col=sval[e], pattern='%Y-%m-%d %H:%M', index=False)
+
+#     sval['Datetime_Temp'] = pd.to_datetime(np.nan)
+
+#     for code in list(sval.Experiment_Code.drop_duplicates()):
+#     # code = list(sval.Experiment_Code.drop_duplicates())[0]
+#         sval.loc[sval.Experiment_Code == code, 'Datetime_Temp'
+#                  ] = pd.to_datetime(sval.loc[sval.Experiment_Code == code, e])
+
+#     sval.loc[:, e] = sval.loc[:, 'Datetime_Temp'] 
+
+# sval = sval.drop(columns = 'Datetime_Temp')
+
+# # # -> floats
+
+# # # [find_unconvertable_numerics(df_col = sval[e], index = False) for e in [
+# # #     'Alley_Length_Unit_Inches',
+# # # 'Row_Spacing_Unit_Inches',
+# # # 'Pounds_Needed_Soil_Moisture'
+# # # ]]
+
+# sval = sanitize_col(
+#     df = sval, 
+#     col = 'Pounds_Needed_Soil_Moisture', 
+#     simple_renames= {'3 to 4':'3.5'}, 
+#     split_renames= {})
+
+# # convert types
+# for e in ['Alley_Length_Unit_Inches', 'Row_Spacing_Unit_Inches', 'Pounds_Needed_Soil_Moisture',
+#          'Anthesis_Unit_Days', 'Silking_Unit_Days', 'Kernels_Per_Plot']:
+#     err_list = find_unconvertable_numerics(df_col = sval[e], index = False)
+#     if err_list != []:
+#         print(e)
+#         print(err_list)
+#     else:
+#         sval[e] = sval[e].astype('float')
+
+# # to bool
+# sval = sanitize_col(
+#     df = sval, 
+#     col = 'Discarded', 
+#     simple_renames= {
+#         'Yes':'True',
+#         'yes':'True'}, 
+#     split_renames= {})
+
+# # set missing to false
+# sval.loc[sval.Discarded.isna(), 'Discarded'] = 'False'
+# sval.Discarded = sval.Discarded.map({'True': True, 'False': False})
+
+# to float
+# sval.Pounds_Needed_Soil_Moisture.astype(float)
+
+# # to bool
+# sval['phno'] = sval['phno'].astype('bool')
+# sval['soil'] = sval['soil'].astype('bool')
+# sval['meta'] = sval['meta'].astype('bool')
+
+# # to string
+# sval = cols_astype_string(
+#     df = sval, 
+#     col_list = [key for key in sval_col_dtypes.keys() if sval_col_dtypes[key] == 'string'])
+
+# sval.Year = year_string
+# sval.Year = sval.Year.astype('string')
+
+# checkpoint = check_df_dtype_expectations(df = sval, dtype_dct = sval_col_dtypes)
+
+# if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
+#     pass
+# else:
+#     print(checkpoint.loc[~checkpoint.Pass, ]) 
+#     print()
+
+# # instead of writing regexes to figure out the mose likely format for each datetime, we assume each experiment will be consistent withing that experiment
+# # and let pd figure it out.
+# # wthr['Datetime_Temp'] = pd.to_datetime(np.nan)
+
+# # for code in list(wthr.loc[:, 'Experiment_Code'].drop_duplicates()):
+# #     wthr.loc[wthr.Experiment_Code == code, 'Datetime_Temp'] = pd.to_datetime(wthr.loc[wthr.Experiment_Code == code, 'Datetime'], errors='coerce')
+
+
+# # ... or we use the fields in the df to make a consistent format
+# wthr = cols_astype_string(
+#     df = wthr, 
+#     col_list = ['Year', 'Month', 'Day', 'Time'])
+
+# wthr = sanitize_col(
+#     df = wthr,
+#     col = 'Time', 
+#     simple_renames= {'24:00:00': '00:00:00'}, # this could be day + 24 h instead of a miscoded day + 0 h
+#     split_renames= {})
+
+# wthr['Datetime_Temp'] = wthr['Year']+'-'+wthr['Month']+'-'+wthr['Day']+' '+wthr['Time']
+
+# # convert types
+# err_list = find_unconvertable_datetimes(df_col=wthr['Datetime_Temp'], pattern='%Y-%m-%d %H:%M', index=False)
+# if err_list != []:
+#     print(err_list)
+# else:
+#     wthr.Datetime_Temp = pd.to_datetime(pd.Series(wthr.Datetime_Temp), errors='coerce')
+#     wthr.Datetime = wthr.Datetime_Temp
+#     wthr = wthr.drop(columns= 'Datetime_Temp')
+
+# # to string
+# wthr = cols_astype_string(
+#     df = wthr, 
+#     col_list = [key for key in wthr_col_dtypes.keys() if wthr_col_dtypes[key] == 'string'])
+
+# wthr.Year = year_string
+# wthr.Year = wthr.Year.astype('string')
+
+# checkpoint = check_df_dtype_expectations(df = wthr, dtype_dct = wthr_col_dtypes)
+
+# if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
+#     pass
+# else:
+#     print(checkpoint.loc[~checkpoint.Pass, ])
+
+# mgmt = relocate_to_Imputation_Notes(df = mgmt, col = 'Date_Datetime', val_list= ['Before Planting'])
+
+# mgmt = sanitize_col(
+#     df = mgmt, 
+#     col = 'Date_Datetime', 
+#     simple_renames= {}, 
+#     split_renames= {'6/24/21 for all but plots in pass 2; 7/5/21 for pass 2' : [
+#                         '6/24/21 for all but plots in pass 2', '7/5/21 for pass 2']})
+
+# # make corrections too one-off to fix with a funciton. 
+# mask = ((mgmt.Date_Datetime == '6/24/21 for all but plots in pass 2') & (mgmt.Pass != 2.))
+# mgmt.loc[mask, 'Date_Datetime'] = '6/24/21'
+# # since we split without specifiying pass we need to remove any rows that still have the search string.
+# # and overwrite the df
+# mask = (mgmt.Date_Datetime == '6/24/21 for all but plots in pass 2')
+# mgmt = mgmt.loc[~mask, :].copy()
+
+# mask = ((mgmt.Date_Datetime == '7/5/21 for pass 2') & (mgmt.Pass == 2.))
+# mgmt.loc[mask, 'Date_Datetime'] = '7/5/21'
+# mask = (mgmt.Date_Datetime == '7/5/21 for pass 2')
+# mgmt = mgmt.loc[~mask, :].copy()
+
+# # convert types
+# err_list = find_unconvertable_datetimes(df_col=mgmt.Date_Datetime, pattern='%m/%d/%y', index=False)
+# if err_list != []:
+#     print(err_list)
+# else:
+#     mgmt.Date_Datetime = pd.to_datetime(pd.Series(mgmt.Date_Datetime), format = '%m/%d/%y', errors='coerce')
+
+# mgmt.loc[find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = True), ]
+
+# mgmt = sanitize_col(
+#     df = mgmt, 
+#     col = 'Amount_Per_Acre', 
+#     simple_renames= {'170 lb (actual N)': '170 (N)'}, 
+#     split_renames= {'51.75, 40.7, 111.7 (N,P,K)': ['51.75 (N)', '40.7 (P)', '111.7 (K)'],
+#                     '31-150-138': ['31 (N)', '150 (P)', '138 (K)'],
+#                     '16 (N), 41 (P)': ['16 (N)', '41 (P)']})
+
+# mgmt = safe_create_col(mgmt, "Ingredient")
+# mask = mgmt.Ingredient.isna()
+# mgmt.loc[mask, 'Ingredient'] = mgmt.loc[mask, 'Product']
+
+# # assume each string is formated as 'val (key)'. `sanitize_col` should be used to enforce this.
+# for e in ['150 (P)', '36.6 (N)', '138 (K)', '111.7 (K)', '41 (P)', '16 (N)', '170 (N)', '35.7 (N)', '51.75 (N)', '31 (N)', '40.7 (P)']:
+#     val = re.findall('^\d+[.]*\d*', e)[0]
+#     key = re.findall('\(.+\)',      e)[0].replace('(', '').replace(')', '')
+    
+#     mask = (mgmt['Amount_Per_Acre'] == e)
+#     mgmt.loc[mask, 'Ingredient'] = key
+#     mgmt.loc[mask, 'Amount_Per_Acre'] = val
+
+# # convert types
+# err_list = find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = False)
+# if err_list != []:
+#     print(err_list)
+# else:
+#     mgmt.Amount_Per_Acre = pd.to_numeric(mgmt.Amount_Per_Acre, errors='coerce')
+
+# list(mgmt.loc[:, 'Ingredient'].drop_duplicates())
+
+# # to bool
+# mgmt['mgmt'] = mgmt['mgmt'].astype('bool')
+
+# # to string
+# for e in [ee for ee in ['Application', 'Product', 'Ingredient', 'Unit', 'Imputation_Notes'] if ee in mgmt.columns]:
+#     mgmt[e] = mgmt[e].astype('string')
+    
+
+# mgmt.Year = year_string
+# mgmt.Year = mgmt.Year.astype('string')
+
+# check_df_dtype_expectations(df = mgmt, dtype_dct = mgmt_col_dtypes)
+
+# write_out_pkl(obj = sval, path = './data/interim/'+year_string+'sval.pickle')
+# write_out_pkl(obj = wthr, path = './data/interim/'+year_string+'wthr.pickle')
+# write_out_pkl(obj = mgmt, path = './data/interim/'+year_string+'mgmt.pickle')

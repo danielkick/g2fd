@@ -89,179 +89,360 @@ def mk_name_dict(name # table meta, phno, soil, wthr, or mgmt
     'Easily share dictionaries for renaming columns across scripts.'  
 
     meta_name_dict = {
-    'Experiment_Code': 'Experiment_Code', # Unchanged 
-    'Treatment': 'Treatment', # Unchanged 
-    'City': 'City', # Unchanged 
-    'Farm': 'Farm', # Unchanged 
-    'Field': 'Field', # Unchanged 
-    'Trial_ID (Assigned by collaborator for internal reference)': 'Trial_ID', 
-    'Soil_Taxonomic_ID and horizon description, if known': 'Soil_Taxonomic_ID', 
-    'Weather_Station_Serial_Number (Last four digits, e.g. m2700s#####)': 'Weather_Station_Serial_Number', 
-    'Weather_Station_Latitude (in decimal numbers NOT DMS)': 'Weather_Station_Latitude_Unit_Decimal', 
-    'Weather_Station_Longitude (in decimal numbers NOT DMS)': 'Weather_Station_Longitude_Unit_Decimal', 
-    'Date_weather_station_placed': 'Weather_Station_Placed_Unit_Datetime', 
-    'Date_weather_station_removed': 'Weather_Station_Removed_Unit_Datetime', 
-    'In-field weather station serial number': 'Weather_Station_In_Field_Serial_Number', 
-    'In-field_weather_station_latitude (in decimal)': 'Weather_Station_In_Field_Latitude_Unit_Decimal', 
-    'In-field_weather_station_longitude (in decimal)': 'Weather_Station_In_Field_Longitude_Unit_Decimal', 
-    'Previous_Crop': 'Previous_Crop', # Unchanged 
-    'Pre-plant_tillage_method(s)': 'Pre_Plant_Tillage', 
-    'In-season_tillage_method(s)': 'Post_Plant_Tillage', 
-    'Plot_length (center-alley to center-alley in feet)': 'Plot_Length_Unit_Feet', 
-    'Alley_length (in inches)': 'Alley_Length_Unit_Inches', 
-    'Row_spacing (in inches)': 'Row_Spacing_Unit_Inches', 
-    'Type_of_planter (fluted cone; belt cone; air planter)': 'Planter_Type', 
-    'Number_kernels_planted_per_plot (>200 seed/pack for cone planters)': 'Kernels_Per_Plot', 
-    'System_Determining_Moisture': 'System_Determining_Moisture', # Unchanged 
-    'Pounds_Needed_Soil_Moisture': 'Pounds_Needed_Soil_Moisture', # Unchanged 
-    'Latitude_of_Field_Corner_#1 (lower left)': 'Field_Latitude_BL', 
+                              'Experiment_Code': 'Experiment_Code', # Unchanged 
+                                    'Treatment': 'Treatment',       # Unchanged 
+                                         'City': 'City',            # Unchanged 
+                                         'Farm': 'Farm',            # Unchanged 
+                                        'Field': 'Field',           # Unchanged 
+ 'Trial_ID (Assigned by collaborator for internal reference)': 'Trial_ID', 
+ 'Soil_Taxonomic_ID and horizon description, if known': 'Soil_Taxonomic_ID', 
+ 'Weather_Station_Serial_Number (Last four digits, e.g. m2700s#####)': 'Weather_Station_Serial_Number', 
+ 'Weather_Station_Latitude (in decimal numbers NOT DMS)': 'Weather_Station_Latitude_Unit_Decimal', 
+ 'Weather_Station_Longitude (in decimal numbers NOT DMS)': 'Weather_Station_Longitude_Unit_Decimal', 
+                  'Date_weather_station_placed': 'Weather_Station_Placed_Unit_Datetime', 
+                 'Date_weather_station_removed': 'Weather_Station_Removed_Unit_Datetime', 
+       'In-field weather station serial number': 'Weather_Station_In_Field_Serial_Number', 
+ 'In-field_weather_station_latitude (in decimal)': 'Weather_Station_In_Field_Latitude_Unit_Decimal', 
+ 'In-field_weather_station_longitude (in decimal)': 'Weather_Station_In_Field_Longitude_Unit_Decimal', 
+                                'Previous_Crop': 'Previous_Crop',   # Unchanged 
+                  'Pre-plant_tillage_method(s)': 'Pre_Plant_Tillage', 
+                  'In-season_tillage_method(s)': 'Post_Plant_Tillage', 
+ 'Plot_length (center-alley to center-alley in feet)': 'Plot_Length_Unit_Feet', 
+                     'Alley_length (in inches)': 'Alley_Length_Unit_Inches', 
+                      'Row_spacing (in inches)': 'Row_Spacing_Unit_Inches', 
+ 'Type_of_planter (fluted cone; belt cone; air planter)': 'Planter_Type', 
+ 'Number_kernels_planted_per_plot (>200 seed/pack for cone planters)': 'Kernels_Per_Plot', 
+                  'System_Determining_Moisture': 'System_Determining_Moisture', # Unchanged 
+                  'Pounds_Needed_Soil_Moisture': 'Pounds_Needed_Soil_Moisture', # Unchanged 
+     'Latitude_of_Field_Corner_#1 (lower left)': 'Field_Latitude_BL', 
     'Longitude_of_Field_Corner_#1 (lower left)': 'Field_Longitude_BL', 
     'Latitude_of_Field_Corner_#2 (lower right)': 'Field_Latitude_BR', 
-    'Longitude_of_Field_Corner_#2 (lower right)': 'Field_Longitude_BR', 
+   'Longitude_of_Field_Corner_#2 (lower right)': 'Field_Longitude_BR', 
     'Latitude_of_Field_Corner_#3 (upper right)': 'Field_Latitude_TR', 
-    'Longitude_of_Field_Corner_#3 (upper right)': 'Field_Longitude_TR', 
-    'Latitude_of_Field_Corner_#4 (upper left)': 'Field_Latitude_TL', 
+   'Longitude_of_Field_Corner_#3 (upper right)': 'Field_Longitude_TR', 
+     'Latitude_of_Field_Corner_#4 (upper left)': 'Field_Latitude_TL', 
     'Longitude_of_Field_Corner_#4 (upper left)': 'Field_Longitude_TL', 
-    'Cardinal_Heading_Pass_1': 'Cardinal_Heading', 
-    'Local_Check_#1_Pedigree': 'Local_Check_Pedigree_1', 
-    'Local_Check_#1_Source': 'Local_Check_Source_1', 
-    'Local_Check_#2_Pedigree': 'Local_Check_Pedigree_2', 
-    'Local_Check_#2_Source': 'Local_Check_Source_2', 
-    'Local_Check_#3_Pedigree': 'Local_Check_Pedigree_3', 
-    'Local_Check_#3_Source': 'Local_Check_Source_3', 
-    'Local_Check_#4_Pedigree': 'Local_Check_Pedigree_4', 
-    'Local_Check_#4_Source': 'Local_Check_Source_4', 
-    'Local_Check_#5_Pedigree': 'Local_Check_Pedigree_5', 
-    'Local_Check_#5_Source': 'Local_Check_Source_5', 
-    'Issue/comment_#1': 'Comment_1', 
-    'Issue/comment_#2': 'Comment_2', 
-    'Issue/comment_#3': 'Comment_3', 
-    'Issue/comment_#4': 'Comment_4', 
-    'Issue/comment_#5': 'Comment_5', 
-    'Issue/comment_#6': 'Comment_6', 
-    'Issue/comment_#7': 'Comment_7', 
-    'Issue/comment_#8': 'Comment_8', 
-    'Issue/comment_#9': 'Comment_9', 
-    'Issue/comment_#10': 'Comment_70'
+                      'Cardinal_Heading_Pass_1': 'Cardinal_Heading', 
+                      'Local_Check_#1_Pedigree': 'Local_Check_Pedigree_1', 
+                        'Local_Check_#1_Source': 'Local_Check_Source_1', 
+                      'Local_Check_#2_Pedigree': 'Local_Check_Pedigree_2', 
+                        'Local_Check_#2_Source': 'Local_Check_Source_2', 
+                      'Local_Check_#3_Pedigree': 'Local_Check_Pedigree_3', 
+                        'Local_Check_#3_Source': 'Local_Check_Source_3', 
+                      'Local_Check_#4_Pedigree': 'Local_Check_Pedigree_4', 
+                        'Local_Check_#4_Source': 'Local_Check_Source_4', 
+                      'Local_Check_#5_Pedigree': 'Local_Check_Pedigree_5', 
+                        'Local_Check_#5_Source': 'Local_Check_Source_5', 
+                             'Issue/comment_#1': 'Comment_1', 
+                             'Issue/comment_#2': 'Comment_2', 
+                             'Issue/comment_#3': 'Comment_3', 
+                             'Issue/comment_#4': 'Comment_4', 
+                             'Issue/comment_#5': 'Comment_5', 
+                             'Issue/comment_#6': 'Comment_6', 
+                             'Issue/comment_#7': 'Comment_7', 
+                             'Issue/comment_#8': 'Comment_8', 
+                             'Issue/comment_#9': 'Comment_9', 
+                            'Issue/comment_#10': 'Comment_70',
+                                               # 2018
+ 'Weather_Station_Serial_Number (Last four digits, e.g.\xa0m2700s#####)': 'Weather_Station_Serial_Number',
+                                               # 2015
+                                   'Experiment': 'Experiment_Code', 
+                                         'Type': 'Type', 
+                                        'WS_SN': 'Weather_Station_In_Field_Serial_Number', 
+                                       'WS Lat': 'Weather_Station_In_Field_Latitude_Unit_Decimal', 
+                                       'WS Lon': 'Weather_Station_In_Field_Longitude_Unit_Decimal', 
+                                       'DateIn': 'Weather_Station_Placed_Unit_Datetime', 
+                                      'DateOut': 'Weather_Station_Removed_Unit_Datetime', 
+                                'Previous Crop': 'Previous_Crop', 
+                                      'Tillage': 'Tillage', 
+                                      'PlotLen': 'Plot_Length_Unit_Feet', 
+                                     'AlleyLen': 'Alley_Length_Unit_Inches', 
+                                        'RowSp': 'Row_Spacing_Unit_Inches', 
+                                  'PlanterType': 'Planter_Type', 
+                               'KernelsPerPlot': 'Kernels_Per_Plot', 
+                               'Moisture Meter': 'System_Determining_Moisture', 
+                                'LBS for  test': 'Test_Weight_Unit_lbs', 
+                                  'corner1 lat': 'Field_Latitude_BL', 
+                                  'corner1 lon': 'Field_Longitude_BL', 
+                                  'corner 2lat': 'Field_Latitude_BR', 
+                                  'corner2 lon': 'Field_Longitude_BR', 
+                                  'corner3 lat': 'Field_Latitude_TR', 
+                                  'corner3 lon': 'Field_Longitude_TR', 
+                                  'corner4 lat': 'Field_Latitude_TL', 
+                                  'corner4 lon': 'Field_Longitude_TL', 
+                                     'Cardinal': 'Cardinal_Heading', 
+                        'date of soil sampling': 'Recieved_Date_Unit_Datetime', 
+                                'preplant herb': 'Pre_Plant_Herbicide', 
+                               'postplant herb': 'Post_Plant_Herbicide', 
+                                      'total N': 'N_Unit_lbs_per_A', 
+                                      'total P': 'P_Unit_lbs_per_A', 
+                                      'total K': 'K_Unit_lbs_per_A', 
+                                 'fert dates 1': 'Fertilizer_Application_Datetime_1', 
+                                 'fert dates 2': 'Fertilizer_Application_Datetime_2', 
+                                 'fert dates 3': 'Fertilizer_Application_Datetime_3', 
+                                 'fert dates 4': 'Fertilizer_Application_Datetime_4', 
+                                 'fert dates 5': 'Fertilizer_Application_Datetime_5', 
+                                 'fert dates 6': 'Fertilizer_Application_Datetime_6', 
+                                 'fert dates 7': 'Fertilizer_Application_Datetime_7', 
+                                 'fert dates 8': 'Fertilizer_Application_Datetime_8', 
+                                 'Type of Fert': 'Fertilizer_Product', 
+                                  'Insecticide': 'Insecticide',
+                                               # 2014  
+                                'Location name': 'Experiment_Code', 
+                                         'long': 'Field_Longitude_BL', 
+                                          'lat': 'Field_Latitude_BL', 
+       'Plot length (center to center in feet)': 'Plot_Length_Unit_Feet', 
+                        'Alley length (inches)': 'Alley_Length_Unit_Inches', 
+                         'Row spacing (inches)': 'Row_Spacing_Unit_Inches', 
+                       'Number kernels planted': 'Kernels_Per_Plot', 
+                                 'Planter type': 'Planter_Type', 
+                                'Previous crop': 'Previous_Crop', 
+                         'Pre-plant herbicides': 'Pre_Plant_Herbicide', 
+                        'Post-plant herbicides': 'Post_Plant_Herbicide', 
+                               'Tillage method': 'Tillage', 
+                               'Soil test type': 'Soil_Test', 
+                                 'Soil texture': 'Texture', 
+                                      'Soil pH': 'Soil_1_to_1_Unit_pH', 
+                               'Total nitrogen': 'N_Unit_lbs_per_A', 
+                             'Total phosphorus': 'P_Unit_lbs_per_A', 
+                              'Total potassium': 'K_Unit_lbs_per_A', 
+                'Nutrient application schedule': 'Nutrient_Schedule', 
+                                   'Irrigated?': 'Irrigation_Applied', 
+          'Weather station includes irrigation': 'Weather_Station_Documents_Irrigation', 
+                         'Fertigation schedule': 'Fertigation_Schedule', 
+                          'Irrigation schedule': 'Irrigation_Schedule', 
+                                  'Local check': 'Local_Check', 
+                                 'Harvest date': 'Harvested_Unit_Datetime', 
+                                'Planting date': 'Planted_Unit_Datetime', 
+                                  'Inbred reps': 'Inbred_Reps', 
+                                 'Inbred plots': 'Inbred_Plots', 
+                                'Collaborators': 'Collaborator', 
+                               'Data file name': 'State', 
+                                       'traits': 'Traits_Measured', 
+                                       'folder': 'State', 
+                           'Metadata file name': 'Metadata_File', 
+                          'additional metadata': 'Additional_Metadata', 
+                'Weather Station serial number': 'Weather_Station_In_Field_Serial_Number', 
+                               'Weather-folder': 'Weather_Directory'
     }
-
+    
     phno_name_dict = {
-    'Year': 'Year', 
-    'Field-Location': 'Experiment_Code', 
-    'State': 'State', # Unchanged 
-    'City': 'City', # Unchanged 
-    'Plot length (center-center in feet)': 'Plot_Length_Unit_Feet', 
-    'Plot area (ft2)': 'Plot_Area_Unit_Feet2', 
-    'Alley length (in inches)': 'Alley_Length_Unit_Inches', 
-    'Row spacing (in inches)': 'Row_Spacing_Unit_Inches', 
-    'Rows per plot': 'Rows_Per_Plot', 
-    '# Seed per plot': 'Seeds_Per_Plot', 
-    'Experiment': 'Experiment', # Unchanged 
-    'Source': 'Source', # Unchanged 
-    'Pedigree': 'Pedigree', # Unchanged 
-    'Family': 'Family', # Unchanged 
-    'Tester': 'Tester', # Unchanged 
-    'Replicate': 'Replicate', # Unchanged 
-    'Block': 'Block', # Unchanged 
-    'Plot': 'Plot', # Unchanged 
-    'Plot_ID': 'Plot_ID', # Unchanged 
-    'Range': 'Range', # Unchanged 
-    'Pass': 'Pass', # Unchanged 
-    'Date Plot Planted [MM/DD/YY]': 'Planted_Unit_Datetime', 
+                              'Year': 'Year', 
+                    'Field-Location': 'Experiment_Code', 
+                             'State': 'State',      # Unchanged 
+                              'City': 'City',       # Unchanged 
+ 'Plot length (center-center in feet)': 'Plot_Length_Unit_Feet', 
+                   'Plot area (ft2)': 'Plot_Area_Unit_Feet2', 
+          'Alley length (in inches)': 'Alley_Length_Unit_Inches', 
+           'Row spacing (in inches)': 'Row_Spacing_Unit_Inches', 
+                     'Rows per plot': 'Rows_Per_Plot', 
+                   '# Seed per plot': 'Seeds_Per_Plot', 
+                        'Experiment': 'Experiment', # Unchanged 
+                            'Source': 'Source',     # Unchanged 
+                          'Pedigree': 'Pedigree',   # Unchanged 
+                            'Family': 'Family',     # Unchanged 
+                            'Tester': 'Tester',     # Unchanged 
+                         'Replicate': 'Replicate',  # Unchanged 
+                             'Block': 'Block',      # Unchanged 
+                              'Plot': 'Plot',       # Unchanged 
+                           'Plot_ID': 'Plot_ID',    # Unchanged 
+                             'Range': 'Range',      # Unchanged 
+                              'Pass': 'Pass',       # Unchanged 
+      'Date Plot Planted [MM/DD/YY]': 'Planted_Unit_Datetime', 
     'Date Plot Harvested [MM/DD/YY]': 'Harvested_Unit_Datetime', 
-    'Anthesis [MM/DD/YY]': 'Anthesis_Unit_Datetime', 
-    'Silking [MM/DD/YY]': 'Silking_Unit_Datetime', 
-    'Anthesis [days]': 'Anthesis_Unit_Days', 
-    'Silking [days]': 'Silking_Unit_Days', 
-    'Plant Height [cm]': 'Plant_Height_Unit_cm', 
-    'Ear Height [cm]': 'Ear_Height_Unit_cm', 
-    'Stand Count [# of plants]': 'Stand_Count_Unit_Number', 
-    'Root Lodging [# of plants]': 'Root_Lodging_Unit_Number', 
-    'Stalk Lodging [# of plants]': 'Stalk_Lodging_Unit_Number', 
-    'Grain Moisture [%]': 'Grain_Moisture_Unit_Percent', 
-    'Test Weight [lbs]': 'Test_Weight_Unit_lbs', 
-    'Plot Weight [lbs]': 'Plot_Weight_Unit_lbs', 
-    'Grain Yield (bu/A)': 'Grain_Yield_Unit_bu_Per_A', 
-    "Plot Discarded [enter 'yes' or blank]": 'Discarded', 
-    'Comments': 'Phenotype_Comments', 
-    'Filler': 'Filler', # Unchanged 
-    'Snap [# of plants]': 'Snap_Unit_Number',
-    # 2019
-    'Kernels/Packet' : 'Kernels_Per_Packet',
-    "Filler [enter 'filler' or blank]" : 'Filler',
-    'Possible subs' : 'Possible_Subs',
-    'Confirmed subs' : 'Confirmed_Subs',
-    'Single Plant Biomass in July(g)' : 'Biomass_July_Unit_g',
-    'Single Plant Biomass in August(g)' : 'Biomass_Aug_Unit_g',
-    'RootPullingForce(kgf)_July' : 'Root_Pulling_Force_July_Unit_kgf',
-    'RootPullingForce(kgf)_August' : 'Root_Pulling_Force_Aug_Unit_kgf'
+               'Anthesis [MM/DD/YY]': 'Anthesis_Unit_Datetime', 
+                'Silking [MM/DD/YY]': 'Silking_Unit_Datetime', 
+                   'Anthesis [days]': 'Anthesis_Unit_Days', 
+                    'Silking [days]': 'Silking_Unit_Days', 
+                 'Plant Height [cm]': 'Plant_Height_Unit_cm', 
+                   'Ear Height [cm]': 'Ear_Height_Unit_cm', 
+         'Stand Count [# of plants]': 'Stand_Count_Unit_Number', 
+        'Root Lodging [# of plants]': 'Root_Lodging_Unit_Number', 
+       'Stalk Lodging [# of plants]': 'Stalk_Lodging_Unit_Number', 
+                'Grain Moisture [%]': 'Grain_Moisture_Unit_Percent', 
+                 'Test Weight [lbs]': 'Test_Weight_Unit_lbs', 
+                 'Plot Weight [lbs]': 'Plot_Weight_Unit_lbs', 
+                'Grain Yield (bu/A)': 'Grain_Yield_Unit_bu_Per_A', 
+  "Plot Discarded [enter 'yes' or blank]": 'Discarded', 
+                          'Comments': 'Phenotype_Comments', 
+                            'Filler': 'Filler',     # Unchanged 
+                'Snap [# of plants]': 'Snap_Unit_Number',
+                                    # 2019
+                   'Kernels/Packet' : 'Kernels_Per_Packet',
+ "Filler [enter 'filler' or blank]" : 'Filler',
+                    'Possible subs' : 'Possible_Subs',
+                   'Confirmed subs' : 'Confirmed_Subs',
+  'Single Plant Biomass in July(g)' : 'Biomass_July_Unit_g',
+ 'Single Plant Biomass in August(g)' : 'Biomass_Aug_Unit_g',
+       'RootPullingForce(kgf)_July' : 'Root_Pulling_Force_July_Unit_kgf',
+     'RootPullingForce(kgf)_August' : 'Root_Pulling_Force_Aug_Unit_kgf',
+                                    # 2018
+                             'RecId': 'Drop_Record_Index', 
+                      'Tester/Group': 'Tester', 
+             'Local Check (Yes, No)': 'Local_Check', 
+                 'Plot Length Field': 'Plot_Length_Unit_', 
+                      'Alley Length': 'Alley_Length_Unit_', 
+                       'Row Spacing': 'Row_Spacing_Unit_', 
+                         'Plot Area': 'Plot_Area_Unit_', 
+                         'Rows/Plot': 'Rows_Per_Plot', 
+                       'Packet/Plot': 'Packets_Per_Plot', 
+                            '# Seed': 'Seeds_Per_Plot', 
+                      'Date Planted': 'Planted_Unit_Datetime', 
+                    'Date Harvested': 'Harvested_Unit_Datetime', 
+                   'Anthesis [date]': 'Anthesis_Unit_Datetime', 
+                    'Silking [date]': 'Silking_Unit_Datetime', 
+                 'Pollen DAP [days]': 'Anthesis_Unit_Days', 
+                   'Silk DAP [days]': 'Silking_Unit_Days', 
+              'Stand Count [plants]': 'Stand_Count_Unit_Number', 
+                         'Stand [%]': 'Stand_Count_Unit_Percent', 
+             'Root Lodging [plants]': 'Root_Lodging_Unit_Number', 
+            'Stalk Lodging [plants]': 'Stalk_Lodging_Unit_Number', 
+              'Test Weight [lbs/bu]': 'Test_Weight_Unit_lbs', 
+                'Grain Yield [bu/A]': 'Grain_Yield_Unit_bu_Per_A', 
+ 'Plot Discarded [enter "Yes" or "blank"]': 'Discarded', 
+ 'Filler [enter "filler" or "blank"]': 'Filler', 
+ '[add additional measurements here]': 'Additional_Metics',
+                                    # 2017
+                           'ï»¿Year': 'Year', 
+      'LOCAL_CHECK (Yes, No[Blank])': 'Local_Check', 
+ 'Plot Discarded [enter "yes" or "blank"]': 'Discarded',
+                                    # 2015
+ 'Plot Length Field (center to center in feet)': 'Plot_Length_Unit_Feet', 
+               'Alley Length (feet)': 'Alley_Length_Unit_Feet', 
+              'Row Spacing (inches)': 'Row_Spacing_Unit_Inches'
+                                    # 2014
     }
 
     soil_name_dict = {
-    'Grower': 'Grower', # Unchanged 
-    'Location': 'Experiment_Code', 
-    'Date Received': 'Recieved_Date_Unit_Datetime', 
-    'Date Reported': 'Processed_Date_Unit_Datetime', 
-    'E Depth': 'Depth_Unit_UNK', 
-    '1:1 Soil pH': 'Soil_1_to_1_Unit_pH', 
-    'WDRF Buffer pH': 'WDRF_Buffer_Unit_pH', 
-    '1:1 S Salts mmho/cm': 'Soluable_Salts_Unit_mmho_Per_cm', 
-    'Texture No': 'Texture_Number', 
-    'Organic Matter LOI %': 'Organic_Matter_Unit_Percent', 
-    'Nitrate-N ppm N': 'Nitrates_Unit_ppm', 
-    'lbs N/A': 'N_per_Acre_Unit_lbs', 
-    'Potassium ppm K': 'K_Unit_ppm', 
-    'Sulfate-S ppm S': 'Sulfate_Unit_ppm', 
-    'Calcium ppm Ca': 'Ca_Unit_ppm', 
-    'Magnesium ppm Mg': 'Mg_Unit_ppm', 
-    'Sodium ppm Na': 'Na_Unit_ppm', 
+                        'Grower': 'Grower',  # Unchanged 
+                      'Location': 'Experiment_Code', 
+                 'Date Received': 'Recieved_Date_Unit_Datetime', 
+                 'Date Reported': 'Processed_Date_Unit_Datetime', 
+                       'E Depth': 'Depth_Unit_UNK', 
+                   '1:1 Soil pH': 'Soil_1_to_1_Unit_pH', 
+                'WDRF Buffer pH': 'WDRF_Buffer_Unit_pH', 
+           '1:1 S Salts mmho/cm': 'Soluable_Salts_Unit_mmho_Per_cm', 
+                    'Texture No': 'Texture_Number', 
+          'Organic Matter LOI %': 'Organic_Matter_Unit_Percent', 
+               'Nitrate-N ppm N': 'Nitrates_Unit_ppm', 
+                       'lbs N/A': 'N_per_Acre_Unit_lbs', 
+               'Potassium ppm K': 'K_Unit_ppm', 
+               'Sulfate-S ppm S': 'Sulfate_Unit_ppm', 
+                'Calcium ppm Ca': 'Ca_Unit_ppm', 
+              'Magnesium ppm Mg': 'Mg_Unit_ppm', 
+                 'Sodium ppm Na': 'Na_Unit_ppm', 
     'CEC/Sum of Cations me/100g': 'Cation_Exchange_Capacity', 
-    '%H Sat': 'H_Sat_Unit_Percent', 
-    '%K Sat': 'K_Sat_Unit_Percent', 
-    '%Ca Sat': 'Ca_Sat_Unit_Percent', 
-    '%Mg Sat': 'Mg_Sat_Unit_Percent', 
-    '%Na Sat': 'Na_Sat_Unit_Percent', 
-    'Mehlich P-III ppm P': 'Mehlich_PIII_P_Unit_ppm', 
-    '% Sand': 'Sand_Unit_Percent', 
-    '% Silt': 'Silt_Unit_Percent', 
-    '% Clay': 'Clay_Unit_Percent', 
-    'Texture': 'Texture', # Unchanged 
-    'Comments': 'Soil_Comments'
+                        '%H Sat': 'H_Sat_Unit_Percent', 
+                        '%K Sat': 'K_Sat_Unit_Percent', 
+                       '%Ca Sat': 'Ca_Sat_Unit_Percent', 
+                       '%Mg Sat': 'Mg_Sat_Unit_Percent', 
+                       '%Na Sat': 'Na_Sat_Unit_Percent', 
+           'Mehlich P-III ppm P': 'Mehlich_PIII_P_Unit_ppm', 
+                        '% Sand': 'Sand_Unit_Percent', 
+                        '% Silt': 'Silt_Unit_Percent', 
+                        '% Clay': 'Clay_Unit_Percent', 
+                       'Texture': 'Texture', # Unchanged 
+                      'Comments': 'Soil_Comments',
+                                # 2018
+                      'Field ID': 'Experiment_Code', 
+                 'Date Recieved': 'Recieved_Date_Unit_Datetime',
+                                # 2016
+                   'Sample Type': 'Sample_Type', 
+                   'Zinc ppm Zn': 'Zn_Unit_ppm', 
+                   'Iron ppm Fe': 'Fe_Unit_ppm', 
+              'Manganese ppm Mn': 'Mn_Unit_ppm', 
+                 'Copper ppm Cu': 'Cu_Unit_ppm', 
+                   'Boron ppm B': 'B_Unit_ppm',
+                                # 2015
+                         'LabID': 'Lab_ID', 
+                     'LabSmplID': 'Lab_ID_Number', 
+                      'SmplDate': 'Recieved_Date_Unit_Datetime', 
+                      'CoopName': 'Cooperator', 
+                    'Experiment': 'Experiment_Code', 
+                     'PlowDepth': 'Depth_Unit_UNK', 
+                            'PH': 'Soil_1_to_1_Unit_pH', 
+                           'BpH': 'Sikora_Buffer_Unit_pH', 
+                            'OM': 'Organic_Matter_Unit_Percent', 
+                             'P': 'P_Unit_ppm', 
+                             'K': 'K_Unit_ppm'  
+                                # 2014
     }
 
     wthr_name_dict = {
-    'Field Location': 'Experiment_Code', 
-    'Station ID': 'Weather_Station_ID', 
-    'NWS Network': 'NWS_Network', 
-    'NWS Station': 'NWS_Station', 
-    'Date_key': 'Datetime', 
-    'Month': 'Month', # Unchanged 
-    'Day': 'Day', # Unchanged 
-    'Year': 'Year', # Unchanged 
-    'Time': 'Time', # Unchanged 
-    'Temperature [C]': 'Temperature_Unit_C', 
-    'Dew Point [C]': 'Dew_Point_Unit_C', 
-    'Relative Humidity [%]': 'Relative_Humidity_Unit_Percent', 
-    'Solar Radiation [W/m2]': 'Solar_Radiation_Unit_W_per_m2', 
-    'Rainfall [mm]': 'Rainfall_Unit_mm', 
-    'Wind Speed [m/s]': 'Wind_Speed_Unit_m_per_s', 
+              'Field Location': 'Experiment_Code', 
+                  'Station ID': 'Weather_Station_ID', 
+                 'NWS Network': 'NWS_Network', 
+                 'NWS Station': 'NWS_Station', 
+                    'Date_key': 'Datetime', 
+                       'Month': 'Month', # Unchanged 
+                         'Day': 'Day',   # Unchanged 
+                        'Year': 'Year',  # Unchanged 
+                        'Time': 'Time',  # Unchanged 
+             'Temperature [C]': 'Temperature_Unit_C', 
+               'Dew Point [C]': 'Dew_Point_Unit_C', 
+       'Relative Humidity [%]': 'Relative_Humidity_Unit_Percent', 
+      'Solar Radiation [W/m2]': 'Solar_Radiation_Unit_W_per_m2', 
+               'Rainfall [mm]': 'Rainfall_Unit_mm', 
+            'Wind Speed [m/s]': 'Wind_Speed_Unit_m_per_s', 
     'Wind Direction [degrees]': 'Wind_Direction_Unit_Degrees', 
-    'Wind Gust [m/s]': 'Wind_Gust_Unit_m_per_s', 
-    'Soil Temperature [C]': 'Soil_Temperature_Unit_C', 
-    'Soil Moisture [%VWC]': 'Soil_Moisture_Unit_Percent_VWC', 
-    'Soil EC [mS/cm]': 'Soil_EC_Unit_mS_per_cm', 
-    'UV Light [uM/m2s]': 'UV_Light_Unit_uM_per_m2s', 
-    'PAR [uM/m2s]': 'PAR_Unit_uM_per_m2s',
-    'CO2 [ppm]': 'CO2_Unit_ppm' # 2020
+             'Wind Gust [m/s]': 'Wind_Gust_Unit_m_per_s', 
+        'Soil Temperature [C]': 'Soil_Temperature_Unit_C', 
+        'Soil Moisture [%VWC]': 'Soil_Moisture_Unit_Percent_VWC', 
+             'Soil EC [mS/cm]': 'Soil_EC_Unit_mS_per_cm', 
+           'UV Light [uM/m2s]': 'UV_Light_Unit_uM_per_m2s', 
+                'PAR [uM/m2s]': 'PAR_Unit_uM_per_m2s',
+                              # 2020
+                   'CO2 [ppm]': 'CO2_Unit_ppm', 
+                              # 2018
+            'ï»¿Record Number': 'Drop_Record_Index', 
+               'UVL (uM/m^2s)': 'UV_Light_Unit_uM_per_m2s', 
+        'Photoperiod [ hours]': 'Photoperiod_Unit_Hours', 
+              'Column Altered': 'Data_Cleaned', 
+        'Altered Column Names': 'Fields_Cleaned', 
+             'Cleaning Method': 'Cleaning_Method', 
+                     'Comment': 'Weather_Comments',
+                              # 2017
+         'Photoperiod [hours]': 'Photoperiod_Unit_Hours',
+                              # 2016
+                 'Time[Local]': 'Time', 
+                'Rainfall[mm]': 'Rainfall_Unit_mm', 
+          'Photoperiod[hours]': 'Photoperiod_Unit_Hours',
+                              # 2015
+               'Record Number': 'Drop_Record_Index', 
+               'Experiment(s)': 'Experiment_Code', 
+                 'Day of Year': 'Day_Of_Year', 
+                'Time [Local]': 'Time', 
+              'Datetime [UTC]': 'Datetime', 
+           'Soil Moisture [%]': 'Soil_Moisture_Percent',
+                              # 2014
+                 'Day [Local]': 'Day', 
+               'Month [Local]': 'Month', 
+                'Year [Local]': 'Year', 
+         'Day of Year [Local]': 'Day_Of_Year'
     }
 
     mgmt_name_dict = {
-    'Location': 'Experiment_Code', 
-    'Application_or_treatment': 'Application', 
+                       'Location': 'Experiment_Code', 
+       'Application_or_treatment': 'Application', 
     'Product_or_nutrient_applied': 'Product', 
-    'Date_of_application': 'Date_Datetime', 
-    'Quantity_per_acre': 'Amount_Per_Acre', 
-    'Application_unit': 'Unit'
+            'Date_of_application': 'Date_Datetime', 
+              'Quantity_per_acre': 'Amount_Per_Acre', 
+               'Application_unit': 'Unit',
+                                 # 2016
+                   'Record Order': 'Drop_Record_Index', 
+                'Experiment Code': 'Experiment_Code', 
+                      'Record ID': 'Drop_Record_Index2', 
+       'Application or Treatment': 'Application', 
+       'Product/Nutrient Applied': 'Product', 
+            'Date of Application': 'Date_Datetime', 
+              'Quantity per acre': 'Amount_Per_Acre', 
+ 'Application unit\n(lbs, in, oz per acre)': 'Unit',
+                                 # 2015
+ 'Irrigation/Fertigation (yes/no)': 'Irrigation_Applied', 
+ 'Weather station documents irrigation? (yes/no)': 'Weather_Station_Documents_Irrigation', 
+              'Nutrients Applied': 'Nutrients_Applied', 
+                          'Notes': 'Management_Comments'
+                                 # 2014
     }
     
     
@@ -296,7 +477,9 @@ def list_known_experiments():
         'TXH2', 'TXH3', 'WIH1', 'WIH2', 'WIH3',
         'MOH1', 'OHH1', # 2020
         'NYH1', 'ONH2', 'TXH4', # 2019
-        'GEH2', 'IAH2 ', 'IAH3 ', 'IAH4 ', 'MOH1 ', 'NYH1', 'W1H1', 'W1H2'
+        'GEH2', 'IAH2 ', 'IAH3 ', 'IAH4 ', 'MOH1 ', 'NYH1', 'W1H1', 'W1H2',
+        # 2018
+        'ARH1', 'ARH2', 'KSH1', 'KSH2', 'KSH3', 'MOH1-Rep1', 'MOH1-Rep2', 'ONH1', 'TXH1-Dry', 'TXH1-Early', 'TXH1-Late'
                  ]
     return(known_exps)
 

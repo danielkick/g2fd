@@ -14256,15 +14256,15 @@ a.anchor-link {
     </script>
     <!-- End of mathjax configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
----
-description: This notebook brings the 2021 into alignment with the desired format
-  with respect to field name, type, and grouping.
-output-file: freshstart_0000.html
-title: Process Data from 2021 into a consistent format.
 
----
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h1 id="Process-Data-from-2021-into-a-consistent-format.">Process Data from 2021 into a consistent format.<a class="anchor-link" href="#Process-Data-from-2021-into-a-consistent-format.">&#182;</a></h1><blockquote>
+<p>This notebook brings the 2021 into alignment with the desired format with respect to field name, type, and grouping.</p>
+</blockquote>
 
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
@@ -14327,53 +14327,45 @@ title: Process Data from 2021 into a consistent format.
 <span class="n">mgmt_path</span> <span class="o">=</span> <span class="s1">&#39;./data/raw/GenomesToFields_G2F_data_2021/z._2021_supplemental_info/g2f_2021_agronomic_information.csv&#39;</span>
 
 
+<span class="c1"># meta_path = &#39;./data/raw/G2F_Planting_Season_2017_v1/z._2017_supplemental_info/g2f_2017_field_metadata.csv&#39; </span>
+<span class="c1"># phno_path = &#39;./data/raw/G2F_Planting_Season_2017_v1/a._2017_hybrid_phenotypic_data/g2f_2017_hybrid_data_clean.csv&#39; # geno_path = None,  </span>
+<span class="c1"># wthr_path = &#39;./data/raw/G2F_Planting_Season_2017_v1/b._2017_weather_data/g2f_2017_weather_data.csv&#39;</span>
+<span class="c1"># soil_path = &#39;./data/raw/G2F_Planting_Season_2017_v1/c._2017_soil_data/g2f_2017_soil_data_clean.csv&#39;</span>
+<span class="c1"># mgmt_path = &#39;./data/raw/G2F_Planting_Season_2017_v1/z._2017_supplemental_info/g2f_2017_agronomic information.csv&#39;</span>
+
+<span class="c1"># meta_path = &#39;./data/raw/G2F_Planting_Season_2016_v2/z._2016_supplemental_info/g2f_2016_field_metadata.csv&#39; </span>
+<span class="c1"># phno_path = &#39;./data/raw/G2F_Planting_Season_2016_v2/a._2016_hybrid_phenotypic_data/g2f_2016_hybrid_data_clean.csv&#39; </span>
+<span class="c1"># # geno_path = None,  </span>
+<span class="c1"># wthr_path = &#39;./data/raw/G2F_Planting_Season_2016_v2/b._2016_weather_data/g2f_2016_weather_data.csv&#39;</span>
+<span class="c1"># soil_path = &#39;./data/raw/G2F_Planting_Season_2016_v2/c._2016_soil_data/g2f_2016_soil_data_clean.csv&#39;</span>
+<span class="c1"># mgmt_path = &#39;./data/raw/G2F_Planting_Season_2016_v2/z._2016_supplemental_info/g2f_2016_agronomic_information.csv&#39;</span>
+
+<span class="c1">#           # print(&#39;Note! Many management factors are recorded in 2015!&#39;)</span>
+<span class="c1"># meta_path = &#39;./data/raw/G2F_Planting_Season_2015_v2/z._2015_supplemental_info/g2f_2015_field_metadata.csv&#39; </span>
+<span class="c1"># phno_path = &#39;./data/raw/G2F_Planting_Season_2015_v2/a._2015_hybrid_phenotypic_data/g2f_2015_hybrid_data_clean.csv&#39; </span>
+<span class="c1"># # geno_path = None,  </span>
+<span class="c1"># wthr_path = &#39;./data/raw/G2F_Planting_Season_2015_v2/b._2015_weather_data/g2f_2015_weather.csv&#39;</span>
+<span class="c1"># soil_path = &#39;./data/raw/G2F_Planting_Season_2015_v2/d._2015_soil_data/g2f_2015_soil_data.csv&#39;</span>
+<span class="c1">#           # There is data to be had but it&#39;s not formatted in a machine friendly way.</span>
+<span class="c1">#           # I&#39;ve reformatted it to be easy to read in.</span>
+<span class="c1"># mgmt_path = &#39;./data/Manual_old/g2f_2015_agronomic information.csv&#39;,</span>
+
+<span class="c1"># meta_path = &#39;./data/raw/G2F_Planting_Season_2014_v4/z._2014_supplemental_info/g2f_2014_field_characteristics.csv&#39; </span>
+<span class="c1"># phno_path = &#39;./data/raw/G2F_Planting_Season_2014_v4/a._2014_hybrid_phenotypic_data/g2f_2014_hybrid_data_clean.csv&#39; </span>
+<span class="c1"># # geno_path = None,  </span>
+<span class="c1"># wthr_path = &#39;./data/raw/G2F_Planting_Season_2014_v4/b._2014_weather_data/g2f_2014_weather.csv&#39;</span>
+<span class="c1">#           # no soil 2014, some info in metadata</span>
+<span class="c1"># # soil_path = None, </span>
+<span class="c1">#           # no agro 2014, some info in metadata</span>
+<span class="c1"># # mgmt_path = None,</span>
+
+
+
 <span class="n">meta</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">meta_path</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;ISO-8859-1&quot;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">phno</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">phno_path</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;ISO-8859-1&quot;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">wthr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">wthr_path</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;ISO-8859-1&quot;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">soil</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">soil_path</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;ISO-8859-1&quot;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">mgmt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">mgmt_path</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;ISO-8859-1&quot;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># meta.columns</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># match_df_cols(df1 = meta, df2 = soil)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
      </div>
@@ -14393,21 +14385,6 @@ title: Process Data from 2021 into a consistent format.
 <span class="n">soil_name_dict</span> <span class="o">=</span> <span class="n">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;soil&#39;</span><span class="p">)</span>
 <span class="n">wthr_name_dict</span> <span class="o">=</span> <span class="n">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;wthr&#39;</span><span class="p">)</span>
 <span class="n">mgmt_name_dict</span> <span class="o">=</span> <span class="n">mk_name_dict</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mgmt&#39;</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># match_df_cols(df1 = meta, df2 = soil)</span>
-<span class="c1"># set(meta.Experiment_Code), set(soil.Location)</span>
 </pre></div>
 
      </div>
@@ -14542,26 +14519,26 @@ title: Process Data from 2021 into a consistent format.
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">soil</span> <span class="o">=</span> <span class="n">sanitize_Experiment_Codes</span><span class="p">(</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">soil</span><span class="p">,</span> 
-    <span class="n">simple_renames</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;W1H1&#39;</span><span class="p">:</span> <span class="s1">&#39;WIH1&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;W1H2&#39;</span><span class="p">:</span> <span class="s1">&#39;WIH2&#39;</span><span class="p">,</span> 
-        <span class="s1">&#39;W1H3&#39;</span><span class="p">:</span> <span class="s1">&#39;WIH3&#39;</span>
-    <span class="p">},</span> 
-    <span class="n">split_renames</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;NEH2_NEH3&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;NEH2&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH3&#39;</span><span class="p">]</span>
-    <span class="p">})</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># soil = sanitize_Experiment_Codes(</span>
+<span class="c1">#     df = soil, </span>
+<span class="c1">#     simple_renames = {</span>
+<span class="c1">#         &#39;W1H1&#39;: &#39;WIH1&#39;, </span>
+<span class="c1">#         &#39;W1H2&#39;: &#39;WIH2&#39;, </span>
+<span class="c1">#         &#39;W1H3&#39;: &#39;WIH3&#39;</span>
+<span class="c1">#     }, </span>
+<span class="c1">#     split_renames = {</span>
+<span class="c1">#         &#39;NEH2_NEH3&#39;: [&#39;NEH2&#39;, &#39;NEH3&#39;]</span>
+<span class="c1">#     })</span>
 
-<span class="n">wthr</span> <span class="o">=</span> <span class="n">sanitize_Experiment_Codes</span><span class="p">(</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">,</span> 
-    <span class="n">simple_renames</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">},</span> 
-    <span class="n">split_renames</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;NEH2_NEH3&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;NEH2&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH3&#39;</span><span class="p">],</span>
-        <span class="s1">&#39;NYH3_NYS1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;NYS1&#39;</span><span class="p">,</span> <span class="s1">&#39;NYH3&#39;</span><span class="p">],</span>
-        <span class="s1">&#39;TXH1_TXH3&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;TXH1&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH3&#39;</span><span class="p">]</span>
-    <span class="p">})</span>
+<span class="c1"># wthr = sanitize_Experiment_Codes(</span>
+<span class="c1">#     df = wthr, </span>
+<span class="c1">#     simple_renames = {</span>
+<span class="c1">#     }, </span>
+<span class="c1">#     split_renames = {</span>
+<span class="c1">#         &#39;NEH2_NEH3&#39;: [&#39;NEH2&#39;, &#39;NEH3&#39;],</span>
+<span class="c1">#         &#39;NYH3_NYS1&#39;: [&#39;NYS1&#39;, &#39;NYH3&#39;],</span>
+<span class="c1">#         &#39;TXH1_TXH3&#39;: [&#39;TXH1&#39;, &#39;TXH3&#39;]</span>
+<span class="c1">#     })</span>
 </pre></div>
 
      </div>
@@ -14605,10 +14582,10 @@ title: Process Data from 2021 into a consistent format.
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>meta [] 
 phno [] 
-soil [] 
-wthr [] 
+soil [&#39;NEH2_NEH3&#39;, &#39;W1H3&#39;] 
+wthr [&#39;NEH2_NEH3&#39;, &#39;NYH3_NYS1&#39;, &#39;TXH1_TXH3&#39;] 
 mgmt [] 
-all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&#39;, &#39;IAH1&#39;, &#39;IAH2&#39;, &#39;IAH3&#39;, &#39;IAH4&#39;, &#39;ILH1&#39;, &#39;INH1&#39;, &#39;MIH1&#39;, &#39;MNH1&#39;, &#39;MOH1&#39;, &#39;NCH1&#39;, &#39;NEH1&#39;, &#39;NEH2&#39;, &#39;NEH3&#39;, &#39;NYH2&#39;, &#39;NYH3&#39;, &#39;NYS1&#39;, &#39;OHH1&#39;, &#39;SCH1&#39;, &#39;TXH1&#39;, &#39;TXH2&#39;, &#39;TXH3&#39;, &#39;WIH1&#39;, &#39;WIH2&#39;, &#39;WIH3&#39;]
+all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&#39;, &#39;GEH2&#39;, &#39;IAH1&#39;, &#39;IAH2&#39;, &#39;IAH2 &#39;, &#39;IAH3&#39;, &#39;IAH3 &#39;, &#39;IAH4&#39;, &#39;IAH4 &#39;, &#39;ILH1&#39;, &#39;INH1&#39;, &#39;MIH1&#39;, &#39;MNH1&#39;, &#39;MOH1&#39;, &#39;MOH1 &#39;, &#39;NCH1&#39;, &#39;NEH1&#39;, &#39;NEH2&#39;, &#39;NEH3&#39;, &#39;NYH1&#39;, &#39;NYH1&#39;, &#39;NYH2&#39;, &#39;NYH3&#39;, &#39;NYS1&#39;, &#39;OHH1&#39;, &#39;ONH2&#39;, &#39;SCH1&#39;, &#39;TXH1&#39;, &#39;TXH2&#39;, &#39;TXH3&#39;, &#39;TXH4&#39;, &#39;W1H1&#39;, &#39;W1H2&#39;, &#39;WIH1&#39;, &#39;WIH2&#39;, &#39;WIH3&#39;]
 </pre>
 </div>
 </div>
@@ -14695,9 +14672,6 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
     
     <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Range&#39;</span><span class="p">,</span> <span class="s1">&#39;Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Plot&#39;</span><span class="p">]:</span>
         <span class="n">wthr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">wthr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
-    
-    
-    
 </pre></div>
 
      </div>
@@ -14782,29 +14756,29 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># # convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.</span>
 
-<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Planted_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Harvested_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Anthesis_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Silking_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Processed_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Weather_Station_Placed_Unit_Datetime&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Weather_Station_Removed_Unit_Datetime&#39;</span>
-    <span class="p">]:</span>
-<span class="c1"># find_unconvertable_datetimes(df_col=sval[e], pattern=&#39;%Y-%m-%d %H:%M&#39;, index=False)</span>
+<span class="c1"># for e in [&#39;Planted_Unit_Datetime&#39;, </span>
+<span class="c1">#     &#39;Harvested_Unit_Datetime&#39;, </span>
+<span class="c1">#     &#39;Anthesis_Unit_Datetime&#39;, </span>
+<span class="c1">#     &#39;Silking_Unit_Datetime&#39;, </span>
+<span class="c1">#     &#39;Recieved_Date_Unit_Datetime&#39;, </span>
+<span class="c1">#     &#39;Processed_Date_Unit_Datetime&#39;, </span>
+<span class="c1">#     &#39;Weather_Station_Placed_Unit_Datetime&#39;, </span>
+<span class="c1">#     &#39;Weather_Station_Removed_Unit_Datetime&#39;</span>
+<span class="c1">#     ]:</span>
+<span class="c1"># # find_unconvertable_datetimes(df_col=sval[e], pattern=&#39;%Y-%m-%d %H:%M&#39;, index=False)</span>
 
-    <span class="n">sval</span><span class="p">[</span><span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+<span class="c1">#     sval[&#39;Datetime_Temp&#39;] = pd.to_datetime(np.nan)</span>
 
-    <span class="k">for</span> <span class="n">code</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">sval</span><span class="o">.</span><span class="n">Experiment_Code</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()):</span>
-    <span class="c1"># code = list(sval.Experiment_Code.drop_duplicates())[0]</span>
-        <span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sval</span><span class="o">.</span><span class="n">Experiment_Code</span> <span class="o">==</span> <span class="n">code</span><span class="p">,</span> <span class="s1">&#39;Datetime_Temp&#39;</span>
-                 <span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sval</span><span class="o">.</span><span class="n">Experiment_Code</span> <span class="o">==</span> <span class="n">code</span><span class="p">,</span> <span class="n">e</span><span class="p">])</span>
+<span class="c1">#     for code in list(sval.Experiment_Code.drop_duplicates()):</span>
+<span class="c1">#     # code = list(sval.Experiment_Code.drop_duplicates())[0]</span>
+<span class="c1">#         sval.loc[sval.Experiment_Code == code, &#39;Datetime_Temp&#39;</span>
+<span class="c1">#                  ] = pd.to_datetime(sval.loc[sval.Experiment_Code == code, e])</span>
 
-    <span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">]</span> 
+<span class="c1">#     sval.loc[:, e] = sval.loc[:, &#39;Datetime_Temp&#39;] </span>
 
-<span class="n">sval</span> <span class="o">=</span> <span class="n">sval</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">)</span>
+<span class="c1"># sval = sval.drop(columns = &#39;Datetime_Temp&#39;)</span>
 </pre></div>
 
      </div>
@@ -14818,13 +14792,13 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># -&gt; floats</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># # -&gt; floats</span>
 
-<span class="c1"># [find_unconvertable_numerics(df_col = sval[e], index = False) for e in [</span>
-<span class="c1">#     &#39;Alley_Length_Unit_Inches&#39;,</span>
-<span class="c1"># &#39;Row_Spacing_Unit_Inches&#39;,</span>
-<span class="c1"># &#39;Pounds_Needed_Soil_Moisture&#39;</span>
-<span class="c1"># ]]</span>
+<span class="c1"># # [find_unconvertable_numerics(df_col = sval[e], index = False) for e in [</span>
+<span class="c1"># #     &#39;Alley_Length_Unit_Inches&#39;,</span>
+<span class="c1"># # &#39;Row_Spacing_Unit_Inches&#39;,</span>
+<span class="c1"># # &#39;Pounds_Needed_Soil_Moisture&#39;</span>
+<span class="c1"># # ]]</span>
 
 <span class="n">sval</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">sval</span><span class="p">,</span> 
@@ -14896,6 +14870,21 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># to float</span>
+<span class="c1"># sval.Pounds_Needed_Soil_Moisture.astype(float)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># to bool</span>
 <span class="n">sval</span><span class="p">[</span><span class="s1">&#39;phno&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sval</span><span class="p">[</span><span class="s1">&#39;phno&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
 <span class="n">sval</span><span class="p">[</span><span class="s1">&#39;soil&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sval</span><span class="p">[</span><span class="s1">&#39;soil&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
@@ -14952,7 +14941,17 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>120/120 Columns pass.
+<pre>112/120 Columns pass.
+                                   Column   dtype  Expected_dtype   Pass
+21                  Planted_Unit_Datetime  object  datetime64[ns]  False
+22                Harvested_Unit_Datetime  object  datetime64[ns]  False
+23                 Anthesis_Unit_Datetime  object  datetime64[ns]  False
+24                  Silking_Unit_Datetime  object  datetime64[ns]  False
+42            Recieved_Date_Unit_Datetime  object  datetime64[ns]  False
+43           Processed_Date_Unit_Datetime  object  datetime64[ns]  False
+78   Weather_Station_Placed_Unit_Datetime  object  datetime64[ns]  False
+79  Weather_Station_Removed_Unit_Datetime  object  datetime64[ns]  False
+
 </pre>
 </div>
 </div>
@@ -14977,35 +14976,35 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># instead of writing regexes to figure out the mose likely format for each datetime, we assume each experiment will be consistent withing that experiment</span>
-<span class="c1"># and let pd figure it out.</span>
-<span class="c1"># wthr[&#39;Datetime_Temp&#39;] = pd.to_datetime(np.nan)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># # instead of writing regexes to figure out the mose likely format for each datetime, we assume each experiment will be consistent withing that experiment</span>
+<span class="c1"># # and let pd figure it out.</span>
+<span class="c1"># # wthr[&#39;Datetime_Temp&#39;] = pd.to_datetime(np.nan)</span>
 
-<span class="c1"># for code in list(wthr.loc[:, &#39;Experiment_Code&#39;].drop_duplicates()):</span>
-<span class="c1">#     wthr.loc[wthr.Experiment_Code == code, &#39;Datetime_Temp&#39;] = pd.to_datetime(wthr.loc[wthr.Experiment_Code == code, &#39;Datetime&#39;], errors=&#39;coerce&#39;)</span>
+<span class="c1"># # for code in list(wthr.loc[:, &#39;Experiment_Code&#39;].drop_duplicates()):</span>
+<span class="c1"># #     wthr.loc[wthr.Experiment_Code == code, &#39;Datetime_Temp&#39;] = pd.to_datetime(wthr.loc[wthr.Experiment_Code == code, &#39;Datetime&#39;], errors=&#39;coerce&#39;)</span>
 
 
-<span class="c1"># ... or we use the fields in the df to make a consistent format</span>
-<span class="n">wthr</span> <span class="o">=</span> <span class="n">cols_astype_string</span><span class="p">(</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">,</span> 
-    <span class="n">col_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="s1">&#39;Month&#39;</span><span class="p">,</span> <span class="s1">&#39;Day&#39;</span><span class="p">,</span> <span class="s1">&#39;Time&#39;</span><span class="p">])</span>
+<span class="c1"># # ... or we use the fields in the df to make a consistent format</span>
+<span class="c1"># wthr = cols_astype_string(</span>
+<span class="c1">#     df = wthr, </span>
+<span class="c1">#     col_list = [&#39;Year&#39;, &#39;Month&#39;, &#39;Day&#39;, &#39;Time&#39;])</span>
 
-<span class="n">wthr</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">,</span>
-    <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Time&#39;</span><span class="p">,</span> 
-    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;24:00:00&#39;</span><span class="p">:</span> <span class="s1">&#39;00:00:00&#39;</span><span class="p">},</span> <span class="c1"># this could be day + 24 h instead of a miscoded day + 0 h</span>
-    <span class="n">split_renames</span><span class="o">=</span> <span class="p">{})</span>
+<span class="c1"># wthr = sanitize_col(</span>
+<span class="c1">#     df = wthr,</span>
+<span class="c1">#     col = &#39;Time&#39;, </span>
+<span class="c1">#     simple_renames= {&#39;24:00:00&#39;: &#39;00:00:00&#39;}, # this could be day + 24 h instead of a miscoded day + 0 h</span>
+<span class="c1">#     split_renames= {})</span>
 
-<span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Day&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span>
+<span class="c1"># wthr[&#39;Datetime_Temp&#39;] = wthr[&#39;Year&#39;]+&#39;-&#39;+wthr[&#39;Month&#39;]+&#39;-&#39;+wthr[&#39;Day&#39;]+&#39; &#39;+wthr[&#39;Time&#39;]</span>
 
-<span class="c1"># convert types</span>
-<span class="n">err_list</span> <span class="o">=</span> <span class="n">find_unconvertable_datetimes</span><span class="p">(</span><span class="n">df_col</span><span class="o">=</span><span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">],</span> <span class="n">pattern</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">err_list</span> <span class="o">!=</span> <span class="p">[]:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">err_list</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="n">wthr</span><span class="o">.</span><span class="n">Datetime_Temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">wthr</span><span class="o">.</span><span class="n">Datetime_Temp</span><span class="p">),</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span>
-    <span class="n">wthr</span><span class="o">.</span><span class="n">Datetime</span> <span class="o">=</span> <span class="n">wthr</span><span class="o">.</span><span class="n">Datetime_Temp</span>
-    <span class="n">wthr</span> <span class="o">=</span> <span class="n">wthr</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span> <span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">)</span>
+<span class="c1"># # convert types</span>
+<span class="c1"># err_list = find_unconvertable_datetimes(df_col=wthr[&#39;Datetime_Temp&#39;], pattern=&#39;%Y-%m-%d %H:%M&#39;, index=False)</span>
+<span class="c1"># if err_list != []:</span>
+<span class="c1">#     print(err_list)</span>
+<span class="c1"># else:</span>
+<span class="c1">#     wthr.Datetime_Temp = pd.to_datetime(pd.Series(wthr.Datetime_Temp), errors=&#39;coerce&#39;)</span>
+<span class="c1">#     wthr.Datetime = wthr.Datetime_Temp</span>
+<span class="c1">#     wthr = wthr.drop(columns= &#39;Datetime_Temp&#39;)</span>
 </pre></div>
 
      </div>
@@ -15043,7 +15042,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Check-Success">Check Success<a class="anchor-link" href="#Check-Success">&#182;</a></h3>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
@@ -15060,27 +15059,6 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>23/23 Columns pass.
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -15113,12 +15091,12 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> 
-    <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">,</span> 
-    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{},</span> 
-    <span class="n">split_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;6/24/21 for all but plots in pass 2; 7/5/21 for pass 2&#39;</span> <span class="p">:</span> <span class="p">[</span>
-                        <span class="s1">&#39;6/24/21 for all but plots in pass 2&#39;</span><span class="p">,</span> <span class="s1">&#39;7/5/21 for pass 2&#39;</span><span class="p">]})</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt = sanitize_col(</span>
+<span class="c1">#     df = mgmt, </span>
+<span class="c1">#     col = &#39;Date_Datetime&#39;, </span>
+<span class="c1">#     simple_renames= {}, </span>
+<span class="c1">#     split_renames= {&#39;6/24/21 for all but plots in pass 2; 7/5/21 for pass 2&#39; : [</span>
+<span class="c1">#                         &#39;6/24/21 for all but plots in pass 2&#39;, &#39;7/5/21 for pass 2&#39;]})</span>
 </pre></div>
 
      </div>
@@ -15132,18 +15110,18 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># make corrections too one-off to fix with a funciton. </span>
-<span class="n">mask</span> <span class="o">=</span> <span class="p">((</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Date_Datetime</span> <span class="o">==</span> <span class="s1">&#39;6/24/21 for all but plots in pass 2&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Pass</span> <span class="o">!=</span> <span class="mf">2.</span><span class="p">))</span>
-<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;6/24/21&#39;</span>
-<span class="c1"># since we split without specifiying pass we need to remove any rows that still have the search string.</span>
-<span class="c1"># and overwrite the df</span>
-<span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Date_Datetime</span> <span class="o">==</span> <span class="s1">&#39;6/24/21 for all but plots in pass 2&#39;</span><span class="p">)</span>
-<span class="n">mgmt</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># # make corrections too one-off to fix with a funciton. </span>
+<span class="c1"># mask = ((mgmt.Date_Datetime == &#39;6/24/21 for all but plots in pass 2&#39;) &amp; (mgmt.Pass != 2.))</span>
+<span class="c1"># mgmt.loc[mask, &#39;Date_Datetime&#39;] = &#39;6/24/21&#39;</span>
+<span class="c1"># # since we split without specifiying pass we need to remove any rows that still have the search string.</span>
+<span class="c1"># # and overwrite the df</span>
+<span class="c1"># mask = (mgmt.Date_Datetime == &#39;6/24/21 for all but plots in pass 2&#39;)</span>
+<span class="c1"># mgmt = mgmt.loc[~mask, :].copy()</span>
 
-<span class="n">mask</span> <span class="o">=</span> <span class="p">((</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Date_Datetime</span> <span class="o">==</span> <span class="s1">&#39;7/5/21 for pass 2&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Pass</span> <span class="o">==</span> <span class="mf">2.</span><span class="p">))</span>
-<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;7/5/21&#39;</span>
-<span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Date_Datetime</span> <span class="o">==</span> <span class="s1">&#39;7/5/21 for pass 2&#39;</span><span class="p">)</span>
-<span class="n">mgmt</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="c1"># mask = ((mgmt.Date_Datetime == &#39;7/5/21 for pass 2&#39;) &amp; (mgmt.Pass == 2.))</span>
+<span class="c1"># mgmt.loc[mask, &#39;Date_Datetime&#39;] = &#39;7/5/21&#39;</span>
+<span class="c1"># mask = (mgmt.Date_Datetime == &#39;7/5/21 for pass 2&#39;)</span>
+<span class="c1"># mgmt = mgmt.loc[~mask, :].copy()</span>
 </pre></div>
 
      </div>
@@ -15195,13 +15173,13 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> 
-    <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> 
-    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;170 lb (actual N)&#39;</span><span class="p">:</span> <span class="s1">&#39;170 (N)&#39;</span><span class="p">},</span> 
-    <span class="n">split_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;51.75, 40.7, 111.7 (N,P,K)&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;51.75 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;40.7 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;111.7 (K)&#39;</span><span class="p">],</span>
-                    <span class="s1">&#39;31-150-138&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;31 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;150 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;138 (K)&#39;</span><span class="p">],</span>
-                    <span class="s1">&#39;16 (N), 41 (P)&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;16 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;41 (P)&#39;</span><span class="p">]})</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt = sanitize_col(</span>
+<span class="c1">#     df = mgmt, </span>
+<span class="c1">#     col = &#39;Amount_Per_Acre&#39;, </span>
+<span class="c1">#     simple_renames= {&#39;170 lb (actual N)&#39;: &#39;170 (N)&#39;}, </span>
+<span class="c1">#     split_renames= {&#39;51.75, 40.7, 111.7 (N,P,K)&#39;: [&#39;51.75 (N)&#39;, &#39;40.7 (P)&#39;, &#39;111.7 (K)&#39;],</span>
+<span class="c1">#                     &#39;31-150-138&#39;: [&#39;31 (N)&#39;, &#39;150 (P)&#39;, &#39;138 (K)&#39;],</span>
+<span class="c1">#                     &#39;16 (N), 41 (P)&#39;: [&#39;16 (N)&#39;, &#39;41 (P)&#39;]})</span>
 </pre></div>
 
      </div>
@@ -15215,18 +15193,18 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">safe_create_col</span><span class="p">(</span><span class="n">mgmt</span><span class="p">,</span> <span class="s2">&quot;Ingredient&quot;</span><span class="p">)</span>
-<span class="n">mask</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">Ingredient</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span>
-<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Ingredient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Product&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt = safe_create_col(mgmt, &quot;Ingredient&quot;)</span>
+<span class="c1"># mask = mgmt.Ingredient.isna()</span>
+<span class="c1"># mgmt.loc[mask, &#39;Ingredient&#39;] = mgmt.loc[mask, &#39;Product&#39;]</span>
 
-<span class="c1"># assume each string is formated as &#39;val (key)&#39;. `sanitize_col` should be used to enforce this.</span>
-<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;150 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;36.6 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;138 (K)&#39;</span><span class="p">,</span> <span class="s1">&#39;111.7 (K)&#39;</span><span class="p">,</span> <span class="s1">&#39;41 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;16 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;170 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;35.7 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;51.75 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;31 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;40.7 (P)&#39;</span><span class="p">]:</span>
-    <span class="n">val</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;^\d+[.]*\d*&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">key</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;\(.+\)&#39;</span><span class="p">,</span>      <span class="n">e</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="c1"># # assume each string is formated as &#39;val (key)&#39;. `sanitize_col` should be used to enforce this.</span>
+<span class="c1"># for e in [&#39;150 (P)&#39;, &#39;36.6 (N)&#39;, &#39;138 (K)&#39;, &#39;111.7 (K)&#39;, &#39;41 (P)&#39;, &#39;16 (N)&#39;, &#39;170 (N)&#39;, &#39;35.7 (N)&#39;, &#39;51.75 (N)&#39;, &#39;31 (N)&#39;, &#39;40.7 (P)&#39;]:</span>
+<span class="c1">#     val = re.findall(&#39;^\d+[.]*\d*&#39;, e)[0]</span>
+<span class="c1">#     key = re.findall(&#39;\(.+\)&#39;,      e)[0].replace(&#39;(&#39;, &#39;&#39;).replace(&#39;)&#39;, &#39;&#39;)</span>
     
-    <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="p">[</span><span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">e</span><span class="p">)</span>
-    <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Ingredient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
-    <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+<span class="c1">#     mask = (mgmt[&#39;Amount_Per_Acre&#39;] == e)</span>
+<span class="c1">#     mgmt.loc[mask, &#39;Ingredient&#39;] = key</span>
+<span class="c1">#     mgmt.loc[mask, &#39;Amount_Per_Acre&#39;] = val</span>
 </pre></div>
 
      </div>
@@ -15306,7 +15284,7 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Check-Success">Check Success<a class="anchor-link" href="#Check-Success">&#182;</a></h3>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
@@ -15318,158 +15296,6 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>13/13 Columns pass.
-</pre>
-</div>
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Column</th>
-      <th>dtype</th>
-      <th>Expected_dtype</th>
-      <th>Pass</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>Year</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Experiment_Code</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Range</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>Pass</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Plot</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>Application</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>Product</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>Date_Datetime</td>
-      <td>datetime64[ns]</td>
-      <td>datetime64[ns]</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>Amount_Per_Acre</td>
-      <td>float64</td>
-      <td>float64</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>Unit</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>mgmt</td>
-      <td>bool</td>
-      <td>bool</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>Imputation_Notes</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>Ingredient</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
 </div>
 
 </div>

@@ -1,3 +1,10 @@
+---
+output-file: standardize_deprecated.html
+title: Setup
+
+---
+
+
 # Imports ----
 import re
 import numpy as np # for np.nan
@@ -911,8 +918,6 @@ prlst([])
 
 
 
-
-
 # Year specific subclasses ----
 class g2f_2021(g2f_year):
     # no year specific renames because we're bringing everything up to 2021 as a standard
@@ -1423,7 +1428,6 @@ dat_2014 = g2f_2014(
 
 
 
-
 # 2021
 dat_2021.ready_csvs()
 dat_2021.transform_all_names()
@@ -1604,7 +1608,6 @@ def check_contract(dataframe, contract, enforce = False):
 # # 'Issue/comment_#1', 'Issue/comment_#2', 'Issue/comment_#3', 'Issue/comment_#4', 'Issue/comment_#5', 'Issue/comment_#6', 'Issue/comment_#7', 'Issue/comment_#8', 'Issue/comment_#9', 'Issue/comment_#10', 
 
 
-
 # meta_contract = {
 #                                                   'Year': 'int',
 #                                               'Location': 'string',  
@@ -1732,7 +1735,6 @@ def check_contract(dataframe, contract, enforce = False):
 # meta = meta.drop(columns=cols_checks_and_issues_list).merge(temp_check, how = 'outer').merge(temp_issue, how = 'outer')
 
 # pd.to_timedelta()
-
 
 
 # for key in meta_contract.keys():
@@ -2400,7 +2402,6 @@ def check_contract(dataframe, contract, enforce = False):
 
 
 
-
 # check_contract(dataframe = meta, contract = meta_contract, enforce = True)  
 
 # def quick_df(lst, nom): return pd.DataFrame(zip([nom for i in range(len(lst))], lst), columns = ['Source', 'Column'])
@@ -2443,7 +2444,6 @@ def check_contract(dataframe, contract, enforce = False):
 #     )
 #     return dat
 
-
 # # pd.DataFrame({year : list(dat_obj.soil.data.columns)})
 # dat_obj = dat_2021
 # year = "2021"
@@ -2461,7 +2461,6 @@ def check_contract(dataframe, contract, enforce = False):
 
 
 # making Y
-
 
 
 # # making W
@@ -2487,8 +2486,6 @@ def check_contract(dataframe, contract, enforce = False):
 #             ]]
 
 # #TODO DAYMET
-
-
 
 
 
