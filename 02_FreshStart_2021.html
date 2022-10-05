@@ -14476,20 +14476,11 @@ a.anchor-link {
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-     </div>
 </div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="mk_name_dict------------------------------------------">mk_name_dict -----------------------------------------<a class="anchor-link" href="#mk_name_dict------------------------------------------">&#182;</a></h2>
 </div>
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
@@ -14694,10 +14685,10 @@ a.anchor-link {
                              <span class="s1">&#39;RecId&#39;</span><span class="p">:</span> <span class="s1">&#39;Drop_Record_Index&#39;</span><span class="p">,</span> 
                       <span class="s1">&#39;Tester/Group&#39;</span><span class="p">:</span> <span class="s1">&#39;Tester&#39;</span><span class="p">,</span> 
              <span class="s1">&#39;Local Check (Yes, No)&#39;</span><span class="p">:</span> <span class="s1">&#39;Local_Check&#39;</span><span class="p">,</span> 
-                 <span class="s1">&#39;Plot Length Field&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_&#39;</span><span class="p">,</span> 
-                      <span class="s1">&#39;Alley Length&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_&#39;</span><span class="p">,</span> 
-                       <span class="s1">&#39;Row Spacing&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_&#39;</span><span class="p">,</span> 
-                         <span class="s1">&#39;Plot Area&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Area_Unit_&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Plot Length Field&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Length_Unit_Feet&#39;</span><span class="p">,</span> 
+                      <span class="s1">&#39;Alley Length&#39;</span><span class="p">:</span> <span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> 
+                       <span class="s1">&#39;Row Spacing&#39;</span><span class="p">:</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> 
+                         <span class="s1">&#39;Plot Area&#39;</span><span class="p">:</span> <span class="s1">&#39;Plot_Area_Unit_Feet2&#39;</span><span class="p">,</span> 
                          <span class="s1">&#39;Rows/Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Rows_Per_Plot&#39;</span><span class="p">,</span> 
                        <span class="s1">&#39;Packet/Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;Packets_Per_Plot&#39;</span><span class="p">,</span> 
                             <span class="s1">&#39;# Seed&#39;</span><span class="p">:</span> <span class="s1">&#39;Seeds_Per_Plot&#39;</span><span class="p">,</span> 
@@ -15051,6 +15042,11 @@ a.anchor-link {
 
 </div>
 
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="list_known_experiments------------------------------------------">list_known_experiments -----------------------------------------<a class="anchor-link" href="#list_known_experiments------------------------------------------">&#182;</a></h2>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
@@ -15564,6 +15560,11 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
 <h2 id="Sanitization:-Column-data-type-expectations">Sanitization: Column data type expectations<a class="anchor-link" href="#Sanitization:-Column-data-type-expectations">&#182;</a></h2><p>Note: to handle missing values some columns that would otherwise be ints are floats</p>
 
 </div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="mk_dtype_dict------------------------------------------">mk_dtype_dict -----------------------------------------<a class="anchor-link" href="#mk_dtype_dict------------------------------------------">&#182;</a></h3>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
@@ -15704,7 +15705,12 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
         <span class="s1">&#39;Biomass_July_Unit_g&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
         <span class="s1">&#39;Biomass_Aug_Unit_g&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
         <span class="s1">&#39;Root_Pulling_Force_July_Unit_kgf&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Root_Pulling_Force_Aug_Unit_kgf&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span>       
+        <span class="s1">&#39;Root_Pulling_Force_Aug_Unit_kgf&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
+         <span class="c1"># 2018 </span>
+        <span class="s1">&#39;Local_Check&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Packets_Per_Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Stand_Count_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span>
+        
     <span class="p">}</span>
 
     
@@ -15735,7 +15741,13 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
         <span class="s1">&#39;PAR_Unit_uM_per_m2s&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span> 
     <span class="s1">&#39;wthr&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
         <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;CO2_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="c1"># 2020</span>
+        <span class="s1">&#39;CO2_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span><span class="c1"># 2020</span>
+        <span class="c1"># 2018</span>
+        <span class="s1">&#39;Photoperiod_Unit_Hours&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Data_Cleaned&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Fields_Cleaned&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Cleaning_Method&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Weather_Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
     <span class="p">}</span>
 
     <span class="n">mgmt_col_dtypes</span> <span class="o">=</span> <span class="p">{</span>

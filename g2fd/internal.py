@@ -280,10 +280,10 @@ def mk_name_dict(name # table meta, phno, soil, wthr, or mgmt
                              'RecId': 'Drop_Record_Index', 
                       'Tester/Group': 'Tester', 
              'Local Check (Yes, No)': 'Local_Check', 
-                 'Plot Length Field': 'Plot_Length_Unit_', 
-                      'Alley Length': 'Alley_Length_Unit_', 
-                       'Row Spacing': 'Row_Spacing_Unit_', 
-                         'Plot Area': 'Plot_Area_Unit_', 
+                 'Plot Length Field': 'Plot_Length_Unit_Feet', 
+                      'Alley Length': 'Alley_Length_Unit_Inches', 
+                       'Row Spacing': 'Row_Spacing_Unit_Inches', 
+                         'Plot Area': 'Plot_Area_Unit_Feet2', 
                          'Rows/Plot': 'Rows_Per_Plot', 
                        'Packet/Plot': 'Packets_Per_Plot', 
                             '# Seed': 'Seeds_Per_Plot', 
@@ -468,7 +468,7 @@ def find_unrecognized_columns(df, dct):
     keys_and_vals
     return([e for e in df.columns if e not in keys_and_vals])
 
-# %% ../02_FreshStart_2021.ipynb 18
+# %% ../02_FreshStart_2021.ipynb 19
 def list_known_experiments():
     'Provides a list of the experiments expected for use in `find_unrecognized_experiments`'
     known_exps = [
@@ -483,7 +483,7 @@ def list_known_experiments():
                  ]
     return(known_exps)
 
-# %% ../02_FreshStart_2021.ipynb 19
+# %% ../02_FreshStart_2021.ipynb 20
 # check Experiment_Code columns for any unexpected columns
 def find_unrecognized_experiments(column, 
                                   known_exps = list_known_experiments(), # Either a list of Experiment_Code s or a list of all provided by the default
@@ -500,7 +500,7 @@ def find_unrecognized_experiments(column,
 # find_unrecognized_experiments(soil.Experiment_Code, print_all_exps=True)
 
 
-# %% ../02_FreshStart_2021.ipynb 20
+# %% ../02_FreshStart_2021.ipynb 21
 # sanitize Experiment Codes
 
 def sanitize_Experiment_Codes(df, simple_renames= {}, split_renames= {}):
@@ -523,7 +523,7 @@ def sanitize_Experiment_Codes(df, simple_renames= {}, split_renames= {}):
 
     return(df)
 
-# %% ../02_FreshStart_2021.ipynb 30
+# %% ../02_FreshStart_2021.ipynb 31
 import pandas as pd
 # Make versions of `find_unconvertable_datetimes` for other datatype
 # make a function to find the unexpected entries so it's easy to write the santization code
@@ -538,7 +538,7 @@ def find_unconvertable_datetimes(df_col, pattern = '%m/%d/%y', index = False):
         # This list comprehension removes nan (which is otherwise stubborn to remove) because nan != nan
         return([e for e in list(set(df_col[datetime_errors])) if e == e]) 
 
-# %% ../02_FreshStart_2021.ipynb 31
+# %% ../02_FreshStart_2021.ipynb 32
 import pandas as pd
 def find_unconvertable_numerics(df_col, # Dataframe column (e.g. df['example']) to be used.
                                 index = False # Return an index of unconveratbles or a list of unique values
@@ -553,7 +553,7 @@ def find_unconvertable_numerics(df_col, # Dataframe column (e.g. df['example']) 
         # This list comprehension removes nan (which is otherwise stubborn to remove) because nan != nan
         return([e for e in list(set(df_col[numeric_errors])) if e == e]) # b  
 
-# %% ../02_FreshStart_2021.ipynb 32
+# %% ../02_FreshStart_2021.ipynb 33
 # generalized version of `sanitize_Experiment_Codes`
 def sanitize_col(df, col, simple_renames= {}, split_renames= {}):
     # simple renames
@@ -575,7 +575,7 @@ def sanitize_col(df, col, simple_renames= {}, split_renames= {}):
 
     return(df)
 
-# %% ../02_FreshStart_2021.ipynb 33
+# %% ../02_FreshStart_2021.ipynb 34
 import numpy as np
 # If the Imputation_Notes column doesnt exist, create it. So long as it wouldn't overwrite any imputation notes move each specified value and replace it with nan.
 def relocate_to_Imputation_Notes(df, col, val_list):
@@ -595,14 +595,14 @@ def relocate_to_Imputation_Notes(df, col, val_list):
             df.loc[(mask), col] = np.nan
     return(df)
 
-# %% ../02_FreshStart_2021.ipynb 34
+# %% ../02_FreshStart_2021.ipynb 35
 # helper function so we can ask for a new column don't have to worry about overwritting a if it already exists 
 def safe_create_col(df, col_name):
     if not col_name in df.columns:
         df.loc[:, col_name] = np.nan
     return(df)
 
-# %% ../02_FreshStart_2021.ipynb 35
+# %% ../02_FreshStart_2021.ipynb 36
 # little helper function to make this easier. Make all the columns in a list into dtype string.
 # require the column to exist to make this safe.
 # to make things even easier, use a list comprehension to pull out the keys in the *_col_dtype dict 
@@ -612,7 +612,7 @@ def cols_astype_string(df, col_list):
         df[e] = df[e].astype('string')
     return(df)
 
-# %% ../02_FreshStart_2021.ipynb 36
+# %% ../02_FreshStart_2021.ipynb 37
 import pandas as pd
 # Ignore columns that don't exist in the dataframe even if they're specified in the dict
 # For testing that sanitization was successful
@@ -639,7 +639,7 @@ def check_df_dtype_expectations(df, dtype_dct):
 
 # each df should get individual treatment with these steps. Probably most readable
 
-# %% ../02_FreshStart_2021.ipynb 38
+# %% ../02_FreshStart_2021.ipynb 40
 def mk_dtype_dict(name # table sval, wthr, or mgmt
                 ):
     'Easily share dictionaries of expected datatypes of the columns across scripts.'
@@ -772,7 +772,12 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
         'Biomass_July_Unit_g': 'float64',
         'Biomass_Aug_Unit_g': 'float64',
         'Root_Pulling_Force_July_Unit_kgf': 'float64',
-        'Root_Pulling_Force_Aug_Unit_kgf': 'float64'       
+        'Root_Pulling_Force_Aug_Unit_kgf': 'float64',
+         # 2018 
+        'Local_Check': 'string',
+        'Packets_Per_Plot': 'float64',
+        'Stand_Count_Unit_Percent': 'float64'
+        
     }
 
     
@@ -803,7 +808,13 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
         'PAR_Unit_uM_per_m2s': 'float64', 
     'wthr': 'bool',
         'Imputation_Notes': 'string',
-        'CO2_Unit_ppm': 'float64'# 2020
+        'CO2_Unit_ppm': 'float64',# 2020
+        # 2018
+        'Photoperiod_Unit_Hours': 'float64',
+        'Data_Cleaned': 'bool',
+        'Fields_Cleaned': 'string',
+        'Cleaning_Method': 'string',
+        'Weather_Comments': 'string'
     }
 
     mgmt_col_dtypes = {
@@ -832,7 +843,7 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
         print('Requested name is not defined')
     
 
-# %% ../02_FreshStart_2021.ipynb 76
+# %% ../02_FreshStart_2021.ipynb 78
 import pickle
 def write_out_pkl(obj, path = './temp.pickle'):
     with open(path, 'wb') as handle:

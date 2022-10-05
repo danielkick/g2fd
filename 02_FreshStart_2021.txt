@@ -115,8 +115,6 @@ def match_df_cols(df1, df2):
 
 # match_df_cols(df1 = meta, df2 = soil)
 
-
-
 #| export
 
 def mk_name_dict(name # table meta, phno, soil, wthr, or mgmt
@@ -315,10 +313,10 @@ def mk_name_dict(name # table meta, phno, soil, wthr, or mgmt
                              'RecId': 'Drop_Record_Index', 
                       'Tester/Group': 'Tester', 
              'Local Check (Yes, No)': 'Local_Check', 
-                 'Plot Length Field': 'Plot_Length_Unit_', 
-                      'Alley Length': 'Alley_Length_Unit_', 
-                       'Row Spacing': 'Row_Spacing_Unit_', 
-                         'Plot Area': 'Plot_Area_Unit_', 
+                 'Plot Length Field': 'Plot_Length_Unit_Feet', 
+                      'Alley Length': 'Alley_Length_Unit_Inches', 
+                       'Row Spacing': 'Row_Spacing_Unit_Inches', 
+                         'Plot Area': 'Plot_Area_Unit_Feet2', 
                          'Rows/Plot': 'Rows_Per_Plot', 
                        'Packet/Plot': 'Packets_Per_Plot', 
                             '# Seed': 'Seeds_Per_Plot', 
@@ -930,7 +928,12 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
         'Biomass_July_Unit_g': 'float64',
         'Biomass_Aug_Unit_g': 'float64',
         'Root_Pulling_Force_July_Unit_kgf': 'float64',
-        'Root_Pulling_Force_Aug_Unit_kgf': 'float64'       
+        'Root_Pulling_Force_Aug_Unit_kgf': 'float64',
+         # 2018 
+        'Local_Check': 'string',
+        'Packets_Per_Plot': 'float64',
+        'Stand_Count_Unit_Percent': 'float64'
+        
     }
 
     
@@ -961,7 +964,13 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
         'PAR_Unit_uM_per_m2s': 'float64', 
     'wthr': 'bool',
         'Imputation_Notes': 'string',
-        'CO2_Unit_ppm': 'float64'# 2020
+        'CO2_Unit_ppm': 'float64',# 2020
+        # 2018
+        'Photoperiod_Unit_Hours': 'float64',
+        'Data_Cleaned': 'bool',
+        'Fields_Cleaned': 'string',
+        'Cleaning_Method': 'string',
+        'Weather_Comments': 'string'
     }
 
     mgmt_col_dtypes = {
