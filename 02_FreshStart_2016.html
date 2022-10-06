@@ -14412,1690 +14412,6 @@ a.anchor-link {
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># prlst2dct([])</span>
-
-<span class="c1"># soil</span>
-<span class="c1"># Sample_Type</span>
-
-<span class="c1"># wthr</span>
-<span class="c1"># Drop_Record_Index</span>
-<span class="c1"># Drop_Record_Index2</span>
-<span class="n">meta</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Experiment_Code</th>
-      <th>Treatment</th>
-      <th>City</th>
-      <th>Farm</th>
-      <th>Field</th>
-      <th>Trial_ID (Assigned by collaborator for internal reference)</th>
-      <th>Soil_Taxonomic_ID and horizon description, if known</th>
-      <th>Weather_Station_Serial_Number (Last four digits, e.g. m2700s#####)</th>
-      <th>Weather_Station_Latitude (in decimal numbers NOT DMS)</th>
-      <th>Weather_Station_Longitude (in decimal numbers NOT DMS)</th>
-      <th>Date_weather_station_placed</th>
-      <th>Date_weather_station_removed</th>
-      <th>Previous_Crop</th>
-      <th>Pre-plant_tillage_method(s)</th>
-      <th>In-season_tillage_method(s)</th>
-      <th>Plot_length (center-alley to center-alley in feet)</th>
-      <th>Alley_length (in inches)</th>
-      <th>Row_spacing (in inches)</th>
-      <th>Type_of_planter (fluted cone; belt cone; air planter)</th>
-      <th>Number_kernels_planted_per_plot (&gt;200 seed/pack for cone planters)</th>
-      <th>System_Determining_Moisture</th>
-      <th>Pounds_Needed_Soil_Moisture</th>
-      <th>Latitude_of_Field_Corner_#1 (lower left)</th>
-      <th>Longitude_of_Field_Corner_#1 (lower left)</th>
-      <th>Latitude_of_Field_Corner_#2 (lower right)</th>
-      <th>Longitude_of_Field_Corner_#2 (lower right)</th>
-      <th>Latitude_of_Field_Corner_#3 (upper right)</th>
-      <th>Longitude_of_Field_Corner_#3 (upper right)</th>
-      <th>Latitude_of_Field_Corner_#4 (upper left)</th>
-      <th>Longitude_of_Field_Corner_#4 (upper left)</th>
-      <th>Cardinal_Heading_Pass_1</th>
-      <th>Local_Check_#1_Pedigree</th>
-      <th>Local_Check_#1_Source</th>
-      <th>Local_Check_#2_Pedigree</th>
-      <th>Local_Check_#2_Source</th>
-      <th>Local_Check_#3_Pedigree</th>
-      <th>Local_Check_#3_Source</th>
-      <th>Local_Check_#4_Pedigree</th>
-      <th>Local_Check_#4_Source</th>
-      <th>Local_Check_#5_Pedigree</th>
-      <th>Local_Check_#5_Source</th>
-      <th>Issue/comment_#1</th>
-      <th>Issue/comment_#2</th>
-      <th>Issue/comment_#3</th>
-      <th>Issue/comment_#4</th>
-      <th>Issue/comment_#5</th>
-      <th>Issue/comment_#6</th>
-      <th>Issue/comment_#7</th>
-      <th>Issue/comment_#8</th>
-      <th>Issue/comment_#9</th>
-      <th>Issue/comment_#10</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>ARH1</td>
-      <td>NaN</td>
-      <td>Mariana</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>Mariana</td>
-      <td>NaN</td>
-      <td>8658</td>
-      <td>34.728333</td>
-      <td>-90.760278</td>
-      <td>4/22/16</td>
-      <td>9/1/16</td>
-      <td>corn</td>
-      <td>Cultivate, hip and row</td>
-      <td>none</td>
-      <td>25.0</td>
-      <td>60.0</td>
-      <td>38.0</td>
-      <td>fluted cone</td>
-      <td>98.0</td>
-      <td>combine</td>
-      <td>NaN</td>
-      <td>34.729884</td>
-      <td>-90.759742</td>
-      <td>34.729894</td>
-      <td>-90.760940</td>
-      <td>34.729151</td>
-      <td>-90.759824</td>
-      <td>34.729151</td>
-      <td>-90.760916</td>
-      <td>NaN</td>
-      <td>Pioneer1319YHR</td>
-      <td>UA extension agent</td>
-      <td>Pioneer1637YHR</td>
-      <td>UA extension agent</td>
-      <td>Pioneer2160YHR</td>
-      <td>UA extension agent</td>
-      <td>DKC66-87</td>
-      <td>UA extension agent</td>
-      <td>DKC67-72</td>
-      <td>UA extension agent</td>
-      <td>Large pigweed in field at harvest August 30 an...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>ARH2</td>
-      <td>Standard</td>
-      <td>Jonesboro</td>
-      <td>Arkansas State University</td>
-      <td>PSSC1</td>
-      <td>ARH2</td>
-      <td>NaN</td>
-      <td>10794</td>
-      <td>35.838876</td>
-      <td>-90.664864</td>
-      <td>5/2/16</td>
-      <td>11/11/16</td>
-      <td>soybeans</td>
-      <td>cultivate, hip, row</td>
-      <td>none</td>
-      <td>14.5</td>
-      <td>42.0</td>
-      <td>30.0</td>
-      <td>fluted cone</td>
-      <td>44.0</td>
-      <td>hand held</td>
-      <td>0.2</td>
-      <td>35.838816</td>
-      <td>-90.665006</td>
-      <td>35.838818</td>
-      <td>-90.665590</td>
-      <td>35.838411</td>
-      <td>-90.665590</td>
-      <td>35.838411</td>
-      <td>-90.665020</td>
-      <td>NaN</td>
-      <td>Pioneer1319YHR</td>
-      <td>UA extension agent</td>
-      <td>Pioneer1637YHR</td>
-      <td>UA extension agent</td>
-      <td>Pioneer2160YHR</td>
-      <td>UA extension agent</td>
-      <td>DKC66-87</td>
-      <td>UA extension agent</td>
-      <td>DKC67-72</td>
-      <td>UA extension agent</td>
-      <td>goose feeding has impacted the stand of most p...</td>
-      <td>flash flooding caused stem lodging across th...</td>
-      <td>2 passes with hipper roller (4/18/16)\n</td>
-      <td>2 passes with the field cultivator (4/15/16)</td>
-      <td>4 passes with disk (4/15/16)</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>DEH1</td>
-      <td>NaN</td>
-      <td>Georgetown</td>
-      <td>Davis Farms</td>
-      <td>NaN</td>
-      <td>DEH1</td>
-      <td>NaN</td>
-      <td>9079</td>
-      <td>38.648453</td>
-      <td>-75.451610</td>
-      <td>4/28/16</td>
-      <td>9/14/16</td>
-      <td>Soybean</td>
-      <td>NaN</td>
-      <td>Disked, chisel plow &amp; final disking</td>
-      <td>17.4</td>
-      <td>28.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>75.0</td>
-      <td>Almaco seed specter II</td>
-      <td>3.5</td>
-      <td>38.648650</td>
-      <td>-75.451590</td>
-      <td>38.648780</td>
-      <td>-75.451880</td>
-      <td>38.647810</td>
-      <td>-75.452770</td>
-      <td>38.647570</td>
-      <td>-75.428000</td>
-      <td>243.00</td>
-      <td>DKC54-40RIB GENVT2P</td>
-      <td>DKC54-40RIB GENVT2P</td>
-      <td>DKC62-08RIB GENSS</td>
-      <td>DKC62-08RIB GENSS</td>
-      <td>DKC63-87RIB GENVT2P</td>
-      <td>DKC63-87RIB GENVT2P</td>
-      <td>DKC64-69RIB GENVT3P</td>
-      <td>DKC64-69RIB GENVT3P</td>
-      <td>DKC65-19RIB GENVT3P</td>
-      <td>DKC65-19RIB GENVT3P</td>
-      <td>On 6-14-2016 the battery for the weather stati...</td>
-      <td>On 8-26-2016 the battery for the weather stati...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>GAH1</td>
-      <td>Standard</td>
-      <td>Tifton</td>
-      <td>Bellflower</td>
-      <td>11</td>
-      <td>NaN</td>
-      <td>Tifton loamy sand/Dothan loamy sand</td>
-      <td>8427</td>
-      <td>31.507430</td>
-      <td>-83.558661</td>
-      <td>4/12/16</td>
-      <td>8/24/16</td>
-      <td>peanut</td>
-      <td>conventional</td>
-      <td>plow</td>
-      <td>20.0</td>
-      <td>72.0</td>
-      <td>36.0</td>
-      <td>fluted cone</td>
-      <td>72.0</td>
-      <td>Almaco</td>
-      <td>2</td>
-      <td>31.508220</td>
-      <td>-83.559182</td>
-      <td>31.507852</td>
-      <td>-83.559413</td>
-      <td>31.507663</td>
-      <td>-83.557656</td>
-      <td>31.507935</td>
-      <td>-83.557940</td>
-      <td>121.00</td>
-      <td>DKC69-72</td>
-      <td>DeKalb</td>
-      <td>DKC69-29</td>
-      <td>DeKalb</td>
-      <td>P2023R</td>
-      <td>Pioneer</td>
-      <td>P1498R</td>
-      <td>Pioneer</td>
-      <td>P31G65</td>
-      <td>Pioneer</td>
-      <td>Field is not rectangular; it is curved to cont...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>GAH2</td>
-      <td>Standard</td>
-      <td>Watkinsville, GA</td>
-      <td>Iron Horse Plant Sciences Farm</td>
-      <td>A Field / Between Creeks Field</td>
-      <td>NaN</td>
-      <td>Augusta A / Cartecey A</td>
-      <td>ms2700s08631</td>
-      <td>33.717220</td>
-      <td>-83.311330</td>
-      <td>5/25/16</td>
-      <td>10/27/16</td>
-      <td>Soybean</td>
-      <td>Conventional disc tillage</td>
-      <td>none</td>
-      <td>15.0</td>
-      <td>48.0</td>
-      <td>30.0</td>
-      <td>Fluted cone</td>
-      <td>52.0</td>
-      <td>John Deere Moisture Chek-Plus SW08120</td>
-      <td>&lt;1</td>
-      <td>33.717360</td>
-      <td>-83.311410</td>
-      <td>33.717220</td>
-      <td>-83.311330</td>
-      <td>33.717220</td>
-      <td>-83.310680</td>
-      <td>33.717380</td>
-      <td>-83.310690</td>
-      <td>90.00</td>
-      <td>DKC69-72 (DeKalb)</td>
-      <td>Joseph Knoll</td>
-      <td>DKC69-29 (DeKalb)</td>
-      <td>Joseph Knoll</td>
-      <td>P2023R (Pioneer)</td>
-      <td>Joseph Knoll</td>
-      <td>P1498R (Pioneer)</td>
-      <td>Joseph Knoll</td>
-      <td>P31G65 (Pioneer)</td>
-      <td>Joseph Knoll</td>
-      <td>07-07-2016 Field had major weed infestation. W...</td>
-      <td>05-25-2016 Planter jammed and failed to plant ...</td>
-      <td>06-01-2016 Runoff gulley washed away fertilize...</td>
-      <td>Stalk lodging and root lodging were not taken ...</td>
-      <td>Test weight was not taken due to a miscommunic...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>IAH1</td>
-      <td>Standard</td>
-      <td>Crawfordsville</td>
-      <td>SERF</td>
-      <td>Field 14</td>
-      <td>CRW14</td>
-      <td>NaN</td>
-      <td>9080</td>
-      <td>41.198693</td>
-      <td>-91.486205</td>
-      <td>4/22/16</td>
-      <td>10/1/16</td>
-      <td>soybean</td>
-      <td>field cultivator</td>
-      <td>none</td>
-      <td>20.0</td>
-      <td>30.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>83.0</td>
-      <td>Almaco</td>
-      <td>3.5</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>IAH2</td>
-      <td>Standard</td>
-      <td>Carroll</td>
-      <td>Thielen</td>
-      <td>Field 6</td>
-      <td>CRL06</td>
-      <td>NaN</td>
-      <td>9085</td>
-      <td>42.065910</td>
-      <td>-94.727448</td>
-      <td>4/25/16</td>
-      <td>10/11/16</td>
-      <td>soybean</td>
-      <td>field cultivator</td>
-      <td>none</td>
-      <td>20.0</td>
-      <td>30.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>83.0</td>
-      <td>Almaco</td>
-      <td>3.5</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>weather station rain bucket plugged when removed</td>
-      <td>wind storm causing root lodging and greensnap ...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>IAH3</td>
-      <td>Standard</td>
-      <td>Keystone</td>
-      <td>Polhman</td>
-      <td>Field 2</td>
-      <td>KYS02</td>
-      <td>NaN</td>
-      <td>9082</td>
-      <td>41.987383</td>
-      <td>-92.260156</td>
-      <td>4/23/16</td>
-      <td>10/6/16</td>
-      <td>soybean</td>
-      <td>none</td>
-      <td>none</td>
-      <td>20.0</td>
-      <td>30.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>83.0</td>
-      <td>Almaco</td>
-      <td>3.5</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>field is continuous no-till</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>IAH4</td>
-      <td>Standard</td>
-      <td>Ames</td>
-      <td>Kitchen</td>
-      <td>KTC01</td>
-      <td>KTC01</td>
-      <td>NaN</td>
-      <td>11859</td>
-      <td>41.997502</td>
-      <td>-93.699899</td>
-      <td>4/26/16</td>
-      <td>10/17/16</td>
-      <td>soybean</td>
-      <td>field cultivator</td>
-      <td>none</td>
-      <td>20.0</td>
-      <td>30.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>83.0</td>
-      <td>Almaco</td>
-      <td>3.5</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>ILH1</td>
-      <td>Standard</td>
-      <td>Champaign, IL</td>
-      <td>Maxwell Farm</td>
-      <td>MF-500</td>
-      <td>NaN</td>
-      <td>Flanagan Silt Loam (154A)</td>
-      <td>8653</td>
-      <td>40.061188</td>
-      <td>-88.234042</td>
-      <td>5/21/16</td>
-      <td>10/10/16</td>
-      <td>Soybeans</td>
-      <td>Chisel</td>
-      <td>NaN</td>
-      <td>20.8</td>
-      <td>40.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>33.0</td>
-      <td>Harvest Master</td>
-      <td>NaN</td>
-      <td>40.061188</td>
-      <td>-88.233272</td>
-      <td>40.061188</td>
-      <td>-88.234491</td>
-      <td>40.060261</td>
-      <td>-88.234491</td>
-      <td>40.060261</td>
-      <td>-88.233272</td>
-      <td>NaN</td>
-      <td>P1417AMX</td>
-      <td>NaN</td>
-      <td>P1197AMXT</td>
-      <td>NaN</td>
-      <td>P0339AMT</td>
-      <td>NaN</td>
-      <td>P1311AMXT</td>
-      <td>NaN</td>
-      <td>DKC62-77</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>INH1</td>
-      <td>NaN</td>
-      <td>West Lafayette, IN</td>
-      <td>ACRE</td>
-      <td>54 North</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>8657</td>
-      <td>40.479250</td>
-      <td>-88.990125</td>
-      <td>5/20/16</td>
-      <td>10/12/16</td>
-      <td>Soybeans</td>
-      <td>Field cultivate</td>
-      <td>NaN</td>
-      <td>20.0</td>
-      <td>30.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>64.0</td>
-      <td>Harvestmaster</td>
-      <td>10</td>
-      <td>40.478351</td>
-      <td>-86.990135</td>
-      <td>40.478351</td>
-      <td>-86.989505</td>
-      <td>40.479168</td>
-      <td>-86.989505</td>
-      <td>40.479168</td>
-      <td>-86.990135</td>
-      <td>0.00</td>
-      <td>LH119xPHP02</td>
-      <td>NaN</td>
-      <td>LH132xPHP02</td>
-      <td>NaN</td>
-      <td>PHG39xPHP02</td>
-      <td>NaN</td>
-      <td>LH195xPHP02</td>
-      <td>NaN</td>
-      <td>B73xPHP02</td>
-      <td>NaN</td>
-      <td>At planting, a row unit plugged up with a clod...</td>
-      <td>July 14. Noticed that Moisture sensor wire was...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>KSH1</td>
-      <td>Standard</td>
-      <td>Manhattan, Kansas</td>
-      <td>Ashland Bottoms</td>
-      <td>500 plots</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>10795</td>
-      <td>39.144306</td>
-      <td>-96.629461</td>
-      <td>5/18/16</td>
-      <td>11/17/16</td>
-      <td>Wheat</td>
-      <td>Field cultivated</td>
-      <td>NaN</td>
-      <td>25.0</td>
-      <td>60.0</td>
-      <td>30.0</td>
-      <td>belt cone</td>
-      <td>NaN</td>
-      <td>Harvest Master</td>
-      <td>2.5 lbs.</td>
-      <td>39.144090</td>
-      <td>-96.629383</td>
-      <td>39.144078</td>
-      <td>-96.628573</td>
-      <td>39.145527</td>
-      <td>-96.628603</td>
-      <td>39.145532</td>
-      <td>-96.629370</td>
-      <td>0.00</td>
-      <td>DKC 63-55 RIB</td>
-      <td>NaN</td>
-      <td>P 1151 AM</td>
-      <td>NaN</td>
-      <td>DKC  64-69 RIB</td>
-      <td>NaN</td>
-      <td>P 1105 AM</td>
-      <td>NaN</td>
-      <td>DKC 61-88 RIB</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>MIH1</td>
-      <td>Standard</td>
-      <td>East Lansing</td>
-      <td>University Farms</td>
-      <td>Powrline Dr</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>9078</td>
-      <td>42.689878</td>
-      <td>-84.497939</td>
-      <td>6/20/16</td>
-      <td>11/16/16</td>
-      <td>Soybean</td>
-      <td>Chisel Plow</td>
-      <td>Field Cultivator</td>
-      <td>25.0</td>
-      <td>36.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>NaN</td>
-      <td>Harvest Master</td>
-      <td>2</td>
-      <td>42.411797</td>
-      <td>-84.295393</td>
-      <td>42.411798</td>
-      <td>-84.295191</td>
-      <td>42.412337</td>
-      <td>-84.295137</td>
-      <td>42.412335</td>
-      <td>-84.295329</td>
-      <td>NaN</td>
-      <td>Croplan 3899VT2PRIB</td>
-      <td>Croplan</td>
-      <td>Beck 5140HR</td>
-      <td>Beck</td>
-      <td>M &amp; W 45M43</td>
-      <td>M &amp; W</td>
-      <td>Great Lakes GLH5283</td>
-      <td>Great Lakes Hybrids</td>
-      <td>DeKalb DKC53-68 GENSSRIB</td>
-      <td>DeKalb</td>
-      <td>Drought</td>
-      <td>Poor Stands - In low areas</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>MNH1</td>
-      <td>Standard</td>
-      <td>Waseca, MN</td>
-      <td>Southern Research and Outreach Center</td>
-      <td>NaN</td>
-      <td>HGXE16</td>
-      <td>\tNicollet clay loam</td>
-      <td>8649</td>
-      <td>44.066804</td>
-      <td>-93.533063</td>
-      <td>5/18/16</td>
-      <td>10/21/16</td>
-      <td>soybean</td>
-      <td>Fall chisel plow and spring field cultivate</td>
-      <td>None</td>
-      <td>25.0</td>
-      <td>36.0</td>
-      <td>30.0</td>
-      <td>fluted cone</td>
-      <td>80.0</td>
-      <td>HM800 High capacity grain gauge</td>
-      <td>Unknown</td>
-      <td>44.066160</td>
-      <td>-93.534178</td>
-      <td>44.066173</td>
-      <td>-93.533118</td>
-      <td>44.066786</td>
-      <td>-93.533113</td>
-      <td>44.066758</td>
-      <td>-93.534183</td>
-      <td>0.00</td>
-      <td>DKC 46-61 - RM96 (RR2)</td>
-      <td>NaN</td>
-      <td>DKC 53-78 RIB - RM103 (RR)</td>
-      <td>NaN</td>
-      <td>DKC 53-56 RIB - RM103 (Smartstax)</td>
-      <td>NaN</td>
-      <td>P9990XR - RM99 (RR2)</td>
-      <td>NaN</td>
-      <td>P9411XR - RM94 (RR2)</td>
-      <td>NaN</td>
-      <td>Field was harvested before plant traits (Plant...</td>
-      <td>Weather station not turned off after removal f...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>MOH1</td>
-      <td>Standard</td>
-      <td>Columbia</td>
-      <td>Bradford</td>
-      <td>C5b</td>
-      <td>G2F - GxE</td>
-      <td>5058  Mexico Silt Loam, 0-2% slopes</td>
-      <td>8645</td>
-      <td>38.895920</td>
-      <td>-92.207420</td>
-      <td>5/24/16</td>
-      <td>10/4/16</td>
-      <td>soybean</td>
-      <td>fall chisel plow, spring field cultivator</td>
-      <td>none</td>
-      <td>20.0</td>
-      <td>36.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>70.0</td>
-      <td>Almaco SeedSpecter</td>
-      <td>2</td>
-      <td>38.894970</td>
-      <td>-92.207540</td>
-      <td>38.894980</td>
-      <td>-92.206900</td>
-      <td>38.896130</td>
-      <td>-92.206870</td>
-      <td>38.896110</td>
-      <td>-92.207500</td>
-      <td>0.00</td>
-      <td>B47 x Phz51</td>
-      <td>15FG2059</td>
-      <td>B47 x Phz51</td>
-      <td>15FG2059</td>
-      <td>2369 x Phz51</td>
-      <td>15FG2038</td>
-      <td>2369 x Phz51</td>
-      <td>15FG2038</td>
-      <td>Trophy Hybrid</td>
-      <td>Trophy Hybrid</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>NCH1</td>
-      <td>Standard</td>
-      <td>Kinston</td>
-      <td>Cunningham</td>
-      <td>Field L Block 3</td>
-      <td>EXP 7</td>
-      <td>Lynchburg sandy loam, 0 to 2 percent slopes, A...</td>
-      <td>8659</td>
-      <td>35.299220</td>
-      <td>-77.570362</td>
-      <td>4/15/16</td>
-      <td>10/28/16</td>
-      <td>Wheat and Double Crop Soybeans</td>
-      <td>Conventional Tillage</td>
-      <td>None</td>
-      <td>16.0</td>
-      <td>48.0</td>
-      <td>30.0</td>
-      <td>fluted cone</td>
-      <td>50.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>35.300490</td>
-      <td>-77.570669</td>
-      <td>35.300674</td>
-      <td>-77.570914</td>
-      <td>35.299812</td>
-      <td>-77.571884</td>
-      <td>35.299631</td>
-      <td>-77.571646</td>
-      <td>140.00</td>
-      <td>DKC 66-40 RIB</td>
-      <td>DEKALB</td>
-      <td>DKC 67-14</td>
-      <td>DEKALB</td>
-      <td>DKC 65-79</td>
-      <td>DEKALB</td>
-      <td>DKC 69-29</td>
-      <td>DEKALB</td>
-      <td>DKC 62-08 RIB</td>
-      <td>DEKALB</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>NEH1</td>
-      <td>Standard</td>
-      <td>Mead</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>corn</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>21.0</td>
-      <td>30.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>70.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>Pioneer</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>NEH4</td>
-      <td>Standard</td>
-      <td>Mead</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>corn</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>21.0</td>
-      <td>30.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>70.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>Pioneer</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>18</th>
-      <td>NYH1</td>
-      <td>Disease trial</td>
-      <td>Aurora</td>
-      <td>Musgrave Research Farm</td>
-      <td>M3</td>
-      <td>NYH1</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>19</th>
-      <td>NYH2</td>
-      <td>Standard</td>
-      <td>Aurora</td>
-      <td>Musgrave Research Farm</td>
-      <td>P1</td>
-      <td>A16NYH2</td>
-      <td>NaN</td>
-      <td>9087</td>
-      <td>42.725430</td>
-      <td>-76.655100</td>
-      <td>5/9/16</td>
-      <td>12/14/16</td>
-      <td>Winter Wheat</td>
-      <td>Moldboard plowed November\n</td>
-      <td>Disced and cultimulched</td>
-      <td>21.0</td>
-      <td>42.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>80.0</td>
-      <td>Seed Spector moisture meter on Gleaner combine</td>
-      <td>NaN</td>
-      <td>42.725428</td>
-      <td>-76.655100</td>
-      <td>42.726806</td>
-      <td>-76.655100</td>
-      <td>42.726806</td>
-      <td>-76.655578</td>
-      <td>42.725428</td>
-      <td>-76.655578</td>
-      <td>0.00</td>
-      <td>DKC52-62</td>
-      <td>51INV1-Margaret Smith</td>
-      <td>FS5424XRR</td>
-      <td>52INV2-Margaret Smith</td>
-      <td>FS6296VT3</td>
-      <td>53INV3-Margaret Smith</td>
-      <td>EX3101</td>
-      <td>54INV4-Margaret Smith</td>
-      <td>EX4101</td>
-      <td>55INV5-Margaret Smith</td>
-      <td>Minimal rain throughout summer</td>
-      <td>Excessive rain in October</td>
-      <td>Additional weather data for the farm can be fo...</td>
-      <td>Plant and ear height is average from two measu...</td>
-      <td>Wet conditions did not allow us to run the com...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td>NYH3</td>
-      <td>Standard</td>
-      <td>Aurora</td>
-      <td>Musgrave Research Farm</td>
-      <td>P1</td>
-      <td>A16NYH3</td>
-      <td>NaN</td>
-      <td>9086</td>
-      <td>42.725430</td>
-      <td>-76.656030</td>
-      <td>6/1/16</td>
-      <td>12/14/16</td>
-      <td>Winter Wheat</td>
-      <td>Moldboard plowed November</td>
-      <td>Disced and cultimulched</td>
-      <td>21.0</td>
-      <td>42.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>80.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>42.725428</td>
-      <td>-76.655600</td>
-      <td>42.726806</td>
-      <td>-76.655600</td>
-      <td>42.726806</td>
-      <td>-76.656067</td>
-      <td>42.725428</td>
-      <td>-76.656067</td>
-      <td>0.00</td>
-      <td>DKC52-62</td>
-      <td>51INV1-Margaret Smith</td>
-      <td>FS5424XRR</td>
-      <td>52INV2-Margaret Smith</td>
-      <td>FS6296VT3</td>
-      <td>53INV3-Margaret Smith</td>
-      <td>EX3101</td>
-      <td>54INV4-Margaret Smith</td>
-      <td>EX4101</td>
-      <td>55INV5-Margaret Smith</td>
-      <td>Mimimal moisture throughout summer\n</td>
-      <td>Excessive rain in fall</td>
-      <td>Not able to harvest because of problems with s...</td>
-      <td>Plant and ear heigh is average from two measur...</td>
-      <td>A bunch of plants had streaking/sterile tassel...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>21</th>
-      <td>OHH1</td>
-      <td>Standard</td>
-      <td>South Charleston</td>
-      <td>Western Ag Research Station</td>
-      <td>G234</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>10800</td>
-      <td>39.860536</td>
-      <td>-83.675091</td>
-      <td>6/1/16</td>
-      <td>10/15/16</td>
-      <td>Soybean</td>
-      <td>Fall Diskchisel, Spring Culivator</td>
-      <td>none</td>
-      <td>25.0</td>
-      <td>30.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>88.0</td>
-      <td>Harvestmaster - FRS GHM</td>
-      <td>6</td>
-      <td>39.860557</td>
-      <td>-83.675203</td>
-      <td>39.861216</td>
-      <td>-83.675122</td>
-      <td>39.861288</td>
-      <td>-83.675998</td>
-      <td>39.860635</td>
-      <td>-83.676075</td>
-      <td>270.00</td>
-      <td>Pioneer P0993HR</td>
-      <td>NaN</td>
-      <td>LG Seeds 5618STXRIB</td>
-      <td>NaN</td>
-      <td>Dekalb DKC61-54RIB</td>
-      <td>NaN</td>
-      <td>Seed Consultants SCS1085YHR</td>
-      <td>NaN</td>
-      <td>Dekalb DKC60-67RIB</td>
-      <td>NaN</td>
-      <td>Above average temps for the growing season Jun...</td>
-      <td>Rainfall June/July  3.1" below average</td>
-      <td>Rainfall Aug/Sept  5.6" above average</td>
-      <td>August - Two heavy rain and/or wind everts con...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>22</th>
-      <td>ONH1</td>
-      <td>Standard</td>
-      <td>Waterloo</td>
-      <td>Rosendale Farms</td>
-      <td>West of driveway</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>8651</td>
-      <td>43.497786</td>
-      <td>-80.451464</td>
-      <td>4/30/16</td>
-      <td>10/14/16</td>
-      <td>Wheat</td>
-      <td>Cultivator</td>
-      <td>None</td>
-      <td>19.5</td>
-      <td>30.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>76.0</td>
-      <td>Harvest Master 800</td>
-      <td>7</td>
-      <td>43.499678</td>
-      <td>-80.451969</td>
-      <td>43.499400</td>
-      <td>-80.451739</td>
-      <td>43.499919</td>
-      <td>-80.450275</td>
-      <td>43.500189</td>
-      <td>-80.450517</td>
-      <td>295.00</td>
-      <td>DKC38-03 RIB</td>
-      <td>NaN</td>
-      <td>P9188AM</td>
-      <td>NaN</td>
-      <td>DKC42-60 RIB</td>
-      <td>NaN</td>
-      <td>P9675AMXT</td>
-      <td>NaN</td>
-      <td>P9855HR</td>
-      <td>NaN</td>
-      <td>Drought</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>23</th>
-      <td>ONH2</td>
-      <td>Standard</td>
-      <td>Ridgetown</td>
-      <td>Research</td>
-      <td>Range 23</td>
-      <td>ONH2</td>
-      <td>NaN</td>
-      <td>8652</td>
-      <td>42.452816</td>
-      <td>-81.883474</td>
-      <td>5/13/16</td>
-      <td>11/1/16</td>
-      <td>Soybeans</td>
-      <td>Cultivate</td>
-      <td>None</td>
-      <td>17.5</td>
-      <td>30.0</td>
-      <td>30.0</td>
-      <td>fluted cone</td>
-      <td>50.0</td>
-      <td>Harvest Master</td>
-      <td>5</td>
-      <td>42.452749</td>
-      <td>-81.883455</td>
-      <td>42.452505</td>
-      <td>-81.883195</td>
-      <td>42.453269</td>
-      <td>-81.882140</td>
-      <td>42.453491</td>
-      <td>-81.882405</td>
-      <td>60.00</td>
-      <td>P0216AM</td>
-      <td>NaN</td>
-      <td>P0604AM</td>
-      <td>NaN</td>
-      <td>MZ 4092DBR</td>
-      <td>NaN</td>
-      <td>DKC 50-45RIB</td>
-      <td>NaN</td>
-      <td>P0474AM</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>24</th>
-      <td>SCH1</td>
-      <td>Standard</td>
-      <td>Clemson</td>
-      <td>Simpson Farm</td>
-      <td>NaN</td>
-      <td>GF_2016</td>
-      <td>NaN</td>
-      <td>11997</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>Dyna-Gro_D58VC37</td>
-      <td>Dyna-Gro_D58VC37</td>
-      <td>Terrral _REV25BHR26</td>
-      <td>Terrral _REV25BHR26</td>
-      <td>Phoenix_7402A3</td>
-      <td>Phoenix_7402A3</td>
-      <td>AgraTech_903VIP</td>
-      <td>AgraTech_903VIP</td>
-      <td>Dekalb_64-35</td>
-      <td>Dekalb_64-35</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>25</th>
-      <td>TXH1</td>
-      <td>Standard</td>
-      <td>College Station, Texas</td>
-      <td>University Field Lab</td>
-      <td>210</td>
-      <td>CS16-G2FH</td>
-      <td>NaN</td>
-      <td>8428</td>
-      <td>30.546919</td>
-      <td>-96.434358</td>
-      <td>3/4/16</td>
-      <td>8/4/16</td>
-      <td>Corn</td>
-      <td>Min-Till</td>
-      <td>NaN</td>
-      <td>25.0</td>
-      <td>48.0</td>
-      <td>30.0</td>
-      <td>belt cone</td>
-      <td>47.0</td>
-      <td>Harvest Master</td>
-      <td>~5 lbs</td>
-      <td>30.546769</td>
-      <td>-96.434680</td>
-      <td>30.546504</td>
-      <td>-96.434278</td>
-      <td>30.547367</td>
-      <td>-96.433155</td>
-      <td>30.547705</td>
-      <td>-96.433626</td>
-      <td>225.07</td>
-      <td>Dekalb 64-69</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>26</th>
-      <td>TXH2</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>27</th>
-      <td>WIH1</td>
-      <td>Standard</td>
-      <td>Madison</td>
-      <td>West Madison</td>
-      <td>M1300</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>8648</td>
-      <td>43.055814</td>
-      <td>-89.531719</td>
-      <td>5/30/16</td>
-      <td>10/31/16</td>
-      <td>Soybeans</td>
-      <td>Fall plow/Spring field cultivator</td>
-      <td>none</td>
-      <td>24.0</td>
-      <td>24.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>80.0</td>
-      <td>Harvest Master 800 System</td>
-      <td>2</td>
-      <td>43.056867</td>
-      <td>-89.531689</td>
-      <td>43.056814</td>
-      <td>-89.532197</td>
-      <td>43.055806</td>
-      <td>-89.532194</td>
-      <td>43.055814</td>
-      <td>-89.531719</td>
-      <td>180.00</td>
-      <td>DK 45-79</td>
-      <td>Dekalb</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>28</th>
-      <td>WIH2</td>
-      <td>Standard</td>
-      <td>Arlington</td>
-      <td>Arlington</td>
-      <td>680</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>8647</td>
-      <td>43.325958</td>
-      <td>-89.340114</td>
-      <td>6/3/16</td>
-      <td>10/24/16</td>
-      <td>Soybeans</td>
-      <td>Field Cultivator</td>
-      <td>NaN</td>
-      <td>24.0</td>
-      <td>24.0</td>
-      <td>30.0</td>
-      <td>air planter</td>
-      <td>80.0</td>
-      <td>Harvest Master 800 System</td>
-      <td>2</td>
-      <td>43.326953</td>
-      <td>-89.340156</td>
-      <td>43.325958</td>
-      <td>-89.340114</td>
-      <td>43.326019</td>
-      <td>-89.337544</td>
-      <td>43.327033</td>
-      <td>-89.337503</td>
-      <td>90.00</td>
-      <td>DK 45-79</td>
-      <td>Dekalb</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>Heavy Stalk Lodging</td>
-      <td>9/12/16 weather station water meter clogged</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
@@ -16163,39 +14479,6 @@ a.anchor-link {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="Sanatize-ID-columns-as-needed">Sanatize ID columns as needed<a class="anchor-link" href="#Sanatize-ID-columns-as-needed">&#182;</a></h1>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># soil = sanitize_Experiment_Codes(</span>
-<span class="c1">#     df = soil, </span>
-<span class="c1">#     simple_renames = {</span>
-<span class="c1">#         &#39;W1H1&#39;: &#39;WIH1&#39;, </span>
-<span class="c1">#         &#39;W1H2&#39;: &#39;WIH2&#39;, </span>
-<span class="c1">#         &#39;W1H3&#39;: &#39;WIH3&#39;</span>
-<span class="c1">#     }, </span>
-<span class="c1">#     split_renames = {</span>
-<span class="c1">#         &#39;NEH2_NEH3&#39;: [&#39;NEH2&#39;, &#39;NEH3&#39;]</span>
-<span class="c1">#     })</span>
-
-<span class="c1"># wthr = sanitize_Experiment_Codes(</span>
-<span class="c1">#     df = wthr, </span>
-<span class="c1">#     simple_renames = {</span>
-<span class="c1">#     }, </span>
-<span class="c1">#     split_renames = {</span>
-<span class="c1">#         &#39;NEH2_NEH3&#39;: [&#39;NEH2&#39;, &#39;NEH3&#39;],</span>
-<span class="c1">#         &#39;NYH3_NYS1&#39;: [&#39;NYS1&#39;, &#39;NYH3&#39;],</span>
-<span class="c1">#         &#39;TXH1_TXH3&#39;: [&#39;TXH1&#39;, &#39;TXH3&#39;]</span>
-<span class="c1">#     })</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
@@ -16230,45 +14513,18 @@ a.anchor-link {
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>meta [&#39;NEH4&#39;] 
-phno [&#39;NEH4&#39;] 
-soil [&#39;AZH1&#39;, &#39;ILH2&#39;, &#39;NYH4&#39;] 
+<pre>meta [] 
+phno [] 
+soil [] 
 wthr [] 
 mgmt [] 
-all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&#39;, &#39;GEH2&#39;, &#39;IAH1&#39;, &#39;IAH2&#39;, &#39;IAH2 &#39;, &#39;IAH3&#39;, &#39;IAH3 &#39;, &#39;IAH4&#39;, &#39;IAH4 &#39;, &#39;ILH1&#39;, &#39;INH1&#39;, &#39;KSH1&#39;, &#39;KSH2&#39;, &#39;KSH3&#39;, &#39;MIH1&#39;, &#39;MNH1&#39;, &#39;MOH1&#39;, &#39;MOH1 &#39;, &#39;MOH1-Rep1&#39;, &#39;MOH1-Rep2&#39;, &#39;NCH1&#39;, &#39;NEH1&#39;, &#39;NEH2&#39;, &#39;NEH3&#39;, &#39;NYH1&#39;, &#39;NYH1&#39;, &#39;NYH2&#39;, &#39;NYH3&#39;, &#39;NYS1&#39;, &#39;OHH1&#39;, &#39;ONH1&#39;, &#39;ONH2&#39;, &#39;SCH1&#39;, &#39;TXH1&#39;, &#39;TXH1-Dry&#39;, &#39;TXH1-Early&#39;, &#39;TXH1-Late&#39;, &#39;TXH2&#39;, &#39;TXH3&#39;, &#39;TXH4&#39;, &#39;W1H1&#39;, &#39;W1H2&#39;, &#39;WIH1&#39;, &#39;WIH2&#39;, &#39;WIH3&#39;]
+all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;AZH1&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&#39;, &#39;GEH2&#39;, &#39;IAH1&#39;, &#39;IAH2&#39;, &#39;IAH2 &#39;, &#39;IAH3&#39;, &#39;IAH3 &#39;, &#39;IAH4&#39;, &#39;IAH4 &#39;, &#39;ILH1&#39;, &#39;ILH2&#39;, &#39;INH1&#39;, &#39;KSH1&#39;, &#39;KSH2&#39;, &#39;KSH3&#39;, &#39;MIH1&#39;, &#39;MNH1&#39;, &#39;MOH1&#39;, &#39;MOH1 &#39;, &#39;MOH1-Rep1&#39;, &#39;MOH1-Rep2&#39;, &#39;NCH1&#39;, &#39;NEH1&#39;, &#39;NEH2&#39;, &#39;NEH3&#39;, &#39;NEH4&#39;, &#39;NYH1&#39;, &#39;NYH1&#39;, &#39;NYH2&#39;, &#39;NYH3&#39;, &#39;NYH4&#39;, &#39;NYS1&#39;, &#39;OHH1&#39;, &#39;ONH1&#39;, &#39;ONH2&#39;, &#39;SCH1&#39;, &#39;TXH1&#39;, &#39;TXH1-Dry&#39;, &#39;TXH1-Early&#39;, &#39;TXH1-Late&#39;, &#39;TXH2&#39;, &#39;TXH3&#39;, &#39;TXH4&#39;, &#39;W1H1&#39;, &#39;W1H2&#39;, &#39;WIH1&#39;, &#39;WIH2&#39;, &#39;WIH3&#39;]
 </pre>
 </div>
 </div>
 
 </div>
 
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># # Find minimum cols needed to index all rows</span>
-<span class="c1"># df = phno</span>
-<span class="c1"># id_cols = [&#39;Year&#39;, &#39;Experiment_Code&#39;, &#39;Range&#39;, &#39;Pass&#39;, &#39;Plot&#39;,]</span>
-<span class="c1"># candidate_cols = [&#39;State&#39;, &#39;City&#39;,</span>
-<span class="c1">#                  &#39;Experiment&#39;, &#39;Source&#39;, &#39;Pedigree&#39;, &#39;Family&#39;, &#39;Tester&#39;, &#39;Replicate&#39;,</span>
-<span class="c1">#                   &#39;Block&#39;,  &#39;Plot_ID&#39;]</span>
-<span class="c1"># target = df.shape[0]</span>
-
-<span class="c1"># output = pd.DataFrame(zip(</span>
-<span class="c1">#     candidate_cols,</span>
-<span class="c1">#     [df.loc[:, id_cols+[e]].drop_duplicates().shape[0] for e in candidate_cols]</span>
-<span class="c1">#    ), columns=[&#39;Additional_ID&#39;, &#39;Uniq_Vals&#39;])</span>
-
-<span class="c1"># output.assign(At_Target=lambda x:x.Uniq_Vals == target)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
 </div>
 
 </div>
@@ -16290,7 +14546,8 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 <span class="c1"># these tables are different enought we&#39;ll keep them separate</span>
 <span class="c1"># mgmt</span>
 <span class="c1"># unfortunately we need multiples because at least one field treats different passes differently</span>
-<span class="n">mgmt</span> <span class="o">=</span> <span class="n">phno</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> <span class="s1">&#39;Range&#39;</span><span class="p">,</span> <span class="s1">&#39;Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Plot&#39;</span><span class="p">,</span> <span class="s1">&#39;phno&#39;</span><span class="p">]</span>
+<span class="n">mgmt</span> <span class="o">=</span> <span class="n">phno</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> <span class="s1">&#39;Range&#39;</span><span class="p">,</span> <span class="s1">&#39;Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Plot&#39;</span><span class="p">,</span> <span class="s1">&#39;Replicate&#39;</span><span class="p">,</span> <span class="s1">&#39;phno&#39;</span><span class="p">]</span>
+<span class="c1">#                 [&#39;Year&#39;, &#39;Experiment_Code&#39;, &#39;Range&#39;, &#39;Pass&#39;, &#39;Plot&#39;, &#39;phno&#39;]</span>
                <span class="p">]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">mgmt</span><span class="p">,</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;outer&#39;</span><span class="p">)</span>
 <span class="c1"># confirm there are no rows in mgmt that are not in phno</span>
 <span class="n">temp</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="o">~</span><span class="n">mgmt</span><span class="o">.</span><span class="n">phno</span> <span class="o">&amp;</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">mgmt</span><span class="p">),</span> <span class="p">:]</span>
@@ -16316,6 +14573,7 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Set each id col to a string</span>
+        <span class="c1"># &#39;Year&#39;, &#39;Experiment_Code&#39;, &#39;Range&#39;, &#39;Pass&#39;, &#39;Plot&#39;, &#39;Replicate&#39;</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="s1">&#39;Experiment_Code&#39;</span><span class="p">,</span> <span class="s1">&#39;Range&#39;</span><span class="p">,</span> <span class="s1">&#39;Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Plot&#39;</span><span class="p">]:</span>
     <span class="n">sval</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sval</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
     <span class="n">mgmt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">mgmt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
@@ -16406,29 +14664,43 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># # convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sval</span><span class="o">.</span><span class="n">Recieved_Date_Unit_Datetime</span> <span class="o">==</span> <span class="s1">&#39;Local Lab&#39;</span><span class="p">,</span> <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+</pre></div>
 
-<span class="c1"># for e in [&#39;Planted_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Harvested_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Anthesis_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Silking_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Recieved_Date_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Processed_Date_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Placed_Unit_Datetime&#39;, </span>
-<span class="c1">#     &#39;Weather_Station_Removed_Unit_Datetime&#39;</span>
-<span class="c1">#     ]:</span>
-<span class="c1"># # find_unconvertable_datetimes(df_col=sval[e], pattern=&#39;%Y-%m-%d %H:%M&#39;, index=False)</span>
+     </div>
+</div>
+</div>
+</div>
 
-<span class="c1">#     sval[&#39;Datetime_Temp&#39;] = pd.to_datetime(np.nan)</span>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.</span>
 
-<span class="c1">#     for code in list(sval.Experiment_Code.drop_duplicates()):</span>
-<span class="c1">#     # code = list(sval.Experiment_Code.drop_duplicates())[0]</span>
-<span class="c1">#         sval.loc[sval.Experiment_Code == code, &#39;Datetime_Temp&#39;</span>
-<span class="c1">#                  ] = pd.to_datetime(sval.loc[sval.Experiment_Code == code, e])</span>
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Planted_Unit_Datetime&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Harvested_Unit_Datetime&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Anthesis_Unit_Datetime&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Silking_Unit_Datetime&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Recieved_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Processed_Date_Unit_Datetime&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Weather_Station_Placed_Unit_Datetime&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Weather_Station_Removed_Unit_Datetime&#39;</span>
+    <span class="p">]:</span>
+<span class="c1">#     print(e)</span>
+<span class="c1">#     print(find_unconvertable_datetimes(df_col=sval[e], pattern=&#39;%Y-%m-%d %H:%M&#39;, index=False))</span>
 
-<span class="c1">#     sval.loc[:, e] = sval.loc[:, &#39;Datetime_Temp&#39;] </span>
+    <span class="n">sval</span><span class="p">[</span><span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
-<span class="c1"># sval = sval.drop(columns = &#39;Datetime_Temp&#39;)</span>
+    <span class="k">for</span> <span class="n">code</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">sval</span><span class="o">.</span><span class="n">Experiment_Code</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()):</span>
+        <span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sval</span><span class="o">.</span><span class="n">Experiment_Code</span> <span class="o">==</span> <span class="n">code</span><span class="p">,</span> <span class="s1">&#39;Datetime_Temp&#39;</span>
+                 <span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sval</span><span class="o">.</span><span class="n">Experiment_Code</span> <span class="o">==</span> <span class="n">code</span><span class="p">,</span> <span class="n">e</span><span class="p">])</span>
+
+    <span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">]</span> 
+
+<span class="n">sval</span> <span class="o">=</span> <span class="n">sval</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16443,17 +14715,30 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># # -&gt; floats</span>
+<span class="n">sval</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">sval</span><span class="p">,</span> 
+    <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Soil_1_to_1_Unit_pH&#39;</span><span class="p">,</span> 
+    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;1:2 soil:water 7&#39;</span><span class="p">:</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> 
+                     <span class="s1">&#39;1:2 soil:water 6.5&#39;</span><span class="p">:</span> <span class="s1">&#39;6.5&#39;</span>
+                    <span class="p">},</span> 
+    <span class="n">split_renames</span><span class="o">=</span> <span class="p">{})</span>
 
-<span class="c1"># # [find_unconvertable_numerics(df_col = sval[e], index = False) for e in [</span>
-<span class="c1"># #     &#39;Alley_Length_Unit_Inches&#39;,</span>
-<span class="c1"># # &#39;Row_Spacing_Unit_Inches&#39;,</span>
-<span class="c1"># # &#39;Pounds_Needed_Soil_Moisture&#39;</span>
-<span class="c1"># # ]]</span>
 
+<span class="c1"># Cation_Exchange_Capacity is listed as &quot;CEC/Sum of Cations me/100g&quot; </span>
+<span class="c1"># If these are adjusted then the numbers will be notably lower than the other values</span>
+<span class="c1"># Droping these values and will impute them.</span>
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;296 umho/cm&#39;</span><span class="p">,</span> <span class="s1">&#39;269 umho/cm&#39;</span><span class="p">,</span> <span class="s1">&#39;14.05 cmolc/kg&#39;</span><span class="p">,</span> <span class="s1">&#39;9 cmocc/kg&#39;</span><span class="p">]:</span>
+    <span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sval</span><span class="o">.</span><span class="n">Cation_Exchange_Capacity</span> <span class="o">==</span> <span class="n">e</span><span class="p">,</span> <span class="s1">&#39;Cation_Exchange_Capacity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+
+<span class="n">sval</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sval</span><span class="o">.</span><span class="n">Pounds_Needed_Soil_Moisture</span> <span class="o">==</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">,</span> <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 <span class="n">sval</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">sval</span><span class="p">,</span> 
     <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">,</span> 
-    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;3 to 4&#39;</span><span class="p">:</span><span class="s1">&#39;3.5&#39;</span><span class="p">},</span> 
+    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;&lt;1&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> 
+                     <span class="s1">&#39;~5 lbs&#39;</span><span class="p">:</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span> 
+                     <span class="s1">&#39;2.5 lbs.&#39;</span><span class="p">:</span> <span class="s1">&#39;2.5&#39;</span>
+                    <span class="p">},</span> 
     <span class="n">split_renames</span><span class="o">=</span> <span class="p">{})</span>
 </pre></div>
 
@@ -16462,15 +14747,16 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># convert types</span>
-<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">,</span>
-         <span class="s1">&#39;Anthesis_Unit_Days&#39;</span><span class="p">,</span> <span class="s1">&#39;Silking_Unit_Days&#39;</span><span class="p">,</span> <span class="s1">&#39;Kernels_Per_Plot&#39;</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Alley_Length_Unit_Inches&#39;</span><span class="p">,</span> <span class="s1">&#39;Row_Spacing_Unit_Inches&#39;</span><span class="p">,</span> 
+         <span class="s1">&#39;Anthesis_Unit_Days&#39;</span><span class="p">,</span> <span class="s1">&#39;Silking_Unit_Days&#39;</span><span class="p">,</span> <span class="s1">&#39;Kernels_Per_Plot&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;Soil_1_to_1_Unit_pH&#39;</span><span class="p">,</span> <span class="s1">&#39;Cation_Exchange_Capacity&#39;</span><span class="p">,</span> <span class="s1">&#39;Pounds_Needed_Soil_Moisture&#39;</span><span class="p">]:</span>
     <span class="n">err_list</span> <span class="o">=</span> <span class="n">find_unconvertable_numerics</span><span class="p">(</span><span class="n">df_col</span> <span class="o">=</span> <span class="n">sval</span><span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">err_list</span> <span class="o">!=</span> <span class="p">[]:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -16482,28 +14768,6 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Pounds_Needed_Soil_Moisture
-[&#39;&lt;1&#39;, &#39;Unknown&#39;, &#39;~5 lbs&#39;, &#39;2.5 lbs.&#39;]
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
@@ -16542,8 +14806,7 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># to float</span>
-<span class="c1"># sval.Pounds_Needed_Soil_Moisture.astype(float)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sval</span> <span class="o">=</span> <span class="n">sval</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Drop_Record_Index&#39;</span><span class="p">,</span> <span class="s1">&#39;Additional_Metics&#39;</span><span class="p">]</span> <span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16592,8 +14855,7 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">Pass</span><span class="p">)</span><span class="o">/</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
     <span class="k">pass</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">Pass</span><span class="p">,</span> <span class="p">])</span> 
-    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">Pass</span><span class="p">,</span> <span class="p">])</span>
 </pre></div>
 
      </div>
@@ -16613,34 +14875,7 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>98/123 Columns pass.
-                                   Column    dtype  Expected_dtype   Pass
-2                       Drop_Record_Index  float64             NaN  False
-10                            Local_Check   object             NaN  False
-11                      Plot_Length_Unit_  float64             NaN  False
-12                     Alley_Length_Unit_  float64             NaN  False
-13                      Row_Spacing_Unit_  float64             NaN  False
-14                        Plot_Area_Unit_  float64             NaN  False
-16                       Packets_Per_Plot  float64             NaN  False
-19                  Planted_Unit_Datetime   object  datetime64[ns]  False
-20                Harvested_Unit_Datetime   object  datetime64[ns]  False
-21                 Anthesis_Unit_Datetime   object  datetime64[ns]  False
-22                  Silking_Unit_Datetime   object  datetime64[ns]  False
-37                      Additional_Metics  float64             NaN  False
-39                            Sample_Type   object             NaN  False
-40            Recieved_Date_Unit_Datetime   object  datetime64[ns]  False
-41           Processed_Date_Unit_Datetime   object  datetime64[ns]  False
-43                    Soil_1_to_1_Unit_pH   object         float64  False
-52                            Zn_Unit_ppm  float64             NaN  False
-53                            Fe_Unit_ppm  float64             NaN  False
-54                            Mn_Unit_ppm  float64             NaN  False
-55                            Cu_Unit_ppm  float64             NaN  False
-59                             B_Unit_ppm  float64             NaN  False
-60               Cation_Exchange_Capacity   object         float64  False
-81   Weather_Station_Placed_Unit_Datetime   object  datetime64[ns]  False
-82  Weather_Station_Removed_Unit_Datetime   object  datetime64[ns]  False
-92            Pounds_Needed_Soil_Moisture   object         float64  False
-
+<pre>118/118 Columns pass.
 </pre>
 </div>
 </div>
@@ -16665,35 +14900,15 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># # instead of writing regexes to figure out the mose likely format for each datetime, we assume each experiment will be consistent withing that experiment</span>
-<span class="c1"># # and let pd figure it out.</span>
-<span class="c1"># # wthr[&#39;Datetime_Temp&#39;] = pd.to_datetime(np.nan)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ... or we use the fields in the df to make a consistent format</span>
+<span class="n">wthr</span> <span class="o">=</span> <span class="n">cols_astype_string</span><span class="p">(</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">,</span> 
+    <span class="n">col_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="s1">&#39;Month&#39;</span><span class="p">,</span> <span class="s1">&#39;Day&#39;</span><span class="p">,</span> <span class="s1">&#39;Time&#39;</span><span class="p">])</span>
 
-<span class="c1"># # for code in list(wthr.loc[:, &#39;Experiment_Code&#39;].drop_duplicates()):</span>
-<span class="c1"># #     wthr.loc[wthr.Experiment_Code == code, &#39;Datetime_Temp&#39;] = pd.to_datetime(wthr.loc[wthr.Experiment_Code == code, &#39;Datetime&#39;], errors=&#39;coerce&#39;)</span>
+<span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Day&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span>
 
-
-<span class="c1"># # ... or we use the fields in the df to make a consistent format</span>
-<span class="c1"># wthr = cols_astype_string(</span>
-<span class="c1">#     df = wthr, </span>
-<span class="c1">#     col_list = [&#39;Year&#39;, &#39;Month&#39;, &#39;Day&#39;, &#39;Time&#39;])</span>
-
-<span class="c1"># wthr = sanitize_col(</span>
-<span class="c1">#     df = wthr,</span>
-<span class="c1">#     col = &#39;Time&#39;, </span>
-<span class="c1">#     simple_renames= {&#39;24:00:00&#39;: &#39;00:00:00&#39;}, # this could be day + 24 h instead of a miscoded day + 0 h</span>
-<span class="c1">#     split_renames= {})</span>
-
-<span class="c1"># wthr[&#39;Datetime_Temp&#39;] = wthr[&#39;Year&#39;]+&#39;-&#39;+wthr[&#39;Month&#39;]+&#39;-&#39;+wthr[&#39;Day&#39;]+&#39; &#39;+wthr[&#39;Time&#39;]</span>
-
-<span class="c1"># # convert types</span>
-<span class="c1"># err_list = find_unconvertable_datetimes(df_col=wthr[&#39;Datetime_Temp&#39;], pattern=&#39;%Y-%m-%d %H:%M&#39;, index=False)</span>
-<span class="c1"># if err_list != []:</span>
-<span class="c1">#     print(err_list)</span>
-<span class="c1"># else:</span>
-<span class="c1">#     wthr.Datetime_Temp = pd.to_datetime(pd.Series(wthr.Datetime_Temp), errors=&#39;coerce&#39;)</span>
-<span class="c1">#     wthr.Datetime = wthr.Datetime_Temp</span>
-<span class="c1">#     wthr = wthr.drop(columns= &#39;Datetime_Temp&#39;)</span>
+<span class="n">wthr</span><span class="p">[</span><span class="s1">&#39;Datetime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">wthr</span><span class="o">.</span><span class="n">Datetime_Temp</span><span class="p">))</span>
+<span class="n">wthr</span> <span class="o">=</span> <span class="n">wthr</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span> <span class="s1">&#39;Datetime_Temp&#39;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16706,6 +14921,31 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Simple-Columns">Simple Columns<a class="anchor-link" href="#Simple-Columns">&#182;</a></h3>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># to bool</span>
+<span class="n">wthr</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">,</span> 
+    <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Data_Cleaned&#39;</span><span class="p">,</span> 
+    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;Yes&#39;</span><span class="p">:</span><span class="s1">&#39;True&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;No&#39;</span><span class="p">:</span><span class="s1">&#39;False&#39;</span><span class="p">},</span> 
+    <span class="n">split_renames</span><span class="o">=</span> <span class="p">{})</span>
+
+<span class="c1"># set missing to false</span>
+<span class="n">wthr</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">wthr</span><span class="o">.</span><span class="n">Data_Cleaned</span><span class="o">.</span><span class="n">isna</span><span class="p">(),</span> <span class="s1">&#39;Data_Cleaned&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;False&#39;</span>
+<span class="n">wthr</span><span class="o">.</span><span class="n">Data_Cleaned</span> <span class="o">=</span> <span class="n">wthr</span><span class="o">.</span><span class="n">Data_Cleaned</span><span class="o">.</span><span class="n">map</span><span class="p">({</span><span class="s1">&#39;True&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;False&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
@@ -16762,13 +15002,7 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>22/27 Columns pass.
-                    Column    dtype Expected_dtype   Pass
-21  Photoperiod_Unit_Hours  float64            NaN  False
-22            Data_Cleaned   object            NaN  False
-23          Fields_Cleaned   object            NaN  False
-24         Cleaning_Method   object            NaN  False
-25        Weather_Comments   object            NaN  False
+<pre>28/28 Columns pass.
 </pre>
 </div>
 </div>
@@ -16793,7 +15027,7 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">relocate_to_Imputation_Notes</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Date_Datetime&#39;</span><span class="p">,</span> <span class="n">val_list</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Before Planting&#39;</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span><span class="p">[</span><span class="s1">&#39;Date_Datetime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">mgmt</span><span class="p">[</span><span class="s1">&#39;Date_Datetime&#39;</span><span class="p">])</span>
 </pre></div>
 
      </div>
@@ -16802,50 +15036,6 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 </div>
 
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt = sanitize_col(</span>
-<span class="c1">#     df = mgmt, </span>
-<span class="c1">#     col = &#39;Date_Datetime&#39;, </span>
-<span class="c1">#     simple_renames= {}, </span>
-<span class="c1">#     split_renames= {&#39;6/24/21 for all but plots in pass 2; 7/5/21 for pass 2&#39; : [</span>
-<span class="c1">#                         &#39;6/24/21 for all but plots in pass 2&#39;, &#39;7/5/21 for pass 2&#39;]})</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># # make corrections too one-off to fix with a funciton. </span>
-<span class="c1"># mask = ((mgmt.Date_Datetime == &#39;6/24/21 for all but plots in pass 2&#39;) &amp; (mgmt.Pass != 2.))</span>
-<span class="c1"># mgmt.loc[mask, &#39;Date_Datetime&#39;] = &#39;6/24/21&#39;</span>
-<span class="c1"># # since we split without specifiying pass we need to remove any rows that still have the search string.</span>
-<span class="c1"># # and overwrite the df</span>
-<span class="c1"># mask = (mgmt.Date_Datetime == &#39;6/24/21 for all but plots in pass 2&#39;)</span>
-<span class="c1"># mgmt = mgmt.loc[~mask, :].copy()</span>
-
-<span class="c1"># mask = ((mgmt.Date_Datetime == &#39;7/5/21 for pass 2&#39;) &amp; (mgmt.Pass == 2.))</span>
-<span class="c1"># mgmt.loc[mask, &#39;Date_Datetime&#39;] = &#39;7/5/21&#39;</span>
-<span class="c1"># mask = (mgmt.Date_Datetime == &#39;7/5/21 for pass 2&#39;)</span>
-<span class="c1"># mgmt = mgmt.loc[~mask, :].copy()</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
@@ -16864,27 +15054,6 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 </div>
 </div>
 
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>[&#39;Friday, July 8, 2016&#39;, &#39;Friday, March 4, 2016&#39;, &#39;Thursday, May 19, 2016&#39;, &#39;Wednesday, June 1, 2016&#39;, &#39;Friday, April 22, 2016&#39;, &#39;Sunday, June 12, 2016&#39;, &#39;Tuesday, July 12, 2016&#39;, &#39;Tuesday, May 10, 2016&#39;, &#39;Friday, April 15, 2016&#39;, &#39;Monday, May 9, 2016&#39;, &#39;Friday, May 13, 2016&#39;, &#39;Monday, April 11, 2016&#39;, &#39;Monday, May 23, 2016&#39;, &#39;Thursday, June 30, 2016&#39;, &#39;Friday, May 20, 2016&#39;, &#39;Tuesday, June 14, 2016&#39;, &#39;Friday, June 24, 2016&#39;, &#39;Tuesday, April 19, 2016&#39;, &#39;Tuesday, May 31, 2016&#39;, &#39;Thursday, June 23, 2016&#39;, &#39;Wednesday, May 4, 2016&#39;, &#39;Thursday, May 5, 2016&#39;, &#39;Friday, October 21, 2016&#39;, &#39;Saturday, July 2, 2016&#39;, &#39;Tuesday, April 5, 2016&#39;, &#39;Tuesday, July 5, 2016&#39;, &#39;Wednesday, April 6, 2016&#39;, &#39;Friday, June 17, 2016&#39;, &#39;Tuesday, February 16, 2016&#39;, &#39;Thursday, August 4, 2016&#39;, &#39;Tuesday, June 28, 2016&#39;, &#39;Thursday, July 28, 2016&#39;, &#39;Monday, March 21, 2016&#39;, &#39;Tuesday, May 17, 2016&#39;, &#39;Wednesday, March 30, 2016&#39;, &#39;Thursday, April 28, 2016&#39;, &#39;Friday, April 29, 2016&#39;, &#39;Wednesday, May 25, 2016&#39;, &#39;Wednesday, June 22, 2016&#39;, &#39;Friday, June 10, 2016&#39;, &#39;Tuesday, July 19, 2016&#39;, &#39;Thursday, August 11, 2016&#39;, &#39;Tuesday, April 26, 2016&#39;, &#39;Friday, May 27, 2016&#39;, &#39;Monday, April 25, 2016&#39;, &#39;Wednesday, June 15, 2016&#39;, &#39;Wednesday, March 23, 2016&#39;, &#39;Tuesday, May 24, 2016&#39;, &#39;Thursday, July 14, 2016&#39;, &#39;Friday, July 22, 2016&#39;, &#39;Thursday, May 26, 2016&#39;, &#39;Thursday, June 2, 2016&#39;, &#39;Monday, April 18, 2016&#39;, &#39;Thursday, June 9, 2016&#39;, &#39;Wednesday, June 29, 2016&#39;, &#39;Tuesday, April 12, 2016&#39;, &#39;Monday, May 16, 2016&#39;]
-</pre>
-</div>
-</div>
-
-</div>
-
-</div>
-
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
@@ -16896,7 +15065,29 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt.loc[find_unconvertable_numerics(df_col = mgmt[&#39;Amount_Per_Acre&#39;], index = True), ]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Amount_Per_Acre</span> <span class="o">==</span> <span class="s1">&#39;50 GPA&#39;</span><span class="p">)</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">]</span> <span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;50&#39;</span><span class="p">,</span> <span class="s1">&#39;GPA&#39;</span><span class="p">]</span>
+
+<span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Amount_Per_Acre</span> <span class="o">==</span> <span class="s1">&#39;4.5 pt./A&#39;</span><span class="p">)</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">]</span> <span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;4.5&#39;</span><span class="p">,</span> <span class="s1">&#39;pt&#39;</span><span class="p">]</span>
+
+<span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Amount_Per_Acre</span> <span class="o">==</span> <span class="s1">&#39;60 gallons/acre&#39;</span><span class="p">)</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">]</span> <span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;60&#39;</span><span class="p">,</span> <span class="s1">&#39;Gal&#39;</span><span class="p">]</span>
+
+<span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Amount_Per_Acre</span> <span class="o">==</span>  <span class="s1">&#39;1/2 ton/A&#39;</span><span class="p">)</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">]</span> <span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="s1">&#39;Ton&#39;</span><span class="p">]</span>
+
+<span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Amount_Per_Acre</span> <span class="o">==</span>  <span class="s1">&#39;1.00%&#39;</span><span class="p">)</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">]</span> <span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span>
+
+<span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Amount_Per_Acre</span> <span class="o">==</span>  <span class="s1">&#39;1.5 qt./A&#39;</span><span class="p">)</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">]</span> <span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;1.5&#39;</span><span class="p">,</span> <span class="s1">&#39;qt&#39;</span><span class="p">]</span>
+
+<span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Amount_Per_Acre</span> <span class="o">==</span>  <span class="s1">&#39;.75 inch&#39;</span><span class="p">)</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">]</span> <span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;0.75&#39;</span><span class="p">,</span> <span class="s1">&#39;in&#39;</span><span class="p">]</span>
+
+<span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="o">.</span><span class="n">Amount_Per_Acre</span> <span class="o">==</span>  <span class="s1">&#39;0.50%&#39;</span><span class="p">)</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">]</span> <span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span>
 </pre></div>
 
      </div>
@@ -16910,13 +15101,26 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt = sanitize_col(</span>
-<span class="c1">#     df = mgmt, </span>
-<span class="c1">#     col = &#39;Amount_Per_Acre&#39;, </span>
-<span class="c1">#     simple_renames= {&#39;170 lb (actual N)&#39;: &#39;170 (N)&#39;}, </span>
-<span class="c1">#     split_renames= {&#39;51.75, 40.7, 111.7 (N,P,K)&#39;: [&#39;51.75 (N)&#39;, &#39;40.7 (P)&#39;, &#39;111.7 (K)&#39;],</span>
-<span class="c1">#                     &#39;31-150-138&#39;: [&#39;31 (N)&#39;, &#39;150 (P)&#39;, &#39;138 (K)&#39;],</span>
-<span class="c1">#                     &#39;16 (N), 41 (P)&#39;: [&#39;16 (N)&#39;, &#39;41 (P)&#39;]})</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">sanitize_col</span><span class="p">(</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> 
+    <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">,</span> 
+    <span class="n">simple_renames</span><span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;375 lbs./A&#39;</span><span class="p">:</span> <span class="s1">&#39;375&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;30 Actual P&#39;</span><span class="p">:</span> <span class="s1">&#39;30&#39;</span><span class="p">,</span>  
+        <span class="s1">&#39;91 lb&#39;</span><span class="p">:</span> <span class="s1">&#39;91&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;100 Actual N&#39;</span><span class="p">:</span> <span class="s1">&#39;100 (N)&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;2 lbs./A&#39;</span><span class="p">:</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;134-0-0&#39;</span><span class="p">:</span> <span class="s1">&#39;134 (N)&#39;</span><span class="p">,</span>  
+        <span class="s1">&#39;180 N&#39;</span><span class="p">:</span> <span class="s1">&#39;180 (N)&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;90 Actual K&#39;</span><span class="p">:</span> <span class="s1">&#39;90 (K)&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;60 Actual N&#39;</span><span class="p">:</span> <span class="s1">&#39;60 (N)&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;6.5 lbs./A&#39;</span><span class="p">:</span> <span class="s1">&#39;6.5&#39;</span>
+    <span class="p">},</span> 
+    <span class="n">split_renames</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;150+5 Zn&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;16.5 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;55.5 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;5 (Zn)&#39;</span><span class="p">],</span> <span class="c1"># based on product, calc to elements [(e/100)*150 for e in [11, 37, 0] ]</span>
+                    <span class="s1">&#39;20-9-3&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;20 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;9 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;3 (K)&#39;</span><span class="p">],</span> 
+                    <span class="s1">&#39;NPK 27,26,0</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;27 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;26 (P)&#39;</span><span class="p">],</span> 
+                    <span class="s1">&#39;7.5 N, 30 P, 30 K&#39;</span><span class="p">:</span>  <span class="p">[</span><span class="s1">&#39;7.5 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;30 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;30 (K)&#39;</span><span class="p">]</span>
+                   <span class="p">})</span>
 </pre></div>
 
      </div>
@@ -16930,18 +15134,18 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mgmt = safe_create_col(mgmt, &quot;Ingredient&quot;)</span>
-<span class="c1"># mask = mgmt.Ingredient.isna()</span>
-<span class="c1"># mgmt.loc[mask, &#39;Ingredient&#39;] = mgmt.loc[mask, &#39;Product&#39;]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">safe_create_col</span><span class="p">(</span><span class="n">mgmt</span><span class="p">,</span> <span class="s2">&quot;Ingredient&quot;</span><span class="p">)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">Ingredient</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span>
+<span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Ingredient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Product&#39;</span><span class="p">]</span>
 
-<span class="c1"># # assume each string is formated as &#39;val (key)&#39;. `sanitize_col` should be used to enforce this.</span>
-<span class="c1"># for e in [&#39;150 (P)&#39;, &#39;36.6 (N)&#39;, &#39;138 (K)&#39;, &#39;111.7 (K)&#39;, &#39;41 (P)&#39;, &#39;16 (N)&#39;, &#39;170 (N)&#39;, &#39;35.7 (N)&#39;, &#39;51.75 (N)&#39;, &#39;31 (N)&#39;, &#39;40.7 (P)&#39;]:</span>
-<span class="c1">#     val = re.findall(&#39;^\d+[.]*\d*&#39;, e)[0]</span>
-<span class="c1">#     key = re.findall(&#39;\(.+\)&#39;,      e)[0].replace(&#39;(&#39;, &#39;&#39;).replace(&#39;)&#39;, &#39;&#39;)</span>
+<span class="c1"># assume each string is formated as &#39;val (key)&#39;. `sanitize_col` should be used to enforce this.</span>
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;26 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;60 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;30 (K)&#39;</span><span class="p">,</span> <span class="s1">&#39;7.5 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;16.5 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;3 (K)&#39;</span><span class="p">,</span> <span class="s1">&#39;180 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;134 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;27 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;30 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;55.5 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;100 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;9 (P)&#39;</span><span class="p">,</span> <span class="s1">&#39;5 (Zn)&#39;</span><span class="p">,</span> <span class="s1">&#39;20 (N)&#39;</span><span class="p">,</span> <span class="s1">&#39;90 (K)&#39;</span><span class="p">]:</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;^\d+[.]*\d*&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;\(.+\)&#39;</span><span class="p">,</span>      <span class="n">e</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
     
-<span class="c1">#     mask = (mgmt[&#39;Amount_Per_Acre&#39;] == e)</span>
-<span class="c1">#     mgmt.loc[mask, &#39;Ingredient&#39;] = key</span>
-<span class="c1">#     mgmt.loc[mask, &#39;Amount_Per_Acre&#39;] = val</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mgmt</span><span class="p">[</span><span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">e</span><span class="p">)</span>
+    <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Ingredient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
+    <span class="n">mgmt</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;Amount_Per_Acre&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
 </pre></div>
 
      </div>
@@ -16949,7 +15153,7 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
@@ -16966,27 +15170,6 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>[&#39;30 Actual P&#39;, &#39;50 GPA&#39;, &#39;150+5 Zn&#39;, &#39;0.50%&#39;, &#39;20-9-3&#39;, &#39;1/2 ton/A&#39;, &#39;7.5 N, 30 P, 30 K&#39;, &#39;60 Actual N&#39;, &#39;91 lb&#39;, &#39;4.5 pt./A&#39;, &#39;375 lbs./A&#39;, &#39;1.00%&#39;, &#39;2 lbs./A&#39;, &#39;1.5 qt./A&#39;, &#39;NPK 27,26,0\n&#39;, &#39;134-0-0&#39;, &#39;100 Actual N&#39;, &#39;90 Actual K&#39;, &#39;6.5 lbs./A&#39;, &#39;60 gallons/acre&#39;, &#39;.75 inch&#39;, &#39;180 N&#39;]
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -17020,13 +15203,27 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mgmt</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Drop_Record_Index&#39;</span><span class="p">,</span> <span class="s1">&#39;Drop_Record_Index2&#39;</span><span class="p">])</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># to bool</span>
 <span class="n">mgmt</span><span class="p">[</span><span class="s1">&#39;mgmt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">[</span><span class="s1">&#39;mgmt&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
 
 <span class="c1"># to string</span>
-<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ee</span> <span class="k">for</span> <span class="n">ee</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Application&#39;</span><span class="p">,</span> <span class="s1">&#39;Product&#39;</span><span class="p">,</span> <span class="s1">&#39;Ingredient&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">ee</span> <span class="ow">in</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">columns</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ee</span> <span class="k">for</span> <span class="n">ee</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Application&#39;</span><span class="p">,</span> <span class="s1">&#39;Product&#39;</span><span class="p">,</span> <span class="s1">&#39;Ingredient&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;Replicate&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">ee</span> <span class="ow">in</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">columns</span><span class="p">]:</span>
     <span class="n">mgmt</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
-    
 
 <span class="n">mgmt</span><span class="o">.</span><span class="n">Year</span> <span class="o">=</span> <span class="n">year_string</span>
 <span class="n">mgmt</span><span class="o">.</span><span class="n">Year</span> <span class="o">=</span> <span class="n">mgmt</span><span class="o">.</span><span class="n">Year</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
@@ -17048,7 +15245,12 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">check_df_dtype_expectations</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> <span class="n">dtype_dct</span> <span class="o">=</span> <span class="n">mgmt_col_dtypes</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">checkpoint</span> <span class="o">=</span> <span class="n">check_df_dtype_expectations</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> <span class="n">dtype_dct</span> <span class="o">=</span> <span class="n">mgmt_col_dtypes</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">Pass</span><span class="p">)</span><span class="o">/</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">Pass</span><span class="p">,</span> <span class="p">])</span>
 </pre></div>
 
      </div>
@@ -17068,7 +15270,7 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>10/14 Columns pass.
+<pre>13/13 Columns pass.
 </pre>
 </div>
 </div>
@@ -17106,104 +15308,6 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th>0</th>
-      <td>Year</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Experiment_Code</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Range</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>Pass</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Plot</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>Drop_Record_Index</td>
-      <td>float64</td>
-      <td>NaN</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>Drop_Record_Index2</td>
-      <td>float64</td>
-      <td>NaN</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>Application</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>Product</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>Date_Datetime</td>
-      <td>object</td>
-      <td>datetime64[ns]</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>Amount_Per_Acre</td>
-      <td>object</td>
-      <td>float64</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>Unit</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>mgmt</td>
-      <td>bool</td>
-      <td>bool</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>Imputation_Notes</td>
-      <td>string</td>
-      <td>string</td>
-      <td>True</td>
-    </tr>
   </tbody>
 </table>
 </div>
@@ -17226,9 +15330,9 @@ all  [&#39;ARH1&#39;, &#39;ARH2&#39;, &#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># write_out_pkl(obj = sval, path = &#39;./data/interim/&#39;+year_string+&#39;sval.pickle&#39;)</span>
-<span class="c1"># write_out_pkl(obj = wthr, path = &#39;./data/interim/&#39;+year_string+&#39;wthr.pickle&#39;)</span>
-<span class="c1"># write_out_pkl(obj = mgmt, path = &#39;./data/interim/&#39;+year_string+&#39;mgmt.pickle&#39;)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">write_out_pkl</span><span class="p">(</span><span class="n">obj</span> <span class="o">=</span> <span class="n">sval</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data/interim/&#39;</span><span class="o">+</span><span class="n">year_string</span><span class="o">+</span><span class="s1">&#39;sval.pickle&#39;</span><span class="p">)</span>
+<span class="n">write_out_pkl</span><span class="p">(</span><span class="n">obj</span> <span class="o">=</span> <span class="n">wthr</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data/interim/&#39;</span><span class="o">+</span><span class="n">year_string</span><span class="o">+</span><span class="s1">&#39;wthr.pickle&#39;</span><span class="p">)</span>
+<span class="n">write_out_pkl</span><span class="p">(</span><span class="n">obj</span> <span class="o">=</span> <span class="n">mgmt</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data/interim/&#39;</span><span class="o">+</span><span class="n">year_string</span><span class="o">+</span><span class="s1">&#39;mgmt.pickle&#39;</span><span class="p">)</span>
 </pre></div>
 
      </div>

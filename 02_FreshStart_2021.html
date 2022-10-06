@@ -15067,7 +15067,9 @@ a.anchor-link {
         <span class="c1"># 2018</span>
         <span class="s1">&#39;ARH1&#39;</span><span class="p">,</span> <span class="s1">&#39;ARH2&#39;</span><span class="p">,</span> <span class="s1">&#39;KSH1&#39;</span><span class="p">,</span> <span class="s1">&#39;KSH2&#39;</span><span class="p">,</span> <span class="s1">&#39;KSH3&#39;</span><span class="p">,</span> <span class="s1">&#39;MOH1-Rep1&#39;</span><span class="p">,</span> <span class="s1">&#39;MOH1-Rep2&#39;</span><span class="p">,</span> <span class="s1">&#39;ONH1&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH1-Dry&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH1-Early&#39;</span><span class="p">,</span> <span class="s1">&#39;TXH1-Late&#39;</span><span class="p">,</span>
         <span class="c1"># 2017</span>
-        <span class="s1">&#39;ILH2&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH4&#39;</span><span class="p">,</span> <span class="s1">&#39;NYH4&#39;</span>
+        <span class="s1">&#39;ILH2&#39;</span><span class="p">,</span> <span class="s1">&#39;NEH4&#39;</span><span class="p">,</span> <span class="s1">&#39;NYH4&#39;</span><span class="p">,</span>
+        <span class="c1"># 2016</span>
+        <span class="s1">&#39;AZH1&#39;</span>
                  <span class="p">]</span>
     <span class="k">return</span><span class="p">(</span><span class="n">known_exps</span><span class="p">)</span>
 </pre></div>
@@ -15711,7 +15713,14 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
          <span class="c1"># 2018 </span>
         <span class="s1">&#39;Local_Check&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
         <span class="s1">&#39;Packets_Per_Plot&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Stand_Count_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span>
+        <span class="s1">&#39;Stand_Count_Unit_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
+        <span class="c1"># 2016</span>
+        <span class="s1">&#39;Sample_Type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Zn_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Fe_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Mn_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Cu_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;B_Unit_ppm&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span>
         
     <span class="p">}</span>
 
@@ -15765,7 +15774,9 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
         <span class="s1">&#39;Unit&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
     <span class="s1">&#39;mgmt&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
         <span class="s1">&#39;Imputation_Notes&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Ingredient&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+        <span class="s1">&#39;Ingredient&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+        <span class="c1"># 2016</span>
+        <span class="s1">&#39;Replicate&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
     <span class="p">}</span>
    
     <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;sval&#39;</span><span class="p">:</span>

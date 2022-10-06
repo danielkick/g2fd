@@ -481,7 +481,9 @@ def list_known_experiments():
         # 2018
         'ARH1', 'ARH2', 'KSH1', 'KSH2', 'KSH3', 'MOH1-Rep1', 'MOH1-Rep2', 'ONH1', 'TXH1-Dry', 'TXH1-Early', 'TXH1-Late',
         # 2017
-        'ILH2', 'NEH4', 'NYH4'
+        'ILH2', 'NEH4', 'NYH4',
+        # 2016
+        'AZH1'
                  ]
     return(known_exps)
 
@@ -778,7 +780,14 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
          # 2018 
         'Local_Check': 'string',
         'Packets_Per_Plot': 'float64',
-        'Stand_Count_Unit_Percent': 'float64'
+        'Stand_Count_Unit_Percent': 'float64',
+        # 2016
+        'Sample_Type': 'string',
+        'Zn_Unit_ppm': 'float64',
+        'Fe_Unit_ppm': 'float64',
+        'Mn_Unit_ppm': 'float64',
+        'Cu_Unit_ppm': 'float64',
+        'B_Unit_ppm': 'float64'
         
     }
 
@@ -832,7 +841,9 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
         'Unit': 'string', 
     'mgmt': 'bool',
         'Imputation_Notes': 'string',
-        'Ingredient': 'string'
+        'Ingredient': 'string',
+        # 2016
+        'Replicate': 'string'
     }
    
     if name == 'sval':
