@@ -145,189 +145,7 @@ print(
 
 # there are some columns that belong in different dfs
 
-
-
-
-
 # [e for e in list(mgmt.columns) if e not in list(mk_dtype_dict('mgmt').keys())]
-
-
-
-# meta = sanitize_col(
-#     df = meta, 
-#     col = 'N_Unit_lbs_per_A', 
-#     simple_renames= {
-#         '120lbs/acre in UAN applied prior to spring tillage.': '120',
-#         '150 lbs/acre in UAN form applied with chemical ahead of tillage': '150'}, 
-#     split_renames= {})
-
-# meta = sanitize_col(
-#     df = meta, 
-#     col = 'P_Unit_lbs_per_A', 
-#     simple_renames= {}, 
-#     split_renames= {'18-60-120-15-1.5 (n-p-k-sulfur-zinc)'})
-
-
-
-
-# [find_unconvertable_numerics(df_col = meta[e], index = False) for e in [
-# #     'Alley_Length_Unit_Feet', 
-# #     'Sikora_Buffer_Unit_pH', 
-# #     'P_Unit_ppm', 
-#     'N_Unit_lbs_per_A', 
-#     'P_Unit_lbs_per_A', 
-#     'K_Unit_lbs_per_A'
-# ]]
-
-
-
-
-
-# # pull out fertilizers and reshape
-
-# application_cols = ['Experiment_Code',  
-#                     'Fertilizer_Application_Datetime_1',
-#                     'Fertilizer_Application_Datetime_2',
-#                     'Fertilizer_Application_Datetime_3',
-#                     'Fertilizer_Application_Datetime_4',
-#                     'Fertilizer_Application_Datetime_5',
-#                     'Fertilizer_Application_Datetime_6',
-#                     'Fertilizer_Application_Datetime_7',
-#                     'Fertilizer_Application_Datetime_8']
-
-# e = 'N_Unit_lbs_per_A'
-# e_product = 'N'
-
-# temp = meta.loc[:, application_cols+[e]]
-
-# # gather
-# temp = pd.melt(temp, id_vars=['Experiment_Code', e])
-# temp = temp.rename(columns={e: 'Amount_Per_Acre', 'value': 'Date_Datetime'})
-# temp = temp.loc[pd.Series.notna(temp.Date_Datetime), :]
-# tally = temp.assign(n = 1).groupby('Experiment_Code').agg(n = ('n', np.sum)).reset_index()
-# temp = temp.merge(tally)
-
-# # Product
-# temp.loc[:, 'Product'] = e_product
-# temp.loc[:, 'Unit'] = 'lbs/Acre'
-
-
-# mask = temp.Amount_Per_Acre == '120lbs/acre in UAN applied prior to spring tillage.'
-# temp.loc[mask, ['Amount_Per_Acre', 'Product']] = ['120', 'UAN']
-
-# mask = temp.Amount_Per_Acre == '150 lbs/acre in UAN form applied with chemical ahead of tillage'
-# temp.loc[mask, ['Amount_Per_Acre', 'Product']] = ['150', 'UAN']
-
-
-# temp.Amount_Per_Acre = temp.Amount_Per_Acre.astype('float64')
-# temp.Amount_Per_Acre = temp.Amount_Per_Acre/temp.n
-
-# temp = temp.drop(columns= ['variable', 'n'])
-
-# mgmt = mgmt.merge(temp, how = 'outer')
-
-# e = 'P_Unit_lbs_per_A'
-# e_product = 'P'
-
-# temp = meta.loc[:, application_cols+[e]]
-
-# # gather
-# temp = pd.melt(temp, id_vars=['Experiment_Code', e])
-# temp = temp.rename(columns={e: 'Amount_Per_Acre', 'value': 'Date_Datetime'})
-# temp = temp.loc[pd.Series.notna(temp.Date_Datetime), :]
-# tally = temp.assign(n = 1).groupby('Experiment_Code').agg(n = ('n', np.sum)).reset_index()
-# temp = temp.merge(tally)
-
-# # Product
-# temp.loc[:, 'Product'] = e_product
-# temp.loc[:, 'Unit'] = 'lbs/Acre'
-
-# # temp.loc[temp.Amount_Per_Acre == '18-60-120-15-1.5 (n-p-k-sulfur-zinc)', :]
-
-
-# temp = sanitize_col(
-#     df = temp, 
-#     col = 'Amount_Per_Acre', 
-#     simple_renames= {}, 
-#     split_renames= {'18-60-120-15-1.5 (n-p-k-sulfur-zinc)': ['18 (N)', '60 (P)', '120 (K)', '15 (S)', '1.5 (Zn)']})
-
-# # assume each string is formated as 'val (key)'. `sanitize_col` should be used to enforce this.
-# for e in ['60 (P)', '1.5 (Zn)', '120 (K)', '15 (S)', '18 (N)']:
-#     val = re.findall('^\d+[.]*\d*', e)[0]
-#     key = re.findall('\(.+\)',      e)[0].replace('(', '').replace(')', '')
-    
-#     mask = (temp['Amount_Per_Acre'] == e)
-#     temp.loc[mask, 'Product'] = key
-#     temp.loc[mask, 'Amount_Per_Acre'] = val
-
-
-# temp.Amount_Per_Acre = temp.Amount_Per_Acre.astype('float64')
-# temp = temp.loc[temp.Amount_Per_Acre > 0, :]
-# temp.Amount_Per_Acre = temp.Amount_Per_Acre/temp.n
-
-# temp = temp.drop(columns= ['variable', 'n'])
-
-# mgmt = mgmt.merge(temp, how = 'outer')
-
-# e = 'K_Unit_lbs_per_A'
-# e_product = 'K'
-
-# temp = meta.loc[:, application_cols+[e]]
-
-# # gather
-# temp = pd.melt(temp, id_vars=['Experiment_Code', e])
-# temp = temp.rename(columns={e: 'Amount_Per_Acre', 'value': 'Date_Datetime'})
-# temp = temp.loc[pd.Series.notna(temp.Date_Datetime), :]
-# tally = temp.assign(n = 1).groupby('Experiment_Code').agg(n = ('n', np.sum)).reset_index()
-# temp = temp.merge(tally)
-
-# # Product
-# temp.loc[:, 'Product'] = e_product
-# temp.loc[:, 'Unit'] = 'lbs/Acre'
-
-# temp
-
-# find_unconvertable_numerics(temp.Amount_Per_Acre)
-# mask = temp.Amount_Per_Acre == '120lbs, fall applied' # associated datetimes 12/1/14  and  5/6/15
-# temp.loc[mask,  'Amount_Per_Acre'] = '120'
-
-
-# temp.Amount_Per_Acre = temp.Amount_Per_Acre.astype('float64')
-# temp.Amount_Per_Acre = temp.Amount_Per_Acre/temp.n
-
-# temp = temp.drop(columns= ['variable', 'n'])
-
-# mgmt = mgmt.merge(temp, how = 'outer')
-
-
-# Fill missings with the appropriate values for
-
-# temp_cols = [
-# 'Irrigation_Applied',
-# 'Weather_Station_Documents_Irrigation',
-#     'Management_Comments',
-# 'mgmt']
-
-# temp = mgmt.loc[:, ['Experiment_Code']+temp_cols].drop_duplicates()
-
-# mask = (
-#     temp.Irrigation_Applied.isna() &
-#     temp.Weather_Station_Documents_Irrigation.isna() &
-#     temp.Management_Comments.isna() &
-#     temp.mgmt.isna() 
-# )
-
-# temp = temp.loc[~mask, ]
-
-# mgmt = mgmt.drop(columns=temp_cols)
-# mgmt = mgmt.merge(temp, how = 'outer')
-
-
-
-
-
-
-
 
 # Frustratingly `Fertilizer_Product` is only partially redundant. For some it contains information on amount 
 # What I want to do is to keep `Fertilizer_Product` as `Product` but add an ingredient column to capture the npk data
@@ -365,8 +183,6 @@ temp = temp.drop(columns= ['N_Unit_lbs_per_A',
                           'Fertilizer_Product'])
 
 # temp
-
-
 
 # PAI2
 # drop this site because the management information
@@ -513,12 +329,6 @@ for e in ['19 (P)', '48 (P)', '51 (K)', '235 (N)', '80 (P)', '86 (N)', '9999 (S)
     temp.loc[mask, 'Product'] = key
     temp.loc[mask, 'Amount_Per_Acre'] = val
 
-
-
-
-
-
-
 # Convert to long format, spread total values across n applications
 temp = pd.melt(temp, id_vars=['Experiment_Code', 'Fertilizer_info', 'Imputation_Notes', 'Product', 'Amount_Per_Acre'])
 
@@ -540,69 +350,6 @@ temp = temp.drop(columns= ['variable', 'n'])
 
 # TODO
 # mgmt = mgmt.merge(temp, how = 'outer')
-
-
-
-
-
-
-
-
-
-# e = 'K_Unit_lbs_per_A'
-# e_product = 'K'
-
-# temp = meta.loc[:, application_cols+[e]]
-
-# # gather
-# temp = pd.melt(temp, id_vars=['Experiment_Code', e])
-# temp = temp.rename(columns={e: 'Amount_Per_Acre', 'value': 'Date_Datetime'})
-# temp = temp.loc[pd.Series.notna(temp.Date_Datetime), :]
-# tally = temp.assign(n = 1).groupby('Experiment_Code').agg(n = ('n', np.sum)).reset_index()
-# temp = temp.merge(tally)
-
-# # Product
-# temp.loc[:, 'Product'] = e_product
-# temp.loc[:, 'Unit'] = 'lbs/Acre'
-
-# temp
-
-# find_unconvertable_numerics(temp.Amount_Per_Acre)
-# mask = temp.Amount_Per_Acre == '120lbs, fall applied' # associated datetimes 12/1/14  and  5/6/15
-# temp.loc[mask,  'Amount_Per_Acre'] = '120'
-
-
-# temp.Amount_Per_Acre = temp.Amount_Per_Acre.astype('float64')
-# temp.Amount_Per_Acre = temp.Amount_Per_Acre/temp.n
-
-# temp = temp.drop(columns= ['variable', 'n'])
-
-# mgmt = mgmt.merge(temp, how = 'outer')
-
-
-
-
-
-
-
-
-# for val in [
-#     '0 (N) 0 (P) 0 (K)  [urea; applied to south half  (Hi-N side) of field only]',
-#     '130 (N) 0 (P) 0 (K)  [urea (46-0-0); applied to south half (1/2 Acre, Hi-N side) of field only: actual applied was 140 lb urea to the Hi-N side of the field]'
-# ]:
-#     mask = (temp.Fertilizer_info == val)
-#     temp.loc[mask, ['Fertilizer_info', 'Product']] = [np.nan, val]
-# #     temp.loc[~mask, ['Fertilizer_info', 'Product']]
-
-
-
-
-
-
-
-
-
-
 
 
 
