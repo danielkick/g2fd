@@ -1,3 +1,12 @@
+---
+description: This notebook brings the 2020 into alignment with the desired format
+  with respect to field name, type, and grouping.
+output-file: freshstart_2020.html
+title: Process Data from 2020 into a consistent format.
+
+---
+
+
 # Imports ----
 import re
 import numpy as np 
@@ -36,7 +45,6 @@ find_unrecognized_columns(df = phno, dct = phno_name_dict),
 find_unrecognized_columns(df = soil, dct = soil_name_dict),
 find_unrecognized_columns(df = wthr, dct = wthr_name_dict),
 find_unrecognized_columns(df = mgmt, dct = mgmt_name_dict))
-
 
 meta = meta.rename(columns=meta_name_dict)
 phno = phno.rename(columns=phno_name_dict)

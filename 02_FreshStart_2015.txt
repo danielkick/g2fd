@@ -41,12 +41,12 @@ find_unrecognized_columns(df = soil, dct = soil_name_dict),
 find_unrecognized_columns(df = wthr, dct = wthr_name_dict),
 find_unrecognized_columns(df = mgmt, dct = mgmt_name_dict))
 
-# [prlst2dct(e) for e in [] ]
+# # [prlst2dct(e) for e in [] ]
 
-# mgmt.loc[:, "Nutrients Applied"].drop_duplicates()
-# soil
+# # mgmt.loc[:, "Nutrients Applied"].drop_duplicates()
+# # soil
 
-meta
+# meta
 
 meta = meta.rename(columns=meta_name_dict)
 phno = phno.rename(columns=phno_name_dict)
@@ -63,26 +63,43 @@ mgmt['mgmt'] = True
 
 [e.shape for e in [meta, phno, soil, wthr, mgmt]]
 
-# soil = sanitize_Experiment_Codes(
-#     df = soil, 
-#     simple_renames = {
-#         'W1H1': 'WIH1', 
-#         'W1H2': 'WIH2', 
-#         'W1H3': 'WIH3'
-#     }, 
-#     split_renames = {
-#         'NEH2_NEH3': ['NEH2', 'NEH3']
-#     })
+simple_rename_dict = {
+    'IA(H4)': 'IAH4', 
+    'MN(?)1': 'MNu1', 
+    'IA(?)3': 'IAu3', 
+    'NY?': 'NYu', 
+    'IA(?)2': 'IAu2'    
+}
 
-# wthr = sanitize_Experiment_Codes(
-#     df = wthr, 
-#     simple_renames = {
-#     }, 
-#     split_renames = {
-#         'NEH2_NEH3': ['NEH2', 'NEH3'],
-#         'NYH3_NYS1': ['NYS1', 'NYH3'],
-#         'TXH1_TXH3': ['TXH1', 'TXH3']
-#     })
+split_rename_dict = {
+    'NEH1  NEH4': ['NEH1', 'NEH4'], 
+    'KSH1  KSI1': ['KSH1', 'KSI1'], 
+    'AZI1  AZI2': ['AZI1', 'AZI2'], 
+    'PAI1  PAI2': ['PAI1', 'PAI2'], 
+    'WIH1  WII1': ['WIH1', 'WII1'], 
+    'WIH2  WII2': ['WIH2', 'WII2'], 
+    'INH1  INI1': ['INH1', 'INI1'], 
+    'NYH1  NYI1': ['NYH1', 'NYI1'], 
+    'NYH3  NYI2': ['NYH3', 'NYI2'],  
+    'ILH1  ILI1  ILH2': ['ILH1', 'ILI1', 'ILH2'],
+    'TXH1  TXI1  TXI2': ['TXH1', 'TXI1', 'TXI2'],
+    'MOH1  MOI1  MOH2  MOI2': ['MOH1', 'MOI1', 'MOH2', 'MOI2']
+}
+
+soil = sanitize_Experiment_Codes(
+    df = soil, 
+    simple_renames = simple_rename_dict, 
+    split_renames = split_rename_dict)
+
+wthr = sanitize_Experiment_Codes(
+    df = wthr, 
+    simple_renames = simple_rename_dict, 
+    split_renames = split_rename_dict)
+
+# soil.loc[soil.Experiment_Code == 'NY_']
+# list_known_experiments()
+
+
 
 # confirm everything's okay
 print(
@@ -94,12 +111,28 @@ print(
 '\nall ', find_unrecognized_experiments([], return_all_exps=True)
 )  
 
+# [e.columns for e in [meta,
+# phno,
+# soil,
+# wthr,
+# mgmt]]
+
 # # Find minimum cols needed to index all rows
 # df = phno
 # id_cols = ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot',]
-# candidate_cols = ['State', 'City',
-#                  'Experiment', 'Source', 'Pedigree', 'Family', 'Tester', 'Replicate',
-#                   'Block',  'Plot_ID']
+# candidate_cols = ['Year', 'Experiment_Code', 'Drop_Record_Index', 'Source', 'Pedigree',
+#        'Replicate', 'Block', 'Plot', 'Range', 'Pass', 'Local_Check',
+#        'Plot_Length_Unit_Feet', 'Alley_Length_Unit_Feet',
+#        'Row_Spacing_Unit_Inches', 'Plot_Area_Unit_Feet2', 'Rows_Per_Plot',
+#        'Packets_Per_Plot', 'Kernels_Per_Packet', 'Seeds_Per_Plot',
+#        'Planted_Unit_Datetime', 'Harvested_Unit_Datetime',
+#        'Anthesis_Unit_Datetime', 'Silking_Unit_Datetime', 'Anthesis_Unit_Days',
+#        'Silking_Unit_Days', 'Plant_Height_Unit_cm', 'Ear_Height_Unit_cm',
+#        'Stand_Count_Unit_Number', 'Root_Lodging_Unit_Number',
+#        'Stalk_Lodging_Unit_Number', 'Grain_Moisture_Unit_Percent',
+#        'Test_Weight_Unit_lbs', 'Plot_Weight_Unit_lbs',
+#        'Grain_Yield_Unit_bu_Per_A', 'Discarded', 'Phenotype_Comments',
+#        'Filler', 'Additional_Metics', 'phno']
 # target = df.shape[0]
 
 # output = pd.DataFrame(zip(
@@ -110,18 +143,512 @@ print(
 # output.assign(At_Target=lambda x:x.Uniq_Vals == target)
 
 
+# there are some columns that belong in different dfs
+
+
+
+
+
+# [e for e in list(mgmt.columns) if e not in list(mk_dtype_dict('mgmt').keys())]
+
+
+
+# meta = sanitize_col(
+#     df = meta, 
+#     col = 'N_Unit_lbs_per_A', 
+#     simple_renames= {
+#         '120lbs/acre in UAN applied prior to spring tillage.': '120',
+#         '150 lbs/acre in UAN form applied with chemical ahead of tillage': '150'}, 
+#     split_renames= {})
+
+# meta = sanitize_col(
+#     df = meta, 
+#     col = 'P_Unit_lbs_per_A', 
+#     simple_renames= {}, 
+#     split_renames= {'18-60-120-15-1.5 (n-p-k-sulfur-zinc)'})
+
+
+
+
+# [find_unconvertable_numerics(df_col = meta[e], index = False) for e in [
+# #     'Alley_Length_Unit_Feet', 
+# #     'Sikora_Buffer_Unit_pH', 
+# #     'P_Unit_ppm', 
+#     'N_Unit_lbs_per_A', 
+#     'P_Unit_lbs_per_A', 
+#     'K_Unit_lbs_per_A'
+# ]]
+
+
+
+
+
+# # pull out fertilizers and reshape
+
+# application_cols = ['Experiment_Code',  
+#                     'Fertilizer_Application_Datetime_1',
+#                     'Fertilizer_Application_Datetime_2',
+#                     'Fertilizer_Application_Datetime_3',
+#                     'Fertilizer_Application_Datetime_4',
+#                     'Fertilizer_Application_Datetime_5',
+#                     'Fertilizer_Application_Datetime_6',
+#                     'Fertilizer_Application_Datetime_7',
+#                     'Fertilizer_Application_Datetime_8']
+
+# e = 'N_Unit_lbs_per_A'
+# e_product = 'N'
+
+# temp = meta.loc[:, application_cols+[e]]
+
+# # gather
+# temp = pd.melt(temp, id_vars=['Experiment_Code', e])
+# temp = temp.rename(columns={e: 'Amount_Per_Acre', 'value': 'Date_Datetime'})
+# temp = temp.loc[pd.Series.notna(temp.Date_Datetime), :]
+# tally = temp.assign(n = 1).groupby('Experiment_Code').agg(n = ('n', np.sum)).reset_index()
+# temp = temp.merge(tally)
+
+# # Product
+# temp.loc[:, 'Product'] = e_product
+# temp.loc[:, 'Unit'] = 'lbs/Acre'
+
+
+# mask = temp.Amount_Per_Acre == '120lbs/acre in UAN applied prior to spring tillage.'
+# temp.loc[mask, ['Amount_Per_Acre', 'Product']] = ['120', 'UAN']
+
+# mask = temp.Amount_Per_Acre == '150 lbs/acre in UAN form applied with chemical ahead of tillage'
+# temp.loc[mask, ['Amount_Per_Acre', 'Product']] = ['150', 'UAN']
+
+
+# temp.Amount_Per_Acre = temp.Amount_Per_Acre.astype('float64')
+# temp.Amount_Per_Acre = temp.Amount_Per_Acre/temp.n
+
+# temp = temp.drop(columns= ['variable', 'n'])
+
+# mgmt = mgmt.merge(temp, how = 'outer')
+
+# e = 'P_Unit_lbs_per_A'
+# e_product = 'P'
+
+# temp = meta.loc[:, application_cols+[e]]
+
+# # gather
+# temp = pd.melt(temp, id_vars=['Experiment_Code', e])
+# temp = temp.rename(columns={e: 'Amount_Per_Acre', 'value': 'Date_Datetime'})
+# temp = temp.loc[pd.Series.notna(temp.Date_Datetime), :]
+# tally = temp.assign(n = 1).groupby('Experiment_Code').agg(n = ('n', np.sum)).reset_index()
+# temp = temp.merge(tally)
+
+# # Product
+# temp.loc[:, 'Product'] = e_product
+# temp.loc[:, 'Unit'] = 'lbs/Acre'
+
+# # temp.loc[temp.Amount_Per_Acre == '18-60-120-15-1.5 (n-p-k-sulfur-zinc)', :]
+
+
+# temp = sanitize_col(
+#     df = temp, 
+#     col = 'Amount_Per_Acre', 
+#     simple_renames= {}, 
+#     split_renames= {'18-60-120-15-1.5 (n-p-k-sulfur-zinc)': ['18 (N)', '60 (P)', '120 (K)', '15 (S)', '1.5 (Zn)']})
+
+# # assume each string is formated as 'val (key)'. `sanitize_col` should be used to enforce this.
+# for e in ['60 (P)', '1.5 (Zn)', '120 (K)', '15 (S)', '18 (N)']:
+#     val = re.findall('^\d+[.]*\d*', e)[0]
+#     key = re.findall('\(.+\)',      e)[0].replace('(', '').replace(')', '')
+    
+#     mask = (temp['Amount_Per_Acre'] == e)
+#     temp.loc[mask, 'Product'] = key
+#     temp.loc[mask, 'Amount_Per_Acre'] = val
+
+
+# temp.Amount_Per_Acre = temp.Amount_Per_Acre.astype('float64')
+# temp = temp.loc[temp.Amount_Per_Acre > 0, :]
+# temp.Amount_Per_Acre = temp.Amount_Per_Acre/temp.n
+
+# temp = temp.drop(columns= ['variable', 'n'])
+
+# mgmt = mgmt.merge(temp, how = 'outer')
+
+# e = 'K_Unit_lbs_per_A'
+# e_product = 'K'
+
+# temp = meta.loc[:, application_cols+[e]]
+
+# # gather
+# temp = pd.melt(temp, id_vars=['Experiment_Code', e])
+# temp = temp.rename(columns={e: 'Amount_Per_Acre', 'value': 'Date_Datetime'})
+# temp = temp.loc[pd.Series.notna(temp.Date_Datetime), :]
+# tally = temp.assign(n = 1).groupby('Experiment_Code').agg(n = ('n', np.sum)).reset_index()
+# temp = temp.merge(tally)
+
+# # Product
+# temp.loc[:, 'Product'] = e_product
+# temp.loc[:, 'Unit'] = 'lbs/Acre'
+
+# temp
+
+# find_unconvertable_numerics(temp.Amount_Per_Acre)
+# mask = temp.Amount_Per_Acre == '120lbs, fall applied' # associated datetimes 12/1/14  and  5/6/15
+# temp.loc[mask,  'Amount_Per_Acre'] = '120'
+
+
+# temp.Amount_Per_Acre = temp.Amount_Per_Acre.astype('float64')
+# temp.Amount_Per_Acre = temp.Amount_Per_Acre/temp.n
+
+# temp = temp.drop(columns= ['variable', 'n'])
+
+# mgmt = mgmt.merge(temp, how = 'outer')
+
+
+# Fill missings with the appropriate values for
+
+# temp_cols = [
+# 'Irrigation_Applied',
+# 'Weather_Station_Documents_Irrigation',
+#     'Management_Comments',
+# 'mgmt']
+
+# temp = mgmt.loc[:, ['Experiment_Code']+temp_cols].drop_duplicates()
+
+# mask = (
+#     temp.Irrigation_Applied.isna() &
+#     temp.Weather_Station_Documents_Irrigation.isna() &
+#     temp.Management_Comments.isna() &
+#     temp.mgmt.isna() 
+# )
+
+# temp = temp.loc[~mask, ]
+
+# mgmt = mgmt.drop(columns=temp_cols)
+# mgmt = mgmt.merge(temp, how = 'outer')
+
+
+
+
+
+
+
+
+# Frustratingly `Fertilizer_Product` is only partially redundant. For some it contains information on amount 
+# What I want to do is to keep `Fertilizer_Product` as `Product` but add an ingredient column to capture the npk data
+
+# 1. create a single schema to parse
+# 2. parse and merge into the desired table
+
+temp = meta.loc[:, [ 'Experiment_Code',
+ 'N_Unit_lbs_per_A',
+ 'P_Unit_lbs_per_A',
+ 'K_Unit_lbs_per_A',
+ 'Fertilizer_Product',
+ 'Fertilizer_Application_Datetime_1',
+ 'Fertilizer_Application_Datetime_2',
+ 'Fertilizer_Application_Datetime_3',
+ 'Fertilizer_Application_Datetime_4',
+ 'Fertilizer_Application_Datetime_5',
+ 'Fertilizer_Application_Datetime_6',
+ 'Fertilizer_Application_Datetime_7',
+ 'Fertilizer_Application_Datetime_8'
+                   ]]
+
+for e in ['N_Unit_lbs_per_A',
+ 'P_Unit_lbs_per_A',
+ 'K_Unit_lbs_per_A',
+ 'Fertilizer_Product']:
+    temp.loc[temp[e].isna(), e]=0
+    temp[e] = temp[e].astype('string')
+    
+    
+temp.loc[:, 'Fertilizer_info'] = temp.loc[:, 'N_Unit_lbs_per_A']+' (N) '+temp.loc[:, 'P_Unit_lbs_per_A']+' (P) '+temp.loc[:, 'K_Unit_lbs_per_A']+' (K) '+' ['+temp.loc[:, 'Fertilizer_Product']+']'
+temp = temp.drop(columns= ['N_Unit_lbs_per_A',
+                          'P_Unit_lbs_per_A',
+                          'K_Unit_lbs_per_A',
+                          'Fertilizer_Product'])
+
+# temp
+
+
+
+# PAI2
+# drop this site because the management information
+# '0 (N) 0 (P) 0 (K)  [urea; applied to south half  (Hi-N side) of field only]'
+# requires a field map to understand and lacks values
+
+# PAI1
+# '130 (N) 0 (P) 0 (K)  [urea (46-0-0); applied to south half (1/2 Acre, Hi-N side) of field only: actual applied was 140 lb urea to the Hi-N side of the field]'
+
+
+
+# safe create imputation notes
+temp = safe_create_col(temp, "Imputation_Notes")
+
+
+mask = temp.Fertilizer_info == '234 (N) 98 (P) 51 (K)  [Pre Plant incorporated 162# DAP & 85# potash dry spread; Planter 2x2 liquid starter 25#N & 24#P; Sidedress 180#N liquid 28% ]'
+temp.loc[mask, ['Fertilizer_info', 'Imputation_Notes']] = ['234 (N) 98 (P) 51 (K)', 'PrePlant']
+
+mask = temp.Fertilizer_info == '120lbs/acre in UAN applied prior to spring tillage. (N) 0 (P) 80 (K)  [UAN, potash]'
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame(
+{'Experiment_Code': ['IAI3', 'IAI3'],
+'Fertilizer_Application_Datetime_1': ['4/16/15', '4/22/15'],
+'Fertilizer_info': ['120 (N)', '80 (K)']
+}
+), how = 'outer')
+
+# '150 lbs/acre in UAN form applied with chemical ahead of tillage (N) 18-60-120-15-1.5 (n-p-k-sulfur-zinc) (P) 120lbs, fall applied (K)  [Uan, MESZ, and Potash]'
+# unclear how much 18-60-120-15-1.5 (n-p-k-sulfur-zinc) was applied. Left as missing.
+mask = temp.Fertilizer_info == '150 lbs/acre in UAN form applied with chemical ahead of tillage (N) 18-60-120-15-1.5 (n-p-k-sulfur-zinc) (P) 120lbs, fall applied (K)  [Uan, MESZ, and Potash]'
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame(
+{'Experiment_Code': ['IAI4', 'IAI4', 'IAI4', 'IAI4', 'IAI4', 'IAI4'],
+'Fertilizer_Application_Datetime_1': ['11/20/14', '5/3/15', '5/3/15', '5/3/15', '5/3/15', '5/3/15'],
+'Fertilizer_info': ['120 (K)', '150 (N)', '9999 (P)', '9999 (K)', '9999 (S)', '9999 (Zn)'] 
+}
+), how = 'outer')
+
+mask = temp.Fertilizer_info == '167 (N) 80 (P) 60 (K)  [only total given by producer;  fall application of 17-80-60;  150 lbs. N in spring]'
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame(
+{'Experiment_Code': ['IAH3', 'IAH3', 'IAH3', 'IAH3'],
+'Fertilizer_Application_Datetime_1': ['11/20/14', '11/20/14', '11/20/14', '5/3/15'],
+'Fertilizer_info': ['17 (N)', '80 (P)', '60 (K)', '150 (N)'] 
+}
+), how = 'outer')     
+
+
+temp = sanitize_col(
+    df = temp, 
+    col = 'Fertilizer_info', 
+    simple_renames= {
+    '166 (N) 30 (P) 40 (K)  [first app. 11-52-9 map (6 lbs N, 30 lbs. P) + 0-0-60 granular potash, spring app of 150 lbs. N as NH3]': '150 (N)',
+    '200 (N) 0 (P) 0 (K)  [granular ammonium sulfate]': '200 (N)',
+    '118 (N) 0 (P) 0 (K)  [UAN; 32-0-0]': '118 (N)',
+    '180 (N) 0 (P) 0 (K)  [0.28]': '180 (N)',        
+    '180 (N) 0 (P) 0 (K)  [NH3 + N-serve]': '180 (N)',
+    '100 (N) 0 (P) 0 (K)  [UAN (28-0-0)]': '100 (N)',
+    '0 (N) 0 (P) 0 (K)  [0]': '0 (N)',
+    '80 (N) 0 (P) 0 (K)  [28% UAN]': '80 (N)',
+    '160 (N) 0 (P) 0 (K)  [Anhydrous Ammonia]': '160 (N)',
+    '100 (N) 0 (P) 0 (K)  [Ammonium Nitrate 34-0-0]': '100 (N)',
+    '120 (N) 0 (P) 0 (K)  [0]': '120 (N)',
+    '200 (N) 0 (P) 0 (K)  [Granular Urea]': '200 (N)',
+    '100 (N) 0 (P) 0 (K)  [0]': '100 (N)'
+    }, 
+    split_renames= {
+    '234 (N) 98 (P) 51 (K)': [
+        '234 (N)', 
+        '98 (P)', 
+        '51 (K)'],
+    '180 (N) 0 (P) 90 (K)  [10-0-30 24S]': [
+        '180 (N)',                           
+        '90 (K)',                       
+        '9999 (S)'],
+    '86 (N) 19 (P) 0 (K)  [32-0-0, 10-34-0]': [
+        '86 (N)', 
+        '19 (P)'],
+    '196 (N) 92 (P) 120 (K)  [dry fertilizer + 160# Ammonia]': [
+        '196 (N)', 
+        '92 (P)', 
+        '120 (K)'],
+    '160 (N) 48 (P) 24 (K)  [Starter]': [
+        '160 (N)', 
+        '48 (P)', 
+        '24 (K)'],          
+    '155 (N) 50 (P) 100 (K)  [UAN 28% Dry PK]': [
+        '155 (N)', 
+        '50 (P)', 
+        '100 (K)'],        
+    '201 (N) 76 (P) 76 (K)  [19-19-19 without zinc & UAN 30% ]': [
+        '201 (N)', 
+         '76 (P)', 
+         '76 (K)'],
+    '138 (N) 46 (P) 62 (K)  [Diammonium phosphate, KCl, Super U (Urea)]': [
+        '138 (N)', 
+        '46 (P)', 
+        '62 (K)'],
+    '175 (N) 200 (P) 240 (K)  [granular 8-20-30, popup 10-34-0, liquid nitrogen 28-0-0-0.5]': [
+        '175 (N)',  
+        '200 (P)',  
+        '240 (K)'],
+    '102 (N) 40 (P) 40 (K)  [NPK and 30% UAN]': [
+        '102 (N)', 
+        '40 (P)', 
+        '40 (K)'],
+    '220 (N) 193 (P) 0 (K)  [11-37-0-5 zn, 32-0-0 UAN]': [
+        '220 (N)', 
+        '193 (P)', 
+        '26.08108108108108 (Zn)'],
+    '235 (N) 156 (P) 156 (K)  [10-20-20 & 19-19-19 with zink and UAN 30%]': [
+        '235 (N)', 
+        '156 (P)', 
+        '156 (K)', 
+        '9999 (Zn)'],          
+    '275 (N) 200 (P) 240 (K)  [granular 8-20-30, popup 10-34-0, liquid nitrogen 28-0-0-0.5]': [
+        '275 (N)', 
+        '200 (P)',
+        '240 (K)'],
+    '220 (N) 193 (P) 0 (K)  [11-37-0-5 zn, 32-0-0]': [
+        '220 (N)', 
+        '193 (P)', 
+        '26.08108108108108 (Zn)'], # solved for total Zn based on provided values
+    '210.8 (N) 47.4 (P) 142.2 (K)  [10-10-30, 24S]': [
+        '210.8 (N)', 
+        '47.4 (P)', 
+        '142.2 (K)'],
+    '250 (N) 0 (P) 120 (K)  [300 lb/A 7-0-40 pre-plant 12.5gal/A 10-20-0-1 at planting 65gal/A UAN sidedress]': [
+        '250 (N)',
+        '120 (K)']
+        
+    })
+
+temp.loc[:, 'Product'] = np.nan
+temp.loc[:, 'Amount_Per_Acre'] = np.nan
+
+
+# assume each string is formated as 'val (key)'. `sanitize_col` should be used to enforce this.
+for e in ['19 (P)', '48 (P)', '51 (K)', '235 (N)', '80 (P)', '86 (N)', '9999 (S)', '102 (N)', '100 (K)', '156 (P)', '92 (P)', '220 (N)', '193 (P)', '9999 (K)', '76 (K)', '0 (N)', '180 (N)', '9999 (Zn)', '90 (K)', '24 (K)', '9999 (P)', '155 (N)', '250 (N)', '100 (N)', '62 (K)', '40 (K)', '234 (N)', '26.08108108108108 (Zn)', '156 (K)', '240 (K)', '98 (P)', '120 (N)', '196 (N)', '175 (N)', '50 (P)', '200 (P)', '46 (P)', '120 (K)', '80 (N)', '80 (K)', '76 (P)', '200 (N)', '150 (N)', '160 (N)', '138 (N)', '40 (P)', '118 (N)', '201 (N)', '142.2 (K)', '275 (N)', '47.4 (P)', '60 (K)', '210.8 (N)', '17 (N)']:
+    val = re.findall('^\d+[.]*\d*', e)[0]
+    key = re.findall('\(.+\)',      e)[0].replace('(', '').replace(')', '')
+    
+    mask = (temp['Fertilizer_info'] == e)
+    temp.loc[mask, 'Product'] = key
+    temp.loc[mask, 'Amount_Per_Acre'] = val
+
+
+
+
+
+
+
+# Convert to long format, spread total values across n applications
+temp = pd.melt(temp, id_vars=['Experiment_Code', 'Fertilizer_info', 'Imputation_Notes', 'Product', 'Amount_Per_Acre'])
+
+temp = temp.rename(columns={e: 'Amount_Per_Acre', 'value': 'Date_Datetime'})
+temp = temp.loc[pd.Series.notna(temp.Date_Datetime), :]
+temp = temp.loc[temp.Amount_Per_Acre.notna(), :]
+# now that we have removed the nas that are likely 0 we can set the unknowns from 9999 to np.nan
+mask = (temp.Amount_Per_Acre == 9999)
+temp.loc[mask, 'Amount_Per_Acre'] = np.nan
+
+tally = temp.assign(n = 1).groupby('Experiment_Code').agg(n = ('n', np.sum)).reset_index()
+temp = temp.merge(tally)
+safe_create_col(temp, 'Unit')
+temp.loc[:, 'Unit'] = 'lbs/Acre'
+
+temp.Amount_Per_Acre = temp.Amount_Per_Acre.astype('float64')
+temp.Amount_Per_Acre = temp.Amount_Per_Acre/temp.n
+temp = temp.drop(columns= ['variable', 'n'])
+
+# TODO
+# mgmt = mgmt.merge(temp, how = 'outer')
+
+
+
+
+
+
+
+
+
+# e = 'K_Unit_lbs_per_A'
+# e_product = 'K'
+
+# temp = meta.loc[:, application_cols+[e]]
+
+# # gather
+# temp = pd.melt(temp, id_vars=['Experiment_Code', e])
+# temp = temp.rename(columns={e: 'Amount_Per_Acre', 'value': 'Date_Datetime'})
+# temp = temp.loc[pd.Series.notna(temp.Date_Datetime), :]
+# tally = temp.assign(n = 1).groupby('Experiment_Code').agg(n = ('n', np.sum)).reset_index()
+# temp = temp.merge(tally)
+
+# # Product
+# temp.loc[:, 'Product'] = e_product
+# temp.loc[:, 'Unit'] = 'lbs/Acre'
+
+# temp
+
+# find_unconvertable_numerics(temp.Amount_Per_Acre)
+# mask = temp.Amount_Per_Acre == '120lbs, fall applied' # associated datetimes 12/1/14  and  5/6/15
+# temp.loc[mask,  'Amount_Per_Acre'] = '120'
+
+
+# temp.Amount_Per_Acre = temp.Amount_Per_Acre.astype('float64')
+# temp.Amount_Per_Acre = temp.Amount_Per_Acre/temp.n
+
+# temp = temp.drop(columns= ['variable', 'n'])
+
+# mgmt = mgmt.merge(temp, how = 'outer')
+
+
+
+
+
+
+
+
+# for val in [
+#     '0 (N) 0 (P) 0 (K)  [urea; applied to south half  (Hi-N side) of field only]',
+#     '130 (N) 0 (P) 0 (K)  [urea (46-0-0); applied to south half (1/2 Acre, Hi-N side) of field only: actual applied was 140 lb urea to the Hi-N side of the field]'
+# ]:
+#     mask = (temp.Fertilizer_info == val)
+#     temp.loc[mask, ['Fertilizer_info', 'Product']] = [np.nan, val]
+# #     temp.loc[~mask, ['Fertilizer_info', 'Product']]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # meta -> mgmt
+# mv_col_lst = ['Pre_Plant_Herbicide',
+#  'Post_Plant_Herbicide',
+#  'N_Unit_lbs_per_A',
+#  'P_Unit_lbs_per_A',
+#  'K_Unit_lbs_per_A',
+#  'Fertilizer_Product',
+#  'Insecticide',
+# #               'Fertilizer_Application_Datetime_1',
+# #  'Fertilizer_Application_Datetime_2',
+# #  'Fertilizer_Application_Datetime_3',
+# #  'Fertilizer_Application_Datetime_4',
+# #  'Fertilizer_Application_Datetime_5',
+# #  'Fertilizer_Application_Datetime_6',
+# #  'Fertilizer_Application_Datetime_7',
+# #  'Fertilizer_Application_Datetime_8'
+#              ]
+
+
+# meta.loc[:, ['Experiment_Code']+mv_col_lst]
+
+# list(meta.Fertilizer_Product.drop_duplicates())
+
 # # separate static and dynamic values
 # sval = phno.merge(soil, how = 'outer')
-# sval = sval.merge(meta, how = 'outer') # This introduces 3 sites that have no data
-# # sval.shape # used to confirm nrow = #20574 + 3
+# sval = sval.merge(meta.drop(columns='Test_Weight_Unit_lbs'), how = 'outer')
+
+# (mgmt.shape, phno.shape)
 
 # # these tables are different enought we'll keep them separate
 # # mgmt
 # # unfortunately we need multiples because at least one field treats different passes differently
 # mgmt = phno.loc[:, ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot', 'phno']
 #                ].drop_duplicates().merge(mgmt, how = 'outer')
+
+# mgmt = mgmt.loc[mgmt.mgmt.notna(), :].drop(columns = 'phno')
+
 # # confirm there are no rows in mgmt that are not in phno
-# temp = mgmt.loc[(~mgmt.phno & mgmt.mgmt), :]
+# temp = mgmt.loc[((mgmt.phno != True) & (mgmt.mgmt == True)), :]
 # if 0 != temp.shape[0]:
 #     print(temp)
 # else:
@@ -131,6 +658,12 @@ print(
 # # wthr
 # # There's only ever one weather station so we have to worry about imputation but not duplicates
 
+
+
+
+
+
+
 # # Set each id col to a string
 # for i in ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot']:
 #     sval[i] = sval[i].astype('string')
@@ -139,9 +672,13 @@ print(
 #     if i not in ['Range', 'Pass', 'Plot']:
 #         wthr[i]  =  wthr[i].astype('string')
 
-# sval_col_dtypes = mk_dtype_dict(name = 'sval')
-# wthr_col_dtypes = mk_dtype_dict(name = 'wthr')
-# mgmt_col_dtypes = mk_dtype_dict(name = 'mgmt')
+sval_col_dtypes = mk_dtype_dict(name = 'sval')
+wthr_col_dtypes = mk_dtype_dict(name = 'wthr')
+mgmt_col_dtypes = mk_dtype_dict(name = 'mgmt')
+
+# sval.loc[sval.Recieved_Date_Unit_Datetime == 'See Soil Sample', 'Recieved_Date_Unit_Datetime'] = np.nan
+
+# sval.Additional_Metics.drop_duplicates()
 
 # # convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.
 
@@ -150,15 +687,24 @@ print(
 #     'Anthesis_Unit_Datetime', 
 #     'Silking_Unit_Datetime', 
 #     'Recieved_Date_Unit_Datetime', 
-#     'Processed_Date_Unit_Datetime', 
+# #     'Processed_Date_Unit_Datetime', 
 #     'Weather_Station_Placed_Unit_Datetime', 
-#     'Weather_Station_Removed_Unit_Datetime'
+#     'Weather_Station_Removed_Unit_Datetime',
+#     'Fertilizer_Application_Datetime_1',
+#     'Fertilizer_Application_Datetime_2',
+#     'Fertilizer_Application_Datetime_3',
+#     'Fertilizer_Application_Datetime_4',
+#     'Fertilizer_Application_Datetime_5',
+#     'Fertilizer_Application_Datetime_6',
+#     'Fertilizer_Application_Datetime_7',
+#     'Fertilizer_Application_Datetime_8'
 #     ]:
 # # find_unconvertable_datetimes(df_col=sval[e], pattern='%Y-%m-%d %H:%M', index=False)
 
 #     sval['Datetime_Temp'] = pd.to_datetime(np.nan)
-
+#     print(e)
 #     for code in list(sval.Experiment_Code.drop_duplicates()):
+
 #     # code = list(sval.Experiment_Code.drop_duplicates())[0]
 #         sval.loc[sval.Experiment_Code == code, 'Datetime_Temp'
 #                  ] = pd.to_datetime(sval.loc[sval.Experiment_Code == code, e])
@@ -167,19 +713,29 @@ print(
 
 # sval = sval.drop(columns = 'Datetime_Temp')
 
-# # # -> floats
 
-# # # [find_unconvertable_numerics(df_col = sval[e], index = False) for e in [
-# # #     'Alley_Length_Unit_Inches',
-# # # 'Row_Spacing_Unit_Inches',
-# # # 'Pounds_Needed_Soil_Moisture'
-# # # ]]
 
-# sval = sanitize_col(
-#     df = sval, 
-#     col = 'Pounds_Needed_Soil_Moisture', 
-#     simple_renames= {'3 to 4':'3.5'}, 
-#     split_renames= {})
+
+
+# sval.loc[sval.N_Unit_lbs_per_A == ['150 lbs/acre in UAN form applied with chemical ahead of tillage',
+#   '120lbs/acre in UAN applied prior to spring tillage.'][0], ]
+
+# # # # -> floats
+
+# [find_unconvertable_numerics(df_col = sval[e], index = False) for e in [
+# #     'Alley_Length_Unit_Feet', 
+# #     'Sikora_Buffer_Unit_pH', 
+# #     'P_Unit_ppm', 
+#     'N_Unit_lbs_per_A', 
+#     'P_Unit_lbs_per_A', 
+#     'K_Unit_lbs_per_A'
+# ]]
+
+# # sval = sanitize_col(
+# #     df = sval, 
+# #     col = 'Pounds_Needed_Soil_Moisture', 
+# #     simple_renames= {'3 to 4':'3.5'}, 
+# #     split_renames= {})
 
 # # convert types
 # for e in ['Alley_Length_Unit_Inches', 'Row_Spacing_Unit_Inches', 'Pounds_Needed_Soil_Moisture',
@@ -204,8 +760,9 @@ print(
 # sval.loc[sval.Discarded.isna(), 'Discarded'] = 'False'
 # sval.Discarded = sval.Discarded.map({'True': True, 'False': False})
 
-# to float
-# sval.Pounds_Needed_Soil_Moisture.astype(float)
+# # to float
+# # sval.Pounds_Needed_Soil_Moisture.astype(float)
+# sval = sval.drop(columns=['Drop_Record_Index', 'Additional_Metics'])
 
 # # to bool
 # sval['phno'] = sval['phno'].astype('bool')
@@ -225,8 +782,12 @@ print(
 # if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
 #     pass
 # else:
-#     print(checkpoint.loc[~checkpoint.Pass, ]) 
 #     print()
+    
+    
+# checkpoint.loc[~checkpoint.Pass, ]
+
+
 
 # # instead of writing regexes to figure out the mose likely format for each datetime, we assume each experiment will be consistent withing that experiment
 # # and let pd figure it out.

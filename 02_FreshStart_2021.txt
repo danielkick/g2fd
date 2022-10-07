@@ -550,9 +550,14 @@ def list_known_experiments():
         # 2017
         'ILH2', 'NEH4', 'NYH4',
         # 2016
-        'AZH1'
+        'AZH1',
+        # 2015
+        'AZI1', 'AZI2', 'DEI1', 'GAI1', 'IAI1', 'IAI2', 'IAI3', 'IAI4', 'ILI1', 'INI1', 'KSI1', 'MNI1', 'MOH2', 'MOI1', 'MOI2', 'NCI1', 'NYI1', 'NYI2', 'PAI1', 'PAI2', 'SDH1', 'SDI1', 'TXI1', 'TXI2', 'TXI3', 'WII1', 'WII2',
+        'IAu2', 'IAu3', 'MNu1', 'NYu' # these are soils from an ambigious location (e.g. IAu2 might be IAH2 or IAI2)
                  ]
     return(known_exps)
+
+list_known_experiments()
 
 #| export
 # check Experiment_Code columns for any unexpected columns
@@ -943,8 +948,16 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
         'Fe_Unit_ppm': 'float64',
         'Mn_Unit_ppm': 'float64',
         'Cu_Unit_ppm': 'float64',
-        'B_Unit_ppm': 'float64'
-        
+        'B_Unit_ppm': 'float64',
+        # 2015
+        'Type': 'string',
+         'Tillage': 'string',
+        'Alley_Length_Unit_Feet': 'float64',
+        'Sikora_Buffer_Unit_pH': 'float64',
+        'P_Unit_ppm': 'float64',
+        'Lab_ID': 'string',
+        'Lab_ID_Number': 'string',
+        'Cooperator': 'string'        
     }
 
     
@@ -999,7 +1012,19 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
         'Imputation_Notes': 'string',
         'Ingredient': 'string',
         # 2016
-        'Replicate': 'string'
+        'Replicate': 'string',
+        # 2015
+        'N_Unit_lbs_per_A': 'float64',
+        'P_Unit_lbs_per_A': 'float64',
+        'K_Unit_lbs_per_A': 'float64',
+        'Fertilizer_Application_Datetime_1': 'datetime64[ns]',
+        'Fertilizer_Application_Datetime_2': 'datetime64[ns]',
+        'Fertilizer_Application_Datetime_3': 'datetime64[ns]',
+        'Fertilizer_Application_Datetime_4': 'datetime64[ns]',
+        'Fertilizer_Application_Datetime_5': 'datetime64[ns]',
+        'Fertilizer_Application_Datetime_6': 'datetime64[ns]',
+        'Fertilizer_Application_Datetime_7': 'datetime64[ns]',
+        'Fertilizer_Application_Datetime_8': 'datetime64[ns]'
     }
    
     if name == 'sval':

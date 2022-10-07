@@ -32,9 +32,9 @@ wthr = pd.read_csv(wthr_path, encoding = "ISO-8859-1", low_memory=False)
 # load dicts for column renaming
 meta_name_dict = mk_name_dict(name = 'meta')
 phno_name_dict = mk_name_dict(name = 'phno')
-soil_name_dict = mk_name_dict(name = 'soil')
+# soil_name_dict = mk_name_dict(name = 'soil')
 wthr_name_dict = mk_name_dict(name = 'wthr')
-mgmt_name_dict = mk_name_dict(name = 'mgmt')
+# mgmt_name_dict = mk_name_dict(name = 'mgmt')
 
 (find_unrecognized_columns(df = meta, dct = meta_name_dict),
 find_unrecognized_columns(df = phno, dct = phno_name_dict),
@@ -63,7 +63,7 @@ meta.loc[:, ['Location name',
 # wthr['wthr'] = True
 # mgmt['mgmt'] = True
 
-# [e.shape for e in [meta, phno, soil, wthr, mgmt]]
+[e.shape for e in [meta, phno, wthr]]
 
 # soil = sanitize_Experiment_Codes(
 #     df = soil, 
