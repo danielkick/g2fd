@@ -15879,7 +15879,10 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
         <span class="s1">&#39;Data_Cleaned&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
         <span class="s1">&#39;Fields_Cleaned&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
         <span class="s1">&#39;Cleaning_Method&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Weather_Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+        <span class="s1">&#39;Weather_Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+        <span class="c1"># 2015</span>
+        <span class="s1">&#39;Day_Of_Year&#39;</span><span class="p">:</span> <span class="s1">&#39;int64&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Soil_Moisture_Percent&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span>
     <span class="p">}</span>
 
     <span class="n">mgmt_col_dtypes</span> <span class="o">=</span> <span class="p">{</span>
@@ -15899,17 +15902,14 @@ all  [&#39;COH1&#39;, &#39;DEH1&#39;, &#39;GAH1&#39;, &#39;GAH2&#39;, &#39;GEH1&
         <span class="c1"># 2016</span>
         <span class="s1">&#39;Replicate&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
         <span class="c1"># 2015</span>
-        <span class="s1">&#39;N_Unit_lbs_per_A&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;P_Unit_lbs_per_A&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;K_Unit_lbs_per_A&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Fertilizer_Application_Datetime_1&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Fertilizer_Application_Datetime_2&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Fertilizer_Application_Datetime_3&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Fertilizer_Application_Datetime_4&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Fertilizer_Application_Datetime_5&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Fertilizer_Application_Datetime_6&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Fertilizer_Application_Datetime_7&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Fertilizer_Application_Datetime_8&#39;</span><span class="p">:</span> <span class="s1">&#39;datetime64[ns]&#39;</span>
+        <span class="s1">&#39;Irrigation_Applied&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;Weather_Station_Documents_Irrigation&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;Nutrients_Applied&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;Management_Comments&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;Fertilizer_info&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;Pre_Plant_Herbicide&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;Post_Plant_Herbicide&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;Insecticide&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
     <span class="p">}</span>
    
     <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;sval&#39;</span><span class="p">:</span>

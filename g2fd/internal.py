@@ -838,7 +838,10 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
         'Data_Cleaned': 'bool',
         'Fields_Cleaned': 'string',
         'Cleaning_Method': 'string',
-        'Weather_Comments': 'string'
+        'Weather_Comments': 'string',
+        # 2015
+        'Day_Of_Year': 'int64',
+        'Soil_Moisture_Percent': 'float64'
     }
 
     mgmt_col_dtypes = {
@@ -858,17 +861,14 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
         # 2016
         'Replicate': 'string',
         # 2015
-        'N_Unit_lbs_per_A': 'float64',
-        'P_Unit_lbs_per_A': 'float64',
-        'K_Unit_lbs_per_A': 'float64',
-        'Fertilizer_Application_Datetime_1': 'datetime64[ns]',
-        'Fertilizer_Application_Datetime_2': 'datetime64[ns]',
-        'Fertilizer_Application_Datetime_3': 'datetime64[ns]',
-        'Fertilizer_Application_Datetime_4': 'datetime64[ns]',
-        'Fertilizer_Application_Datetime_5': 'datetime64[ns]',
-        'Fertilizer_Application_Datetime_6': 'datetime64[ns]',
-        'Fertilizer_Application_Datetime_7': 'datetime64[ns]',
-        'Fertilizer_Application_Datetime_8': 'datetime64[ns]'
+        'Irrigation_Applied': 'string', 
+        'Weather_Station_Documents_Irrigation': 'string', 
+        'Nutrients_Applied': 'string', 
+        'Management_Comments': 'string', 
+        'Fertilizer_info': 'string', 
+        'Pre_Plant_Herbicide': 'string', 
+        'Post_Plant_Herbicide': 'string', 
+        'Insecticide': 'string'
     }
    
     if name == 'sval':

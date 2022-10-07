@@ -41,13 +41,6 @@ find_unrecognized_columns(df = soil, dct = soil_name_dict),
 find_unrecognized_columns(df = wthr, dct = wthr_name_dict),
 find_unrecognized_columns(df = mgmt, dct = mgmt_name_dict))
 
-# # [prlst2dct(e) for e in [] ]
-
-# # mgmt.loc[:, "Nutrients Applied"].drop_duplicates()
-# # soil
-
-# meta
-
 meta = meta.rename(columns=meta_name_dict)
 phno = phno.rename(columns=phno_name_dict)
 soil = soil.rename(columns=soil_name_dict)
@@ -96,11 +89,6 @@ wthr = sanitize_Experiment_Codes(
     simple_renames = simple_rename_dict, 
     split_renames = split_rename_dict)
 
-# soil.loc[soil.Experiment_Code == 'NY_']
-# list_known_experiments()
-
-
-
 # confirm everything's okay
 print(
   'meta', find_unrecognized_experiments(meta.Experiment_Code, return_all_exps=False), 
@@ -110,42 +98,6 @@ print(
 '\nmgmt', find_unrecognized_experiments(mgmt.Experiment_Code, return_all_exps=False),
 '\nall ', find_unrecognized_experiments([], return_all_exps=True)
 )  
-
-# [e.columns for e in [meta,
-# phno,
-# soil,
-# wthr,
-# mgmt]]
-
-# # Find minimum cols needed to index all rows
-# df = phno
-# id_cols = ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot',]
-# candidate_cols = ['Year', 'Experiment_Code', 'Drop_Record_Index', 'Source', 'Pedigree',
-#        'Replicate', 'Block', 'Plot', 'Range', 'Pass', 'Local_Check',
-#        'Plot_Length_Unit_Feet', 'Alley_Length_Unit_Feet',
-#        'Row_Spacing_Unit_Inches', 'Plot_Area_Unit_Feet2', 'Rows_Per_Plot',
-#        'Packets_Per_Plot', 'Kernels_Per_Packet', 'Seeds_Per_Plot',
-#        'Planted_Unit_Datetime', 'Harvested_Unit_Datetime',
-#        'Anthesis_Unit_Datetime', 'Silking_Unit_Datetime', 'Anthesis_Unit_Days',
-#        'Silking_Unit_Days', 'Plant_Height_Unit_cm', 'Ear_Height_Unit_cm',
-#        'Stand_Count_Unit_Number', 'Root_Lodging_Unit_Number',
-#        'Stalk_Lodging_Unit_Number', 'Grain_Moisture_Unit_Percent',
-#        'Test_Weight_Unit_lbs', 'Plot_Weight_Unit_lbs',
-#        'Grain_Yield_Unit_bu_Per_A', 'Discarded', 'Phenotype_Comments',
-#        'Filler', 'Additional_Metics', 'phno']
-# target = df.shape[0]
-
-# output = pd.DataFrame(zip(
-#     candidate_cols,
-#     [df.loc[:, id_cols+[e]].drop_duplicates().shape[0] for e in candidate_cols]
-#    ), columns=['Additional_ID', 'Uniq_Vals'])
-
-# output.assign(At_Target=lambda x:x.Uniq_Vals == target)
-
-
-# there are some columns that belong in different dfs
-
-# [e for e in list(mgmt.columns) if e not in list(mk_dtype_dict('mgmt').keys())]
 
 # Frustratingly `Fertilizer_Product` is only partially redundant. For some it contains information on amount 
 # What I want to do is to keep `Fertilizer_Product` as `Product` but add an ingredient column to capture the npk data
@@ -182,16 +134,11 @@ temp = temp.drop(columns= ['N_Unit_lbs_per_A',
                           'K_Unit_lbs_per_A',
                           'Fertilizer_Product'])
 
-# temp
-
+# Not done here but this site has within field variation in management, so it would be best to resolve or drop it.
 # PAI2
-# drop this site because the management information
 # '0 (N) 0 (P) 0 (K)  [urea; applied to south half  (Hi-N side) of field only]'
-# requires a field map to understand and lacks values
-
 # PAI1
 # '130 (N) 0 (P) 0 (K)  [urea (46-0-0); applied to south half (1/2 Acre, Hi-N side) of field only: actual applied was 140 lb urea to the Hi-N side of the field]'
-
 
 
 # safe create imputation notes
@@ -319,7 +266,6 @@ temp = sanitize_col(
 temp.loc[:, 'Product'] = np.nan
 temp.loc[:, 'Amount_Per_Acre'] = np.nan
 
-
 # assume each string is formated as 'val (key)'. `sanitize_col` should be used to enforce this.
 for e in ['19 (P)', '48 (P)', '51 (K)', '235 (N)', '80 (P)', '86 (N)', '9999 (S)', '102 (N)', '100 (K)', '156 (P)', '92 (P)', '220 (N)', '193 (P)', '9999 (K)', '76 (K)', '0 (N)', '180 (N)', '9999 (Zn)', '90 (K)', '24 (K)', '9999 (P)', '155 (N)', '250 (N)', '100 (N)', '62 (K)', '40 (K)', '234 (N)', '26.08108108108108 (Zn)', '156 (K)', '240 (K)', '98 (P)', '120 (N)', '196 (N)', '175 (N)', '50 (P)', '200 (P)', '46 (P)', '120 (K)', '80 (N)', '80 (K)', '76 (P)', '200 (N)', '150 (N)', '160 (N)', '138 (N)', '40 (P)', '118 (N)', '201 (N)', '142.2 (K)', '275 (N)', '47.4 (P)', '60 (K)', '210.8 (N)', '17 (N)']:
     val = re.findall('^\d+[.]*\d*', e)[0]
@@ -348,313 +294,201 @@ temp.Amount_Per_Acre = temp.Amount_Per_Acre.astype('float64')
 temp.Amount_Per_Acre = temp.Amount_Per_Acre/temp.n
 temp = temp.drop(columns= ['variable', 'n'])
 
-# TODO
-# mgmt = mgmt.merge(temp, how = 'outer')
+mgmt = mgmt.merge(temp, how = 'outer'
+          ).merge(meta.loc[:, [
+           'Experiment_Code',
+           'Pre_Plant_Herbicide',
+           'Post_Plant_Herbicide',
+           'Insecticide']].drop_duplicates(), how = 'outer')
 
+meta = meta.drop(columns=[
+    'Pre_Plant_Herbicide',
+    'Post_Plant_Herbicide',
+    'Insecticide',
+    'N_Unit_lbs_per_A',
+    'P_Unit_lbs_per_A',
+    'K_Unit_lbs_per_A',
+    'Fertilizer_Product',
+    'Fertilizer_Application_Datetime_1',
+    'Fertilizer_Application_Datetime_2',
+    'Fertilizer_Application_Datetime_3',
+    'Fertilizer_Application_Datetime_4',
+    'Fertilizer_Application_Datetime_5',
+    'Fertilizer_Application_Datetime_6',
+    'Fertilizer_Application_Datetime_7',
+    'Fertilizer_Application_Datetime_8'])
 
+# separate static and dynamic values
+sval = phno.merge(soil, how = 'outer')
+sval = sval.merge(meta.drop(columns='Test_Weight_Unit_lbs'), how = 'outer')
 
+# these tables are different enought we'll keep them separate
+# mgmt
+# unfortunately we need multiples because at least one field treats different passes differently
+mgmt = phno.loc[:, ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot', 'phno']
+               ].drop_duplicates().merge(mgmt, how = 'outer')
 
+mgmt = mgmt.loc[mgmt.mgmt.notna(), :].drop(columns = 'phno')
 
-
-
-# # meta -> mgmt
-# mv_col_lst = ['Pre_Plant_Herbicide',
-#  'Post_Plant_Herbicide',
-#  'N_Unit_lbs_per_A',
-#  'P_Unit_lbs_per_A',
-#  'K_Unit_lbs_per_A',
-#  'Fertilizer_Product',
-#  'Insecticide',
-# #               'Fertilizer_Application_Datetime_1',
-# #  'Fertilizer_Application_Datetime_2',
-# #  'Fertilizer_Application_Datetime_3',
-# #  'Fertilizer_Application_Datetime_4',
-# #  'Fertilizer_Application_Datetime_5',
-# #  'Fertilizer_Application_Datetime_6',
-# #  'Fertilizer_Application_Datetime_7',
-# #  'Fertilizer_Application_Datetime_8'
-#              ]
-
-
-# meta.loc[:, ['Experiment_Code']+mv_col_lst]
-
-# list(meta.Fertilizer_Product.drop_duplicates())
-
-# # separate static and dynamic values
-# sval = phno.merge(soil, how = 'outer')
-# sval = sval.merge(meta.drop(columns='Test_Weight_Unit_lbs'), how = 'outer')
-
-# (mgmt.shape, phno.shape)
-
-# # these tables are different enought we'll keep them separate
-# # mgmt
-# # unfortunately we need multiples because at least one field treats different passes differently
-# mgmt = phno.loc[:, ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot', 'phno']
-#                ].drop_duplicates().merge(mgmt, how = 'outer')
-
-# mgmt = mgmt.loc[mgmt.mgmt.notna(), :].drop(columns = 'phno')
-
-# # confirm there are no rows in mgmt that are not in phno
-# temp = mgmt.loc[((mgmt.phno != True) & (mgmt.mgmt == True)), :]
-# if 0 != temp.shape[0]:
-#     print(temp)
-# else:
-#     mgmt = mgmt.loc[mgmt.mgmt.notna(), :].drop(columns = 'phno')
-
-
-# # wthr
-# # There's only ever one weather station so we have to worry about imputation but not duplicates
-
-
-
-
-
-
-
-# # Set each id col to a string
-# for i in ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot']:
-#     sval[i] = sval[i].astype('string')
-#     mgmt[i]  =  mgmt[i].astype('string')
+# Set each id col to a string
+for i in ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot']:
+    sval[i] = sval[i].astype('string')
+    mgmt[i]  =  mgmt[i].astype('string')
     
-#     if i not in ['Range', 'Pass', 'Plot']:
-#         wthr[i]  =  wthr[i].astype('string')
+    if i not in ['Range', 'Pass', 'Plot']:
+        wthr[i]  =  wthr[i].astype('string')
 
 sval_col_dtypes = mk_dtype_dict(name = 'sval')
 wthr_col_dtypes = mk_dtype_dict(name = 'wthr')
 mgmt_col_dtypes = mk_dtype_dict(name = 'mgmt')
 
-# sval.loc[sval.Recieved_Date_Unit_Datetime == 'See Soil Sample', 'Recieved_Date_Unit_Datetime'] = np.nan
+sval.loc[sval.Recieved_Date_Unit_Datetime == 'See Soil Sample', 'Recieved_Date_Unit_Datetime'] = np.nan
 
-# sval.Additional_Metics.drop_duplicates()
+# convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.
 
-# # convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.
+for e in ['Planted_Unit_Datetime', 
+    'Harvested_Unit_Datetime', 
+    'Anthesis_Unit_Datetime', 
+    'Silking_Unit_Datetime', 
+    'Recieved_Date_Unit_Datetime', 
+#     'Processed_Date_Unit_Datetime', 
+    'Weather_Station_Placed_Unit_Datetime', 
+    'Weather_Station_Removed_Unit_Datetime'
+    ]:
+# find_unconvertable_datetimes(df_col=sval[e], pattern='%Y-%m-%d %H:%M', index=False)
 
-# for e in ['Planted_Unit_Datetime', 
-#     'Harvested_Unit_Datetime', 
-#     'Anthesis_Unit_Datetime', 
-#     'Silking_Unit_Datetime', 
-#     'Recieved_Date_Unit_Datetime', 
-# #     'Processed_Date_Unit_Datetime', 
-#     'Weather_Station_Placed_Unit_Datetime', 
-#     'Weather_Station_Removed_Unit_Datetime',
-#     'Fertilizer_Application_Datetime_1',
-#     'Fertilizer_Application_Datetime_2',
-#     'Fertilizer_Application_Datetime_3',
-#     'Fertilizer_Application_Datetime_4',
-#     'Fertilizer_Application_Datetime_5',
-#     'Fertilizer_Application_Datetime_6',
-#     'Fertilizer_Application_Datetime_7',
-#     'Fertilizer_Application_Datetime_8'
-#     ]:
-# # find_unconvertable_datetimes(df_col=sval[e], pattern='%Y-%m-%d %H:%M', index=False)
+    sval['Datetime_Temp'] = pd.to_datetime(np.nan)
+    print(e)
+    for code in list(sval.Experiment_Code.drop_duplicates()):
 
-#     sval['Datetime_Temp'] = pd.to_datetime(np.nan)
-#     print(e)
-#     for code in list(sval.Experiment_Code.drop_duplicates()):
+    # code = list(sval.Experiment_Code.drop_duplicates())[0]
+        sval.loc[sval.Experiment_Code == code, 'Datetime_Temp'
+                 ] = pd.to_datetime(sval.loc[sval.Experiment_Code == code, e])
 
-#     # code = list(sval.Experiment_Code.drop_duplicates())[0]
-#         sval.loc[sval.Experiment_Code == code, 'Datetime_Temp'
-#                  ] = pd.to_datetime(sval.loc[sval.Experiment_Code == code, e])
+    sval.loc[:, e] = sval.loc[:, 'Datetime_Temp'] 
 
-#     sval.loc[:, e] = sval.loc[:, 'Datetime_Temp'] 
+sval = sval.drop(columns = 'Datetime_Temp')
 
-# sval = sval.drop(columns = 'Datetime_Temp')
+# to bool
+sval = sanitize_col(
+    df = sval, 
+    col = 'Discarded', 
+    simple_renames= {
+        'Yes':'True',
+        'yes':'True'}, 
+    split_renames= {})
 
-
-
-
-
-# sval.loc[sval.N_Unit_lbs_per_A == ['150 lbs/acre in UAN form applied with chemical ahead of tillage',
-#   '120lbs/acre in UAN applied prior to spring tillage.'][0], ]
-
-# # # # -> floats
-
-# [find_unconvertable_numerics(df_col = sval[e], index = False) for e in [
-# #     'Alley_Length_Unit_Feet', 
-# #     'Sikora_Buffer_Unit_pH', 
-# #     'P_Unit_ppm', 
-#     'N_Unit_lbs_per_A', 
-#     'P_Unit_lbs_per_A', 
-#     'K_Unit_lbs_per_A'
-# ]]
-
-# # sval = sanitize_col(
-# #     df = sval, 
-# #     col = 'Pounds_Needed_Soil_Moisture', 
-# #     simple_renames= {'3 to 4':'3.5'}, 
-# #     split_renames= {})
-
-# # convert types
-# for e in ['Alley_Length_Unit_Inches', 'Row_Spacing_Unit_Inches', 'Pounds_Needed_Soil_Moisture',
-#          'Anthesis_Unit_Days', 'Silking_Unit_Days', 'Kernels_Per_Plot']:
-#     err_list = find_unconvertable_numerics(df_col = sval[e], index = False)
-#     if err_list != []:
-#         print(e)
-#         print(err_list)
-#     else:
-#         sval[e] = sval[e].astype('float')
-
-# # to bool
-# sval = sanitize_col(
-#     df = sval, 
-#     col = 'Discarded', 
-#     simple_renames= {
-#         'Yes':'True',
-#         'yes':'True'}, 
-#     split_renames= {})
-
-# # set missing to false
-# sval.loc[sval.Discarded.isna(), 'Discarded'] = 'False'
-# sval.Discarded = sval.Discarded.map({'True': True, 'False': False})
+# set missing to false
+sval.loc[sval.Discarded.isna(), 'Discarded'] = 'False'
+sval.Discarded = sval.Discarded.map({'True': True, 'False': False})
 
 # # to float
 # # sval.Pounds_Needed_Soil_Moisture.astype(float)
-# sval = sval.drop(columns=['Drop_Record_Index', 'Additional_Metics'])
+sval = sval.drop(columns=['Drop_Record_Index', 'Additional_Metics'])
 
-# # to bool
-# sval['phno'] = sval['phno'].astype('bool')
-# sval['soil'] = sval['soil'].astype('bool')
-# sval['meta'] = sval['meta'].astype('bool')
+# to bool
+sval['phno'] = sval['phno'].astype('bool')
+sval['soil'] = sval['soil'].astype('bool')
+sval['meta'] = sval['meta'].astype('bool')
 
-# # to string
-# sval = cols_astype_string(
-#     df = sval, 
-#     col_list = [key for key in sval_col_dtypes.keys() if sval_col_dtypes[key] == 'string'])
+# to string
+sval = cols_astype_string(
+    df = sval, 
+    col_list = [key for key in sval_col_dtypes.keys() if sval_col_dtypes[key] == 'string'])
 
-# sval.Year = year_string
-# sval.Year = sval.Year.astype('string')
+sval.Year = year_string
+sval.Year = sval.Year.astype('string')
 
-# checkpoint = check_df_dtype_expectations(df = sval, dtype_dct = sval_col_dtypes)
+checkpoint = check_df_dtype_expectations(df = sval, dtype_dct = sval_col_dtypes)
 
-# if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
-#     pass
-# else:
-#     print()
-    
-    
-# checkpoint.loc[~checkpoint.Pass, ]
+if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
+    pass
+else:
+    print(checkpoint.loc[~checkpoint.Pass, ])
+
+# ... or we use the fields in the df to make a consistent format
+wthr = cols_astype_string(
+    df = wthr, 
+    col_list = ['Year', 'Month', 'Day', 'Time'])
+
+wthr['Datetime_Temp'] = wthr['Year']+'-'+wthr['Month']+'-'+wthr['Day']+' '+wthr['Time']
+
+wthr['Datetime'] = pd.to_datetime(pd.Series(wthr.Datetime_Temp))
+wthr = wthr.drop(columns= 'Datetime_Temp')
+
+mask = wthr.Photoperiod_Unit_Hours.notna()
+temp = wthr.Photoperiod_Unit_Hours.str.split(":", expand=True)
+wthr.Photoperiod_Unit_Hours = temp.loc[:, 0].astype(float) + (temp.loc[:, 1].astype(float)/60)
+
+# to bool
+wthr = sanitize_col(
+    df = wthr, 
+    col = 'Data_Cleaned', 
+    simple_renames= {
+        'Yes':'True',
+        'No':'False'}, 
+    split_renames= {})
+
+# set missing to false
+wthr.loc[wthr.Data_Cleaned.isna(), 'Data_Cleaned'] = 'False'
+wthr.Data_Cleaned = wthr.Data_Cleaned.map({'True': True, 'False': False})
+
+wthr = wthr.drop(columns=['Drop_Record_Index',
+                         'CO2_Unit_ppm' # 0 non null
+                         ])
+
+# to string
+wthr = cols_astype_string(
+    df = wthr, 
+    col_list = [key for key in wthr_col_dtypes.keys() if wthr_col_dtypes[key] == 'string'])
+
+wthr.Year = year_string
+wthr.Year = wthr.Year.astype('string')
+
+checkpoint = check_df_dtype_expectations(df = wthr, dtype_dct = wthr_col_dtypes)
+
+if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
+    pass
+else:
+    print(checkpoint.loc[~checkpoint.Pass, ])
 
 
+# convert types
+err_list = find_unconvertable_datetimes(df_col=mgmt.Date_Datetime, pattern='%m/%d/%Y', index=False)
+if err_list != []:
+    print(err_list)
+else:
+    mgmt.Date_Datetime = pd.to_datetime(pd.Series(mgmt.Date_Datetime), format = '%m/%d/%Y', errors='coerce')
 
-# # instead of writing regexes to figure out the mose likely format for each datetime, we assume each experiment will be consistent withing that experiment
-# # and let pd figure it out.
-# # wthr['Datetime_Temp'] = pd.to_datetime(np.nan)
+# effectively done above.
 
-# # for code in list(wthr.loc[:, 'Experiment_Code'].drop_duplicates()):
-# #     wthr.loc[wthr.Experiment_Code == code, 'Datetime_Temp'] = pd.to_datetime(wthr.loc[wthr.Experiment_Code == code, 'Datetime'], errors='coerce')
-
-
-# # ... or we use the fields in the df to make a consistent format
-# wthr = cols_astype_string(
-#     df = wthr, 
-#     col_list = ['Year', 'Month', 'Day', 'Time'])
-
-# wthr = sanitize_col(
-#     df = wthr,
-#     col = 'Time', 
-#     simple_renames= {'24:00:00': '00:00:00'}, # this could be day + 24 h instead of a miscoded day + 0 h
-#     split_renames= {})
-
-# wthr['Datetime_Temp'] = wthr['Year']+'-'+wthr['Month']+'-'+wthr['Day']+' '+wthr['Time']
-
-# # convert types
-# err_list = find_unconvertable_datetimes(df_col=wthr['Datetime_Temp'], pattern='%Y-%m-%d %H:%M', index=False)
-# if err_list != []:
-#     print(err_list)
-# else:
-#     wthr.Datetime_Temp = pd.to_datetime(pd.Series(wthr.Datetime_Temp), errors='coerce')
-#     wthr.Datetime = wthr.Datetime_Temp
-#     wthr = wthr.drop(columns= 'Datetime_Temp')
-
-# # to string
-# wthr = cols_astype_string(
-#     df = wthr, 
-#     col_list = [key for key in wthr_col_dtypes.keys() if wthr_col_dtypes[key] == 'string'])
-
-# wthr.Year = year_string
-# wthr.Year = wthr.Year.astype('string')
-
-# checkpoint = check_df_dtype_expectations(df = wthr, dtype_dct = wthr_col_dtypes)
-
-# if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
-#     pass
-# else:
-#     print(checkpoint.loc[~checkpoint.Pass, ])
-
-# mgmt = relocate_to_Imputation_Notes(df = mgmt, col = 'Date_Datetime', val_list= ['Before Planting'])
-
-# mgmt = sanitize_col(
-#     df = mgmt, 
-#     col = 'Date_Datetime', 
-#     simple_renames= {}, 
-#     split_renames= {'6/24/21 for all but plots in pass 2; 7/5/21 for pass 2' : [
-#                         '6/24/21 for all but plots in pass 2', '7/5/21 for pass 2']})
-
-# # make corrections too one-off to fix with a funciton. 
-# mask = ((mgmt.Date_Datetime == '6/24/21 for all but plots in pass 2') & (mgmt.Pass != 2.))
-# mgmt.loc[mask, 'Date_Datetime'] = '6/24/21'
-# # since we split without specifiying pass we need to remove any rows that still have the search string.
-# # and overwrite the df
-# mask = (mgmt.Date_Datetime == '6/24/21 for all but plots in pass 2')
-# mgmt = mgmt.loc[~mask, :].copy()
-
-# mask = ((mgmt.Date_Datetime == '7/5/21 for pass 2') & (mgmt.Pass == 2.))
-# mgmt.loc[mask, 'Date_Datetime'] = '7/5/21'
-# mask = (mgmt.Date_Datetime == '7/5/21 for pass 2')
-# mgmt = mgmt.loc[~mask, :].copy()
-
-# # convert types
-# err_list = find_unconvertable_datetimes(df_col=mgmt.Date_Datetime, pattern='%m/%d/%y', index=False)
-# if err_list != []:
-#     print(err_list)
-# else:
-#     mgmt.Date_Datetime = pd.to_datetime(pd.Series(mgmt.Date_Datetime), format = '%m/%d/%y', errors='coerce')
-
-# mgmt.loc[find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = True), ]
-
-# mgmt = sanitize_col(
-#     df = mgmt, 
-#     col = 'Amount_Per_Acre', 
-#     simple_renames= {'170 lb (actual N)': '170 (N)'}, 
-#     split_renames= {'51.75, 40.7, 111.7 (N,P,K)': ['51.75 (N)', '40.7 (P)', '111.7 (K)'],
-#                     '31-150-138': ['31 (N)', '150 (P)', '138 (K)'],
-#                     '16 (N), 41 (P)': ['16 (N)', '41 (P)']})
-
-# mgmt = safe_create_col(mgmt, "Ingredient")
-# mask = mgmt.Ingredient.isna()
-# mgmt.loc[mask, 'Ingredient'] = mgmt.loc[mask, 'Product']
-
-# # assume each string is formated as 'val (key)'. `sanitize_col` should be used to enforce this.
-# for e in ['150 (P)', '36.6 (N)', '138 (K)', '111.7 (K)', '41 (P)', '16 (N)', '170 (N)', '35.7 (N)', '51.75 (N)', '31 (N)', '40.7 (P)']:
-#     val = re.findall('^\d+[.]*\d*', e)[0]
-#     key = re.findall('\(.+\)',      e)[0].replace('(', '').replace(')', '')
-    
-#     mask = (mgmt['Amount_Per_Acre'] == e)
-#     mgmt.loc[mask, 'Ingredient'] = key
-#     mgmt.loc[mask, 'Amount_Per_Acre'] = val
-
-# # convert types
-# err_list = find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = False)
-# if err_list != []:
-#     print(err_list)
-# else:
-#     mgmt.Amount_Per_Acre = pd.to_numeric(mgmt.Amount_Per_Acre, errors='coerce')
+# convert types
+err_list = find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = False)
+if err_list != []:
+    print(err_list)
+else:
+    mgmt.Amount_Per_Acre = pd.to_numeric(mgmt.Amount_Per_Acre, errors='coerce')
 
 # list(mgmt.loc[:, 'Ingredient'].drop_duplicates())
 
-# # to bool
-# mgmt['mgmt'] = mgmt['mgmt'].astype('bool')
+# to bool
+mgmt['mgmt'] = mgmt['mgmt'].astype('bool')
 
-# # to string
-# for e in [ee for ee in ['Application', 'Product', 'Ingredient', 'Unit', 'Imputation_Notes'] if ee in mgmt.columns]:
-#     mgmt[e] = mgmt[e].astype('string')
+# to string
+for e in [ee for ee in ['Irrigation_Applied', 'Weather_Station_Documents_Irrigation', 'Application', 'Product', 'Unit', 'Nutrients_Applied', 'Management_Comments', 'Fertilizer_info', 'Imputation_Notes', 'Pre_Plant_Herbicide', 'Post_Plant_Herbicide', 'Insecticide'] if ee in mgmt.columns]:
+    mgmt[e] = mgmt[e].astype('string')
     
 
-# mgmt.Year = year_string
-# mgmt.Year = mgmt.Year.astype('string')
+mgmt.Year = year_string
+mgmt.Year = mgmt.Year.astype('string')
 
-# check_df_dtype_expectations(df = mgmt, dtype_dct = mgmt_col_dtypes)
+checkpoint = check_df_dtype_expectations(df = mgmt, dtype_dct = mgmt_col_dtypes)
 
-# write_out_pkl(obj = sval, path = './data/interim/'+year_string+'sval.pickle')
-# write_out_pkl(obj = wthr, path = './data/interim/'+year_string+'wthr.pickle')
-# write_out_pkl(obj = mgmt, path = './data/interim/'+year_string+'mgmt.pickle')
+if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
+    pass
+else:
+    print(checkpoint.loc[~checkpoint.Pass, ])
+
+write_out_pkl(obj = sval, path = './data/interim/'+year_string+'sval.pickle')
+write_out_pkl(obj = wthr, path = './data/interim/'+year_string+'wthr.pickle')
+write_out_pkl(obj = mgmt, path = './data/interim/'+year_string+'mgmt.pickle')
