@@ -21,8 +21,6 @@ wthr_path = './data/raw/G2F_Planting_Season_2014_v4/b._2014_weather_data/g2f_201
           # no agro 2014, some info in metadata
 # mgmt_path = None,
 
-
-
 meta = pd.read_csv(meta_path, encoding = "ISO-8859-1", low_memory=False)
 phno = pd.read_csv(phno_path, encoding = "ISO-8859-1", low_memory=False)
 wthr = pd.read_csv(wthr_path, encoding = "ISO-8859-1", low_memory=False)
@@ -32,323 +30,558 @@ wthr = pd.read_csv(wthr_path, encoding = "ISO-8859-1", low_memory=False)
 # load dicts for column renaming
 meta_name_dict = mk_name_dict(name = 'meta')
 phno_name_dict = mk_name_dict(name = 'phno')
-# soil_name_dict = mk_name_dict(name = 'soil')
 wthr_name_dict = mk_name_dict(name = 'wthr')
-# mgmt_name_dict = mk_name_dict(name = 'mgmt')
 
 (find_unrecognized_columns(df = meta, dct = meta_name_dict),
 find_unrecognized_columns(df = phno, dct = phno_name_dict),
-# find_unrecognized_columns(df = soil, dct = soil_name_dict),
-find_unrecognized_columns(df = wthr, dct = wthr_name_dict)#,
-# find_unrecognized_columns(df = mgmt, dct = mgmt_name_dict)
+find_unrecognized_columns(df = wthr, dct = wthr_name_dict)
 )
 
-# prlst2dct([])
+meta = meta.rename(columns=meta_name_dict)
+phno = phno.rename(columns=phno_name_dict)
+wthr = wthr.rename(columns=wthr_name_dict)
 
-meta.loc[:, ['Location name',
-  'Soil test type',
-  'Soil texture',
-  'Soil pH']].head(3)
+# add indicator columns to help with debugging merge
+meta['meta'] = True
+phno['phno'] = True
+wthr['wthr'] = True
 
-# meta = meta.rename(columns=meta_name_dict)
-# phno = phno.rename(columns=phno_name_dict)
-# soil = soil.rename(columns=soil_name_dict)
-# wthr = wthr.rename(columns=wthr_name_dict)
-# mgmt = mgmt.rename(columns=mgmt_name_dict)
-
-# # add indicator columns to help with debugging merge
-# meta['meta'] = True
-# phno['phno'] = True
-# soil['soil'] = True
-# wthr['wthr'] = True
-# mgmt['mgmt'] = True
+meta.loc[meta.Experiment_Code.isna(), 'Experiment_Code'] = meta.loc[meta.Experiment_Code.isna(), 'Location_Name']
 
 [e.shape for e in [meta, phno, wthr]]
 
-# soil = sanitize_Experiment_Codes(
-#     df = soil, 
-#     simple_renames = {
-#         'W1H1': 'WIH1', 
-#         'W1H2': 'WIH2', 
-#         'W1H3': 'WIH3'
-#     }, 
-#     split_renames = {
-#         'NEH2_NEH3': ['NEH2', 'NEH3']
-#     })
+# fix missing value
+mask = meta.Experiment_Code.isna()
+meta.loc[mask, :]# 'Experiment_Code'] = meta.loc[mask, 'State']
 
-# wthr = sanitize_Experiment_Codes(
-#     df = wthr, 
-#     simple_renames = {
-#     }, 
-#     split_renames = {
-#         'NEH2_NEH3': ['NEH2', 'NEH3'],
-#         'NYH3_NYS1': ['NYS1', 'NYH3'],
-#         'TXH1_TXH3': ['TXH1', 'TXH3']
-#     })
+wthr = sanitize_Experiment_Codes(
+    df = wthr, 
+    simple_renames = {
+    }, 
+    split_renames = {
+        'IAH1 IAI1': ['IAH1', 'IAI1'], 
+        'ILH1 ILI1': ['ILH1', 'ILI1'], 
+        'INH1 INI1': ['INH1', 'INI1'], 
+        'MOH1 MOI1': ['MOH1', 'MOI1'], 
+        'MOH2 MOI2 MOI3': ['MOH2', 'MOI2', 'MOI3'], 
+        'NEH1 NEI1': ['NEH1', 'NEI1'], 
+        'NYH1 NYI1': ['NYH1', 'NYI1'], 
+        'TXH1  TXI1  TXI2': ['TXH1', 'TXI1', 'TXI2'], 
+        'TXH2  TXI3': ['TXH2', 'TXI3'], 
+        'WIH1 WII1': ['WIH1', 'WII1']
+    })
 
-# # confirm everything's okay
-# print(
-#   'meta', find_unrecognized_experiments(meta.Experiment_Code, return_all_exps=False), 
-# '\nphno', find_unrecognized_experiments(phno.Experiment_Code, return_all_exps=False),
-# '\nsoil', find_unrecognized_experiments(soil.Experiment_Code, return_all_exps=False),
-# '\nwthr', find_unrecognized_experiments(wthr.Experiment_Code, return_all_exps=False),
-# '\nmgmt', find_unrecognized_experiments(mgmt.Experiment_Code, return_all_exps=False),
-# '\nall ', find_unrecognized_experiments([], return_all_exps=True)
-# )  
+# confirm everything's okay
+print(
+  'meta', find_unrecognized_experiments(meta.Experiment_Code, return_all_exps=False), 
+'\nphno', find_unrecognized_experiments(phno.Experiment_Code, return_all_exps=False),
+'\nwthr', find_unrecognized_experiments(wthr.Experiment_Code, return_all_exps=False),
+'\nall ', find_unrecognized_experiments([], return_all_exps=True)
+)  
 
-# # Find minimum cols needed to index all rows
-# df = phno
-# id_cols = ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot',]
-# candidate_cols = ['State', 'City',
-#                  'Experiment', 'Source', 'Pedigree', 'Family', 'Tester', 'Replicate',
-#                   'Block',  'Plot_ID']
-# target = df.shape[0]
+[(e, meta.loc[:, e].dtype, phno.loc[:, e].dtype) for e in meta.columns if e in phno.columns]
 
-# output = pd.DataFrame(zip(
-#     candidate_cols,
-#     [df.loc[:, id_cols+[e]].drop_duplicates().shape[0] for e in candidate_cols]
-#    ), columns=['Additional_ID', 'Uniq_Vals'])
+# Pull out managment from metadata
+id_cols = ['Location_Name', 'Experiment_Code']
+mgmt_cols = ['Insecticide', 'Pre_Plant_Herbicide', 'Post_Plant_Herbicide', 'N_Unit_lbs_per_A', 'P_Unit_lbs_per_A', 'K_Unit_lbs_per_A', 'Nutrient_Schedule', 'Irrigation_Applied', 'Weather_Station_Documents_Irrigation', 'Fertigation_Schedule', 'Irrigation_Schedule']
+mgmt = meta.loc[:, ['Location_Name', 'Experiment_Code']+mgmt_cols].drop_duplicates()
+meta = meta.drop(columns=mgmt_cols)
 
-# output.assign(At_Target=lambda x:x.Uniq_Vals == target)
+accumulator = mgmt.loc[:, id_cols].drop_duplicates()
 
+temp = mgmt.loc[:, id_cols+[
+    'N_Unit_lbs_per_A', # |- total per season?
+    'P_Unit_lbs_per_A', # |
+    'K_Unit_lbs_per_A', # |
+    'Nutrient_Schedule']]
 
-# # separate static and dynamic values
-# sval = phno.merge(soil, how = 'outer')
-# sval = sval.merge(meta, how = 'outer') # This introduces 3 sites that have no data
-# # sval.shape # used to confirm nrow = #20574 + 3
-
-# # these tables are different enought we'll keep them separate
-# # mgmt
-# # unfortunately we need multiples because at least one field treats different passes differently
-# mgmt = phno.loc[:, ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot', 'phno']
-#                ].drop_duplicates().merge(mgmt, how = 'outer')
-# # confirm there are no rows in mgmt that are not in phno
-# temp = mgmt.loc[(~mgmt.phno & mgmt.mgmt), :]
-# if 0 != temp.shape[0]:
-#     print(temp)
-# else:
-#     mgmt = mgmt.loc[mgmt.mgmt.notna(), :].drop(columns = 'phno')
-
-
-# # wthr
-# # There's only ever one weather station so we have to worry about imputation but not duplicates
-
-# # Set each id col to a string
-# for i in ['Year', 'Experiment_Code', 'Range', 'Pass', 'Plot']:
-#     sval[i] = sval[i].astype('string')
-#     mgmt[i]  =  mgmt[i].astype('string')
+for e in ['Application', 'Product', 'Date_Datetime', 'Amount_Per_Acre', 'Unit', 'Imputation_Notes']:
+    temp = safe_create_col(temp, e)
+    temp.loc[:, e] = temp.loc[:, e].astype('string')
     
-#     if i not in ['Range', 'Pass', 'Plot']:
-#         wthr[i]  =  wthr[i].astype('string')
+temp.Date_Datetime = temp.Date_Datetime.astype('string')
 
-# sval_col_dtypes = mk_dtype_dict(name = 'sval')
-# wthr_col_dtypes = mk_dtype_dict(name = 'wthr')
-# mgmt_col_dtypes = mk_dtype_dict(name = 'mgmt')
+# Fix entries with information in total application columns but not in the Nutrient_Schedule
+application_lookup_list = [
+    ['MN', 'MNH1', '160 (N)'],
+    ['MO2', 'MOH2', '125 (N) 30 (P) 30 (K)'],
+    ['NE1', 'NEH1', '150 (N)'],
+    ['NE2', 'NEH2', '126 (N) 19.4 (P)'],
+    ['NE3', 'NEH3', '116 (N) 19.4 (P)'],
+    ['WI', 'G2FWI-HYB', '150 (N)'],
+    ['DE1', 'G2FDE1', '90 (N) 40 (P) 40 (K)'],
+    ['MO2', 'GXE_inb_BO2', '125 (N) 30 (P) 30 (K)'],
+    ['MO3', 'GXE_inb_MO3', '125 (N) 30 (P) 30 (K)'],
+    ['NE1', 'G2FNE1', '150 (N)'],
+    ['WI1', 'G2FWI1', '150 (N)'],
+    ['WI2', 'G2FWI2', '150 (N)']]
+
+for ee in application_lookup_list:
+    aa, bb, cc = ee[0], ee[1], ee[2]
+    mask = (temp.Location_Name == aa) & (temp.Experiment_Code == bb) 
+    temp.loc[mask, 'Application'] = cc
+
+# Tricky one off
+mask = (temp.Location_Name == 'MN2') & (temp.Experiment_Code == 'G2FMN2') 
+temp = temp.loc[~mask, ]
+temp = temp.merge(pd.DataFrame({
+    'Location_Name': ['MN2' for e in range(12)],
+    'Experiment_Code': ['G2FMN2' for e in range(12)],
+    'Replicate': [2, 4, 6, 8, 10, 12]+[1, 3, 5, 7, 9, 11],
+    'Application': ['0 (N)' for e in range(6)]+['100 (N)' for e in range(6)]
+}), how = 'outer')
+
+mask = temp.Nutrient_Schedule == 'Preplant 120 lb K2O/ac as 0-0-60; 117 lb PAN/ac as poultry litter; 194 lb P2O5/ac as poultry litter; At plant: 5/5/2014; 26 lb N/ac as 20-10-0-1; 13 lb P2O5/ac as 20-10-0-1; At sidedress: 195 lb N/ac as 30% UAN\n'
+temp.loc[mask, :]
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame({   
+    'Location_Name': ['DE', 'DE', 'DE'],
+  'Experiment_Code': ['DEH1', 'DEH1', 'DEH1'],
+      'Application': ['117 (N) 194 (P) 120 (K)', '26 (N), 13 (P)', '195 (N)'],
+    'Date_Datetime': ['', '5-5-2014', ''], 
+             'Unit': ['lbs', 'lbs', 'lbs'],
+ 'Imputation_Notes': ['Preplant', 'Planting', 'Sidedress']
+}
+), how = 'outer')
+
+
+mask = temp.Nutrient_Schedule == '3/24/2014 8/20/1930 broadcast 1000#/A; 4/4/2014 10-34-0 row band 10gal/A; 4/4/2014 Agri Starter Orangeburg row band 4qt/A; 5/7/2014;28-0-0-0.5;row band;100#N/A; 5/7/2014;Boron;row band;20 ounce/A; 5/14/2014;28-0-0-0.5;row band;100#N/A'
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame({   
+    'Location_Name': ['GA',        'GA',       'GA',         'GA',         'GA',       'GA'],
+  'Experiment_Code': ['GAH1',      'GAH1',     'GAH1',       'GAH1',       'GAH1',     'GAH1'],
+      'Application': ['8-20-30',   '10-34-0',  'Orangeburg', '28-0-0-0.5', 'Boron',    '28-0-0-0.5' ],
+    'Date_Datetime': ['3/24/2014', '4/4/2014', '4/4/2014',   '5/7/2014',   '5/7/2014', '5/14/2014'], 
+  'Amount_Per_Acre': [1000,        10,         4,            100,          20,         100   ], 
+             'Unit': ['lbs',       'gal',      'qt',         'lbs',        'oz',       'lbs' ]
+}
+), how = 'outer')
+
+mask = temp.Nutrient_Schedule == '5/8:  140-0-0'
+temp.loc[mask, ['Product', 'Date_Datetime', 'Nutrient_Schedule']] = [' 140-0-0', '5-8-2014', np.nan] # MDY
+
+mask = temp.Nutrient_Schedule == '4/22:  dry fert 36-92-120; 4/23: 150 lbs Ammonia'
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame({   
+    'Location_Name': ['IA4', 'IA4'],
+  'Experiment_Code': ['IAH4', 'IAH4'],
+      'Application': ['36-92-120', 'Ammonia'],
+    'Date_Datetime': ['4/22', '4/23'], 
+  'Amount_Per_Acre': [100,     150], 
+             'Unit': ['lbs', 'lbs']
+}
+), how = 'outer')
+
+
+
+mask = temp.Nutrient_Schedule == '180 lb Nitrogen/acre preplant'
+temp.loc[mask, ['Product', 'Imputation_Notes', 'Nutrient_Schedule']] = [' 180', 'Preplant', np.nan]
+
+
+mask = temp.Nutrient_Schedule == '300#/acre of 10-0-30-12%S preplant and 26 gallons of 30% UAN (85# of N) was applied pre- emerge. Total N applied was 115 pounds per acre.'
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame({   
+    'Location_Name': ['NC', 'NC'],
+  'Experiment_Code': ['NCH1', 'NCH1'],
+      'Application': ['10-0-30-12%S', 'N'],
+  'Amount_Per_Acre': [300, 85], 
+             'Unit': ['lbs', 'lbs'],
+ 'Imputation_Notes': ['Preplant', 'Pre-emerge']
+}
+), how = 'outer')
+
+mask = temp.Nutrient_Schedule == 'none other than preplant above'
+temp.loc[mask, ['Product', 'Unit', 'Imputation_Notes', 'Nutrient_Schedule']] = ['118 (N) 46 (P) 62 (K)', 'lbs', 'Preplant', np.nan]
+
+
+mask = temp.Nutrient_Schedule == 'NOTES on fertilizer:  At planting 5/27/14 12-25-0-3.3S and 0.3 ZN was banded at 7.5 gallons per acre which comes out to 11 lbs of N and 22 lbs of P2O per acre.  Then side dress 6/30/14 33.8 gallons of 30 % UAN which is 110 lbs of N.'
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame({   
+    'Location_Name': ['NY1', 'NY1', 'NY1'],
+  'Experiment_Code': ['NYH1', 'NYH1', 'NYH1'],
+      'Application': ['12-25-0-3.3S', '0.3 Zn', 'N'],
+    'Date_Datetime': ['5/27/14', '5/27/14', '6/30/14'], 
+  'Amount_Per_Acre': [91.66666666666667, np.nan, 110], 
+             'Unit': ['lbs','lbs','lbs']
+}
+), how = 'outer')
+
+
+mask = temp.Nutrient_Schedule == '250 lbs/acre of 10-20-20 / 110lbs/acre  N 33.8 gallons of 30% UAN'
+temp.loc[mask, ['Product', 'Unit', 'Nutrient_Schedule']] = ['135.1204 (N) 50 (P) 50 (K)', 'lbs', np.nan]
+
+mask = temp.Nutrient_Schedule == 'P&K applied in fall 2013; Liquid N applied preplant;  Dry starter fertilizer applied with planter'
+temp.loc[mask, ['Product', 'Unit', 'Nutrient_Schedule']] = ['175 (N) 68 (P) 120 (K)', 'kg/ha', np.nan]
+
+mask = temp.Nutrient_Schedule == 'UAN broadcast Preplant/ P+K 2x2 band Starter Fertilizer'
+temp.loc[mask, ['Product', 'Unit', 'Nutrient_Schedule']] = ['165 (N) 54 (P) 12024 (K)', 'lbs', np.nan]
+
+mask = temp.Nutrient_Schedule == 'Preplant applied at 150 lbs 11-37-0+4lbs Zn then applied at V7 = 200 lbs 46-0-0'
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame({   
+    'Location_Name': ['TX1', 'TX1', 'TX1'],
+  'Experiment_Code': ['TXH1', 'TXH1', 'TXH1'],
+      'Application': ['11-37-0', 'Zn', 'N'],
+  'Amount_Per_Acre': [150, 41, 92], 
+             'Unit': ['lbs','lbs','lbs'],
+ 'Imputation_Notes': ['Preplant', 'Preplant', 'V7']
+}
+), how = 'outer')
+
+
+mask = temp.Nutrient_Schedule == '3/6/14-UAN/10-34-0 applied with spreader truck. V5 stage 32-0-0 applied side dress'
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame({   
+    'Location_Name': ['TX2', 'TX2'],
+  'Experiment_Code': ['TXH2', 'TXH2'],
+      'Application': ['10-34-0', 'N'],
+    'Date_Datetime': ['3/6/14', ''], 
+  'Amount_Per_Acre': [235.2941176470588, 276.47058823529414], 
+             'Unit': ['lbs','lbs']
+}
+), how = 'outer')
+temp = temp.merge(pd.DataFrame({   
+    'Location_Name': ['TX3', 'TX3'],
+  'Experiment_Code': ['TX3', 'TX3'],
+      'Application': ['10-34-0', 'N'],
+    'Date_Datetime': ['3/6/14', ''], 
+  'Amount_Per_Acre': [235.2941176470588, 276.47058823529414], 
+             'Unit': ['lbs','lbs']
+}
+), how = 'outer')
+
+
+mask = temp.Nutrient_Schedule == '120 lbs/acre'
+temp.loc[mask, ['Product', 'Unit', 'Nutrient_Schedule']] = ['120 (N)', 'lbs', np.nan]
+
+
+mask = temp.Nutrient_Schedule == 'none other than applied in fall'
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame({   
+    'Location_Name': ['IA3', 'IA3'],
+  'Experiment_Code': ['G2FIA3', 'G2FIA3'],
+      'Application': ['22 (N) 74 (P) 111 (K)', '110 (N)'],
+             'Unit': ['lbs','lbs'],
+ 'Imputation_Notes': ['fall 2013', 'spring 2014']
+}
+), how = 'outer')
+
+
+mask = temp.Nutrient_Schedule == 'Pre plant incorporated fertilizer 10-10-30 at 474 lbs per acre; 24S liquid nitrogen 12 gals per acre side dress; 24S liquid nitrogen 12 gals per acre top dress'
+temp.loc[mask, ['Product', 'Unit', 'Nutrient_Schedule']] = ['100 (N) 47.4 (P) 142.2 (K)', 'lbs', np.nan]
+
+
+mask = temp.Nutrient_Schedule == 'NOTES on fertilizer:  At planting 5/27/14 12-25-0-3.3S and 0.3 ZN was banded at 7.5 gallons per acre which comes out to 11 lbs of N and 22 lbs of P2O per acre.\xa0 Then side dress 6/30/14 33.8 gallons of 30 % UAN which is 110 lbs of N.'
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame({   
+    'Location_Name': ['NY1', 'NY1', 'NY1'],
+  'Experiment_Code': ['G2FNY1', 'G2FNY1', 'G2FNY1'],
+      'Application': ['12-25-0-3.3S', '0.3 Zn', 'N'],
+    'Date_Datetime': ['5/27/14', '5/27/14', '6/30/14'], 
+  'Amount_Per_Acre': [91.66666666666667, np.nan, 110], 
+             'Unit': ['lbs','lbs','lbs']
+}
+), how = 'outer')
+
+
+mask = temp.Nutrient_Schedule == 'Pre-plant (150 lbs 11-37-0 + 4lbs Zn) applied on 1/19/2014 in liquid form; and 200 lbs 32-0-0 applied in liquid form on 4-19-2014 ~V-7.'
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame({   
+    'Location_Name': ['TX1', 'TX1', 'TX1'],
+  'Experiment_Code': ['G2F_IN_TX1', 'G2F_IN_TX1', 'G2F_IN_TX1'],
+      'Application': ['11-37-0', 'Zn', 'N'],
+    'Date_Datetime': ['1/19/2014', '1/19/2014', '4/19/2014'], 
+  'Amount_Per_Acre': [150, 4, 64,], 
+             'Unit': ['lbs','lbs','lbs']
+}
+), how = 'outer')
+
+
+mask = temp.Nutrient_Schedule == 'Pre-plant (150 lbs 11-37-0 + 4lbs Zn) applied on 1/29/2014 in liquid form; and 200 lbs 32-0-0 applied in liquid form on 4-15-2014.'
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame({   
+    'Location_Name': ['TX2', 'TX2', 'TX2'],
+  'Experiment_Code': ['G2F_IN_TX1', 'G2F_IN_TX1', 'G2F_IN_TX1'],
+      'Application': ['11-37-0', 'Zn', 'N'],
+    'Date_Datetime': ['1/29/2014', '1/29/2014', '4/15/2014'], 
+  'Amount_Per_Acre': [150, 4, 64,], 
+             'Unit': ['lbs','lbs','lbs']
+}
+), how = 'outer')
+
+
+mask = temp.Nutrient_Schedule == "fall '13:  NH3; 4/12:  11-52-0  Map; 0-0-60 granular potash"
+temp = temp.loc[~mask, :]
+temp = temp.merge(pd.DataFrame({   
+    'Location_Name': ['IA1'],
+  'Experiment_Code': ['IAH1'],
+      'Application': ['156 (N) 80 (P) 75 (K)'],
+    'Date_Datetime': ['4/12/2014'], 
+             'Unit': ['lbs']
+}
+), how = 'outer')
+
+mask = (temp.Nutrient_Schedule == 'see above')
+temp.loc[mask, 'Application'] = '198 (N) 46 (P)'
+
+mask = temp.Nutrient_Schedule == 'See above'
+temp.loc[mask, ['Application', 'Date_Datetime']] = ['450 (N) 192 (P) 210 (K)', '4/17/2014'] 
+
+mask = temp.Nutrient_Schedule == 'Low-N history of fields 105 and 85: Fields 105 and 85 recieved an application of hardwood sawdust (May 6 field 85 and May 9 field 105) in 2011; and both fields received a second application of sawdust on May 23; 2012: not sawdust applied in 2013 or 2014'
+temp.loc[mask, ['Imputation_Notes', 'Nutrient_Schedule']] = ['Inconsistant withing field. Recommend Dropping.', np.nan]
+
+temp = temp.loc[:, ['Location_Name', 'Experiment_Code', 
+             'Application', 'Product', 'Date_Datetime', 'Amount_Per_Acre', 'Unit',
+             'Imputation_Notes', 'Replicate']]
+temp.loc[temp.Unit.isna(), 'Unit'] = 'lbs'
+
+accumulator = accumulator.merge(temp, 
+                                how = 'outer')
+
+temp = mgmt.loc[:, id_cols+[
+    'Irrigation_Applied',
+    'Weather_Station_Documents_Irrigation',
+    'Fertigation_Schedule',
+    'Irrigation_Schedule']]
+
+for e in ['Application', 'Product', 'Date_Datetime', 'Amount_Per_Acre', 'Unit', 'Imputation_Notes']:
+    temp = safe_create_col(temp, e)
+    temp.loc[:, e] = temp.loc[:, e].astype('string')
+    
+temp.Date_Datetime = temp.Date_Datetime.astype('string')
+
+# only need to consider those with records not traced by the weather station
+temp = temp.loc[temp.Irrigation_Applied.isin(['Yes', 'yes'])]
+temp = temp.loc[temp.Irrigation_Schedule.notna()]
+temp = temp.loc[temp.Weather_Station_Documents_Irrigation.isin(['no'])]
+
+# TX1 (Experiment_Code: TXH1 and G2F_IN_TX1) had 
+# '4/29/2014 and 6/17/2014; flood irrigated',
+# 'May 4; 2014 and June 19; 2014; flood irrigated'
+# but have no values recorded for amount
+
+temp
+
+accumulator = accumulator.merge(pd.DataFrame({   
+    'Location_Name': ['TX1' for e in range(4)],
+  'Experiment_Code': ['TXH1', 'TXH1', 'G2F_IN_TX1', 'G2F_IN_TX1'],
+      'Application': ['water' for e in range(4)],
+    'Date_Datetime': ['4/29/2014', '6/17/2014', '5/4/2014', '6/19/2014']
+}
+), how = 'outer')
+
+temp = mgmt.loc[:, id_cols+[
+    'Insecticide',
+    'Pre_Plant_Herbicide',
+    'Post_Plant_Herbicide']]
+mgmt = accumulator.merge(temp, how = 'outer')
+
+# separate static and dynamic values
+sval = phno.merge(meta.drop(columns=[
+    'Alley_Length_Unit_Inches', # allow phno to be the authorative source of alley length (also avoids IA3's meta value of ['120" & 30"'])
+    'Plot_Length_Unit_Feet',
+    'Row_Spacing_Unit_Inches',
+    'Local_Check',
+    'Harvested_Unit_Datetime',
+    'Planted_Unit_Datetime'
+    ]), how = 'outer')
+
+sval_col_dtypes = mk_dtype_dict(name = 'sval')
+wthr_col_dtypes = mk_dtype_dict(name = 'wthr')
+mgmt_col_dtypes = mk_dtype_dict(name = 'mgmt')
 
 # # convert the date cols into datetime. Lean on pd.to_datetime() to infer the format, assume that each site uses the same format.
 
-# for e in ['Planted_Unit_Datetime', 
-#     'Harvested_Unit_Datetime', 
-#     'Anthesis_Unit_Datetime', 
-#     'Silking_Unit_Datetime', 
-#     'Recieved_Date_Unit_Datetime', 
-#     'Processed_Date_Unit_Datetime', 
-#     'Weather_Station_Placed_Unit_Datetime', 
-#     'Weather_Station_Removed_Unit_Datetime'
-#     ]:
-# # find_unconvertable_datetimes(df_col=sval[e], pattern='%Y-%m-%d %H:%M', index=False)
+for e in ['Planted_Unit_Datetime',
+          'Harvested_Unit_Datetime',
+          'Anthesis_Unit_Datetime',
+          'Silking_Unit_Datetime',
+    ]:
+# find_unconvertable_datetimes(df_col=sval[e], pattern='%Y-%m-%d %H:%M', index=False)
 
-#     sval['Datetime_Temp'] = pd.to_datetime(np.nan)
+    sval['Datetime_Temp'] = pd.to_datetime(np.nan)
 
-#     for code in list(sval.Experiment_Code.drop_duplicates()):
-#     # code = list(sval.Experiment_Code.drop_duplicates())[0]
-#         sval.loc[sval.Experiment_Code == code, 'Datetime_Temp'
-#                  ] = pd.to_datetime(sval.loc[sval.Experiment_Code == code, e])
+    for code in list(sval.Experiment_Code.drop_duplicates()):
+    # code = list(sval.Experiment_Code.drop_duplicates())[0]
+        sval.loc[sval.Experiment_Code == code, 'Datetime_Temp'
+                 ] = pd.to_datetime(sval.loc[sval.Experiment_Code == code, e])
 
-#     sval.loc[:, e] = sval.loc[:, 'Datetime_Temp'] 
+    sval.loc[:, e] = sval.loc[:, 'Datetime_Temp'] 
 
-# sval = sval.drop(columns = 'Datetime_Temp')
+sval = sval.drop(columns = 'Datetime_Temp')
 
-# # # -> floats
+# -> floats
+# find_unconvertable_numerics(df_col = sval['Soil_1_to_1_Unit_pH'], index = False)
+sval = sanitize_col(
+    df = sval, 
+    col = 'Soil_1_to_1_Unit_pH', 
+    simple_renames= {'PH = 8.00': '8.0', 
+                     'not recently tested': '', 
+                     'soil sample submitted 6/11/15': ''}, 
+    split_renames= {})
 
-# # # [find_unconvertable_numerics(df_col = sval[e], index = False) for e in [
-# # #     'Alley_Length_Unit_Inches',
-# # # 'Row_Spacing_Unit_Inches',
-# # # 'Pounds_Needed_Soil_Moisture'
-# # # ]]
+sval.loc[sval.Soil_1_to_1_Unit_pH == '', 'Soil_1_to_1_Unit_pH'] = np.nan
 
-# sval = sanitize_col(
-#     df = sval, 
-#     col = 'Pounds_Needed_Soil_Moisture', 
-#     simple_renames= {'3 to 4':'3.5'}, 
-#     split_renames= {})
+# convert types
+for e in ['Soil_1_to_1_Unit_pH']:
+    err_list = find_unconvertable_numerics(df_col = sval[e], index = False)
+    if err_list != []:
+        print(e)
+        print(err_list)
+    else:
+        sval[e] = sval[e].astype('float')
 
-# # convert types
-# for e in ['Alley_Length_Unit_Inches', 'Row_Spacing_Unit_Inches', 'Pounds_Needed_Soil_Moisture',
-#          'Anthesis_Unit_Days', 'Silking_Unit_Days', 'Kernels_Per_Plot']:
-#     err_list = find_unconvertable_numerics(df_col = sval[e], index = False)
-#     if err_list != []:
-#         print(e)
-#         print(err_list)
-#     else:
-#         sval[e] = sval[e].astype('float')
+# to bool
+sval = sanitize_col(
+    df = sval, 
+    col = 'Discarded', 
+    simple_renames= {
+        'Yes':'True',
+        'yes':'True'}, 
+    split_renames= {})
 
-# # to bool
-# sval = sanitize_col(
-#     df = sval, 
-#     col = 'Discarded', 
-#     simple_renames= {
-#         'Yes':'True',
-#         'yes':'True'}, 
-#     split_renames= {})
-
-# # set missing to false
-# sval.loc[sval.Discarded.isna(), 'Discarded'] = 'False'
-# sval.Discarded = sval.Discarded.map({'True': True, 'False': False})
+# set missing to false
+sval.loc[sval.Discarded.isna(), 'Discarded'] = 'False'
+sval.Discarded = sval.Discarded.map({'True': True, 'False': False})
 
 # to float
 # sval.Pounds_Needed_Soil_Moisture.astype(float)
+sval = sval.drop(columns=[
+    'Drop_Record_Index',
+    'Inbred_Reps',
+    'Inbred_Plots',
+    'Collaborator',
+    'File_Name',
+    'Traits_Measured',
+    'Folder_Name',
+    'Metadata_File',
+    'Additional_Metadata',
+    'Weather_Directory',
+    'Additional_Metics'
+])
 
-# # to bool
-# sval['phno'] = sval['phno'].astype('bool')
-# sval['soil'] = sval['soil'].astype('bool')
-# sval['meta'] = sval['meta'].astype('bool')
+# to bool
+sval['phno'] = sval['phno'].astype('bool')
+sval['meta'] = sval['meta'].astype('bool')
 
-# # to string
-# sval = cols_astype_string(
-#     df = sval, 
-#     col_list = [key for key in sval_col_dtypes.keys() if sval_col_dtypes[key] == 'string'])
+# to string
+sval = cols_astype_string(
+    df = sval, 
+    col_list = [key for key in sval_col_dtypes.keys() if sval_col_dtypes[key] == 'string'])
 
-# sval.Year = year_string
-# sval.Year = sval.Year.astype('string')
+sval.Year = year_string
+sval.Year = sval.Year.astype('string')
 
-# checkpoint = check_df_dtype_expectations(df = sval, dtype_dct = sval_col_dtypes)
+checkpoint = check_df_dtype_expectations(df = sval, dtype_dct = sval_col_dtypes)
 
-# if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
-#     pass
-# else:
-#     print(checkpoint.loc[~checkpoint.Pass, ]) 
-#     print()
+if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
+    pass
+else:
+    print(checkpoint.loc[~checkpoint.Pass, ]) 
 
-# # instead of writing regexes to figure out the mose likely format for each datetime, we assume each experiment will be consistent withing that experiment
-# # and let pd figure it out.
-# # wthr['Datetime_Temp'] = pd.to_datetime(np.nan)
+# ... or we use the fields in the df to make a consistent format
+wthr = cols_astype_string(
+    df = wthr, 
+    col_list = ['Year', 'Month', 'Day', 'Time'])
 
-# # for code in list(wthr.loc[:, 'Experiment_Code'].drop_duplicates()):
-# #     wthr.loc[wthr.Experiment_Code == code, 'Datetime_Temp'] = pd.to_datetime(wthr.loc[wthr.Experiment_Code == code, 'Datetime'], errors='coerce')
-
-
-# # ... or we use the fields in the df to make a consistent format
-# wthr = cols_astype_string(
-#     df = wthr, 
-#     col_list = ['Year', 'Month', 'Day', 'Time'])
-
-# wthr = sanitize_col(
-#     df = wthr,
-#     col = 'Time', 
-#     simple_renames= {'24:00:00': '00:00:00'}, # this could be day + 24 h instead of a miscoded day + 0 h
-#     split_renames= {})
-
-# wthr['Datetime_Temp'] = wthr['Year']+'-'+wthr['Month']+'-'+wthr['Day']+' '+wthr['Time']
+wthr['Datetime_Temp'] = wthr['Year']+'-'+wthr['Month']+'-'+wthr['Day']+' '+wthr['Time']
 
 # # convert types
-# err_list = find_unconvertable_datetimes(df_col=wthr['Datetime_Temp'], pattern='%Y-%m-%d %H:%M', index=False)
-# if err_list != []:
-#     print(err_list)
-# else:
-#     wthr.Datetime_Temp = pd.to_datetime(pd.Series(wthr.Datetime_Temp), errors='coerce')
-#     wthr.Datetime = wthr.Datetime_Temp
-#     wthr = wthr.drop(columns= 'Datetime_Temp')
+err_list = find_unconvertable_datetimes(df_col=wthr['Datetime_Temp'], pattern='%Y-%m-%d %H:%M', index=False)
+if err_list != []:
+    print(err_list)
+else:
+    wthr.Datetime_Temp = pd.to_datetime(pd.Series(wthr.Datetime_Temp), errors='coerce')
+    wthr.Datetime = wthr.Datetime_Temp
+    wthr = wthr.drop(columns= 'Datetime_Temp')
 
-# # to string
-# wthr = cols_astype_string(
-#     df = wthr, 
-#     col_list = [key for key in wthr_col_dtypes.keys() if wthr_col_dtypes[key] == 'string'])
+# to bool
+wthr = sanitize_col(
+    df = wthr, 
+    col = 'Data_Cleaned', 
+    simple_renames= {
+        'Yes':'True',
+        'No':'False'}, 
+    split_renames= {})
 
-# wthr.Year = year_string
-# wthr.Year = wthr.Year.astype('string')
+# set missing to false
+wthr.loc[wthr.Data_Cleaned.isna(), 'Data_Cleaned'] = 'False'
+wthr.Data_Cleaned = wthr.Data_Cleaned.map({'True': True, 'False': False})
 
-# checkpoint = check_df_dtype_expectations(df = wthr, dtype_dct = wthr_col_dtypes)
+wthr = wthr.drop(columns = 'Drop_Record_Index')
 
-# if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
-#     pass
-# else:
-#     print(checkpoint.loc[~checkpoint.Pass, ])
+# to string
+wthr = cols_astype_string(
+    df = wthr, 
+    col_list = [key for key in wthr_col_dtypes.keys() if wthr_col_dtypes[key] == 'string'])
 
-# mgmt = relocate_to_Imputation_Notes(df = mgmt, col = 'Date_Datetime', val_list= ['Before Planting'])
+wthr.Year = year_string
+wthr.Year = wthr.Year.astype('string')
 
-# mgmt = sanitize_col(
-#     df = mgmt, 
-#     col = 'Date_Datetime', 
-#     simple_renames= {}, 
-#     split_renames= {'6/24/21 for all but plots in pass 2; 7/5/21 for pass 2' : [
-#                         '6/24/21 for all but plots in pass 2', '7/5/21 for pass 2']})
+checkpoint = check_df_dtype_expectations(df = wthr, dtype_dct = wthr_col_dtypes)
 
-# # make corrections too one-off to fix with a funciton. 
-# mask = ((mgmt.Date_Datetime == '6/24/21 for all but plots in pass 2') & (mgmt.Pass != 2.))
-# mgmt.loc[mask, 'Date_Datetime'] = '6/24/21'
-# # since we split without specifiying pass we need to remove any rows that still have the search string.
-# # and overwrite the df
-# mask = (mgmt.Date_Datetime == '6/24/21 for all but plots in pass 2')
-# mgmt = mgmt.loc[~mask, :].copy()
+if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
+    pass
+else:
+    print(checkpoint.loc[~checkpoint.Pass, ])
 
-# mask = ((mgmt.Date_Datetime == '7/5/21 for pass 2') & (mgmt.Pass == 2.))
-# mgmt.loc[mask, 'Date_Datetime'] = '7/5/21'
-# mask = (mgmt.Date_Datetime == '7/5/21 for pass 2')
-# mgmt = mgmt.loc[~mask, :].copy()
+mgmt = sanitize_col(
+    df = mgmt, 
+    col = 'Date_Datetime', 
+    simple_renames= {
+        '5-5-2014': '5/5/2014',
+        '5-8-2014': '5/8/2014',
+        '4/22': '4/22/2014',
+        '4/23': '4/23/2014',
+        '5/27/14': '5/27/2014',
+        '6/30/14': '6/30/2014',
+        '3/6/14': '3/6/2014'
+    }, 
+    split_renames= {})
 
-# # convert types
-# err_list = find_unconvertable_datetimes(df_col=mgmt.Date_Datetime, pattern='%m/%d/%y', index=False)
-# if err_list != []:
-#     print(err_list)
-# else:
-#     mgmt.Date_Datetime = pd.to_datetime(pd.Series(mgmt.Date_Datetime), format = '%m/%d/%y', errors='coerce')
+mgmt.loc[mgmt.Date_Datetime.isna(), 'Date_Datetime'] = np.nan
+mgmt.loc[mgmt.Date_Datetime == '', 'Date_Datetime'] = np.nan
 
-# mgmt.loc[find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = True), ]
+# find_unconvertable_datetimes(mgmt.Date_Datetime, pattern='%m/%d/%Y')
 
-# mgmt = sanitize_col(
-#     df = mgmt, 
-#     col = 'Amount_Per_Acre', 
-#     simple_renames= {'170 lb (actual N)': '170 (N)'}, 
-#     split_renames= {'51.75, 40.7, 111.7 (N,P,K)': ['51.75 (N)', '40.7 (P)', '111.7 (K)'],
-#                     '31-150-138': ['31 (N)', '150 (P)', '138 (K)'],
-#                     '16 (N), 41 (P)': ['16 (N)', '41 (P)']})
 
-# mgmt = safe_create_col(mgmt, "Ingredient")
-# mask = mgmt.Ingredient.isna()
-# mgmt.loc[mask, 'Ingredient'] = mgmt.loc[mask, 'Product']
 
-# # assume each string is formated as 'val (key)'. `sanitize_col` should be used to enforce this.
-# for e in ['150 (P)', '36.6 (N)', '138 (K)', '111.7 (K)', '41 (P)', '16 (N)', '170 (N)', '35.7 (N)', '51.75 (N)', '31 (N)', '40.7 (P)']:
-#     val = re.findall('^\d+[.]*\d*', e)[0]
-#     key = re.findall('\(.+\)',      e)[0].replace('(', '').replace(')', '')
-    
-#     mask = (mgmt['Amount_Per_Acre'] == e)
-#     mgmt.loc[mask, 'Ingredient'] = key
-#     mgmt.loc[mask, 'Amount_Per_Acre'] = val
+# convert types
+err_list = find_unconvertable_datetimes(df_col=mgmt.Date_Datetime, pattern='%m/%d/%Y', index=False)
+if err_list != []:
+    print(err_list)
+else:
+    mgmt.Date_Datetime = pd.to_datetime(pd.Series(mgmt.Date_Datetime), format = '%m/%d/%Y', errors='coerce')
 
-# # convert types
-# err_list = find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = False)
-# if err_list != []:
-#     print(err_list)
-# else:
-#     mgmt.Amount_Per_Acre = pd.to_numeric(mgmt.Amount_Per_Acre, errors='coerce')
+# convert types
+err_list = find_unconvertable_numerics(df_col = mgmt['Amount_Per_Acre'], index = False)
+if err_list != []:
+    print(err_list)
+else:
+    mgmt.Amount_Per_Acre = pd.to_numeric(mgmt.Amount_Per_Acre, errors='coerce')
 
 # list(mgmt.loc[:, 'Ingredient'].drop_duplicates())
 
 # # to bool
 # mgmt['mgmt'] = mgmt['mgmt'].astype('bool')
 
-# # to string
-# for e in [ee for ee in ['Application', 'Product', 'Ingredient', 'Unit', 'Imputation_Notes'] if ee in mgmt.columns]:
-#     mgmt[e] = mgmt[e].astype('string')
+# to string
+for e in [ee for ee in ['Application', 'Product', 'Ingredient', 'Unit', 'Imputation_Notes',
+                       'Location_Name', 'Experiment_Code', 'Replicate', 'Insecticide', 'Pre_Plant_Herbicide', 'Post_Plant_Herbicide'] if ee in mgmt.columns]:
+    mgmt[e] = mgmt[e].astype('string')
     
 
-# mgmt.Year = year_string
+mgmt.Year = year_string
 # mgmt.Year = mgmt.Year.astype('string')
 
-# check_df_dtype_expectations(df = mgmt, dtype_dct = mgmt_col_dtypes)
+checkpoint = check_df_dtype_expectations(df = mgmt, dtype_dct = mgmt_col_dtypes)
 
-# write_out_pkl(obj = sval, path = './data/interim/'+year_string+'sval.pickle')
-# write_out_pkl(obj = wthr, path = './data/interim/'+year_string+'wthr.pickle')
-# write_out_pkl(obj = mgmt, path = './data/interim/'+year_string+'mgmt.pickle')
+if sum(checkpoint.Pass)/checkpoint.shape[0] == 1:
+    pass
+else:
+    print(checkpoint.loc[~checkpoint.Pass, ])
+
+
+write_out_pkl(obj = sval, path = './data/interim/'+year_string+'sval.pickle')
+write_out_pkl(obj = wthr, path = './data/interim/'+year_string+'wthr.pickle')
+write_out_pkl(obj = mgmt, path = './data/interim/'+year_string+'mgmt.pickle')

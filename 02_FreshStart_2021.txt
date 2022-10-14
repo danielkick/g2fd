@@ -221,7 +221,7 @@ def mk_name_dict(name # table meta, phno, soil, wthr, or mgmt
                                  'Type of Fert': 'Fertilizer_Product', 
                                   'Insecticide': 'Insecticide',
                                                # 2014  
-                                'Location name': 'Experiment_Code', 
+                                'Location name': 'Location_Name', 
                                          'long': 'Field_Longitude_BL', 
                                           'lat': 'Field_Latitude_BL', 
        'Plot length (center to center in feet)': 'Plot_Length_Unit_Feet', 
@@ -250,9 +250,9 @@ def mk_name_dict(name # table meta, phno, soil, wthr, or mgmt
                                   'Inbred reps': 'Inbred_Reps', 
                                  'Inbred plots': 'Inbred_Plots', 
                                 'Collaborators': 'Collaborator', 
-                               'Data file name': 'State', 
+                               'Data file name': 'File_Name', 
                                        'traits': 'Traits_Measured', 
-                                       'folder': 'State', 
+                                       'folder': 'Folder_Name', 
                            'Metadata file name': 'Metadata_File', 
                           'additional metadata': 'Additional_Metadata', 
                 'Weather Station serial number': 'Weather_Station_In_Field_Serial_Number', 
@@ -553,7 +553,9 @@ def list_known_experiments():
         'AZH1',
         # 2015
         'AZI1', 'AZI2', 'DEI1', 'GAI1', 'IAI1', 'IAI2', 'IAI3', 'IAI4', 'ILI1', 'INI1', 'KSI1', 'MNI1', 'MOH2', 'MOI1', 'MOI2', 'NCI1', 'NYI1', 'NYI2', 'PAI1', 'PAI2', 'SDH1', 'SDI1', 'TXI1', 'TXI2', 'TXI3', 'WII1', 'WII2',
-        'IAu2', 'IAu3', 'MNu1', 'NYu' # these are soils from an ambigious location (e.g. IAu2 might be IAH2 or IAI2)
+        'IAu2', 'IAu3', 'MNu1', 'NYu', # these are soils from an ambigious location (e.g. IAu2 might be IAH2 or IAI2)
+        # 2014
+        'G2FDE1', 'NC1', 'G2FIL1', 'G2FWI2', 'GA2', 'GXE_inb_BO2', 'G2FIN1', 'NEI1', 'G2F_IN_TX1', 'GXE_inb_IA1', 'MNI2', 'G2FNE1', 'G2FNY1', 'GAI2', 'MOI3', 'IAH1b', 'GXE_inb_MO3', 'TX3', 'IAH1a', 'G2FMN2', 'GxE_inb_PA1', 'IAH1c', 'GXE_inb_IA2', 'G2FWI1', 'G2FIA3', 'G2FWI-HYB', 'GXE_inb_MO1'
                  ]
     return(known_exps)
 
@@ -957,7 +959,10 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
         'P_Unit_ppm': 'float64',
         'Lab_ID': 'string',
         'Lab_ID_Number': 'string',
-        'Cooperator': 'string'        
+        'Cooperator': 'string' ,
+        #
+        'Location_Name': 'string',
+        'Soil_Test': 'string'
     }
 
     
@@ -1024,7 +1029,9 @@ def mk_dtype_dict(name # table sval, wthr, or mgmt
         'Fertilizer_info': 'string', 
         'Pre_Plant_Herbicide': 'string', 
         'Post_Plant_Herbicide': 'string', 
-        'Insecticide': 'string'
+        'Insecticide': 'string',
+        # 2014
+        'Location_Name':'string'
     }
    
     if name == 'sval':
